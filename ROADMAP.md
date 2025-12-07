@@ -94,25 +94,25 @@
 - [ ] Configure properties for each new node type
 
 #### Day 12-13: Flow Validation Engine
-- [ ] Create validation utility functions
-- [ ] Implement validation rules:
-  - [ ] No orphaned nodes
-  - [ ] All paths lead to END
-  - [ ] No circular references
-  - [ ] Required fields filled
-  - [ ] Valid expressions
-- [ ] Add visual validation indicators (red border on error)
-- [ ] Create validation panel (show all errors)
-- [ ] Add "Validate Flow" button in toolbar
+- [x] ~~Create validation utility functions~~
+- [x] ~~Implement validation rules:~~
+  - [x] ~~No orphaned nodes~~
+  - [x] ~~All paths lead to END~~
+  - [x] ~~No circular references~~
+  - [x] ~~Required fields filled~~
+  - [x] ~~Valid expressions~~
+- [x] ~~Add visual validation indicators (red border on error)~~
+- [x] ~~Create validation panel (show all errors)~~
+- [x] ~~Add "Validate Flow" button in toolbar~~
 
 #### Day 14: Save/Load & Export
-- [ ] Implement save flow to localStorage
-- [ ] Implement load flow from localStorage
-- [ ] Create export to JSON functionality
-- [ ] Create import from JSON functionality
-- [ ] Add auto-save (every 2 minutes)
-- [ ] Show last saved timestamp
-- [ ] **Git commit:** "Week 2: Node configuration & validation"
+- [x] ~~Implement save flow to localStorage~~
+- [x] ~~Implement load flow from localStorage~~
+- [x] ~~Create export to JSON functionality~~
+- [x] ~~Create import from JSON functionality~~
+- [x] ~~Add auto-save (every 2 minutes)~~
+- [x] ~~Show last saved timestamp~~
+- [x] ~~**Git commit:** "Week 2: Node configuration & validation"~~
 
 **Week 2 Deliverable:**
 ✅ Dynamic properties panel  
