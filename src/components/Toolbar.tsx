@@ -1,5 +1,5 @@
 // src/components/Toolbar.tsx
-import React from "react";
+import React, { useRef } from "react";
 import { 
   Undo2, 
   Redo2, 
@@ -8,60 +8,68 @@ import {
   Maximize2, 
   Play, 
   Save,
-  Download 
+  Download,
+  Upload 
 } from "lucide-react";
 import { useReactFlow } from "reactflow";
 import { useFlowStore } from "../store/flowStore";
+import { validateFlow } from "../utils/flowValidation";
 
 const Toolbar: React.FC = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
-  const { undo, redo, canUndo, canRedo, nodes, edges } = useFlowStore();
+  const { 
+    undo, 
+    redo, 
+    canUndo, 
+    canRedo, 
+    nodes, 
+    edges,
+    setValidationResults,
+    toggleValidationPanel,
+    saveFlow,
+    exportFlow,
+    importFlow 
+  } = useFlowStore();
 
   const handleTestFlow = () => {
-    // Validation checks
-    const errors: string[] = [];
+    const result = validateFlow(nodes, edges);
+    setValidationResults(result.errors, result.warnings);
+    toggleValidationPanel();
+  };
 
-    // Check if there are any nodes
-    if (nodes.length === 0) {
-      errors.push("❌ Flow is empty. Add nodes to begin.");
-    } else {
-      // Check for Start node
-      const hasStart = nodes.some((node) => node.type === "start");
-      if (!hasStart) {
-        errors.push("❌ Missing Start node. Every flow must start with a Start node.");
+  const handleSave = () => {
+    saveFlow();
+    alert("✅ Flow saved successfully!");
+  };
+
+  const handleExport = () => {
+    exportFlow();
+  };
+
+  const handleImport = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        importFlow(content);
+        alert("✅ Flow imported successfully!");
+      } catch {
+        alert("❌ Failed to import flow. Invalid file format.");
       }
-
-      // Check for End node
-      const hasEnd = nodes.some((node) => node.type === "end");
-      if (!hasEnd) {
-        errors.push("❌ Missing End node. Every flow must end with an End node.");
-      }
-
-      // Check for unconnected nodes (dangling nodes)
-      const connectedNodeIds = new Set<string>();
-      edges.forEach((edge) => {
-        connectedNodeIds.add(edge.source);
-        connectedNodeIds.add(edge.target);
-      });
-
-      const unconnectedNodes = nodes.filter(
-        (node) => !connectedNodeIds.has(node.id) && node.type !== "start"
-      );
-
-      if (unconnectedNodes.length > 0) {
-        errors.push(
-          `⚠️ ${unconnectedNodes.length} node(s) are not connected. All nodes must be part of the flow.`
-        );
-      }
-    }
-
-    // Show results
-    if (errors.length === 0) {
-      alert(
-        `✅ Flow is valid!\n\n📊 Summary:\n- Nodes: ${nodes.length}\n- Connections: ${edges.length}\n\nYour flow looks good to go!`
-      );
-    } else {
-      alert(`Flow Validation Results:\n\n${errors.join("\n")}`);
+    };
+    reader.readAsText(file);
+    
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   };
 
@@ -161,6 +169,7 @@ const Toolbar: React.FC = () => {
 
       {/* Right Side Actions */}
       <button
+        onClick={handleSave}
         className="
           px-3 py-1.5 rounded-md border border-slate-700
           hover:bg-slate-800 hover:border-green-500
@@ -173,6 +182,7 @@ const Toolbar: React.FC = () => {
         <span className="hidden sm:inline">Save</span>
       </button>
       <button
+        onClick={handleExport}
         className="
           px-3 py-1.5 rounded-md border border-slate-700
           hover:bg-slate-800 hover:border-purple-500
@@ -184,6 +194,26 @@ const Toolbar: React.FC = () => {
         <Download size={16} />
         <span className="hidden sm:inline">Export</span>
       </button>
+      <button
+        onClick={handleImport}
+        className="
+          px-3 py-1.5 rounded-md border border-slate-700
+          hover:bg-slate-800 hover:border-orange-500
+          transition-all text-xs sm:text-sm text-slate-300
+          flex items-center gap-2 shrink-0
+        "
+        title="Import Flow"
+      >
+        <Upload size={16} />
+        <span className="hidden sm:inline">Import</span>
+      </button>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept=".json"
+        className="hidden"
+      />
     </div>
   );
 };

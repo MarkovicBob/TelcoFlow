@@ -5,6 +5,7 @@ import type { NodeProps } from "reactflow";
 import * as Icons from "lucide-react";
 import type { NodeData } from "../../types/nodes";
 import { NODE_DEFINITIONS } from "../../types/nodes";
+import { useFlowStore } from "../../store/flowStore";
 
 interface BaseNodeProps extends NodeProps<NodeData> {
   icon?: keyof typeof Icons;
@@ -18,6 +19,7 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
   data,
   type,
   selected,
+  id,
   hasInput = true,
   hasOutput = true,
   outputCount = 1,
@@ -25,14 +27,23 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
   const definition = NODE_DEFINITIONS[type as keyof typeof NODE_DEFINITIONS];
   const Icon = Icons[definition?.icon as keyof typeof Icons] as React.ComponentType<{ size?: number }>;
   const color = definition?.color || "#3b82f6";
+  
+  // Check if node has validation errors/warnings
+  const { validationErrors, validationWarnings } = useFlowStore();
+  const hasError = validationErrors.some((err) => err.nodeId === id);
+  const hasWarning = validationWarnings.some((warn) => warn.nodeId === id);
+  
+  // Determine border color based on validation state
+  const borderColor = hasError ? "#ef4444" : hasWarning ? "#f59e0b" : color;
 
   return (
     <div
       className={`
         bg-slate-900 rounded-lg shadow-lg border-2 transition-all
         ${selected ? "ring-2 ring-blue-400 scale-105" : ""}
+        ${hasError ? "animate-pulse" : ""}
       `}
-      style={{ borderColor: color, minWidth: "200px" }}
+      style={{ borderColor, minWidth: "200px" }}
     >
       {/* Input Handle */}
       {hasInput && (

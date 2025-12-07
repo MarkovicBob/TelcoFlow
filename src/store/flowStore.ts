@@ -4,6 +4,7 @@ import type { Node, Edge, Connection, NodeChange, EdgeChange } from "reactflow";
 import { addEdge, applyNodeChanges, applyEdgeChanges } from "reactflow";
 import { nanoid } from "nanoid";
 import type { NodeType, NodeData } from "../types/nodes";
+import type { ValidationError } from "../utils/flowValidation";
 
 interface FlowState {
   nodes: Node<NodeData>[];
@@ -11,6 +12,14 @@ interface FlowState {
   selectedNode: Node<NodeData> | null;
   selectedNodes: string[]; // Array of node IDs for multi-selection
   clipboard: Node<NodeData> | null;
+  
+  // Validation state
+  validationErrors: ValidationError[];
+  validationWarnings: ValidationError[];
+  showValidationPanel: boolean;
+  
+  // Save/Load state
+  lastSaved: Date | null;
   
   // History for undo/redo
   history: {
@@ -36,6 +45,17 @@ interface FlowState {
   // Copy/Paste operations
   copyNode: () => void;
   pasteNode: (position: { x: number; y: number }) => void;
+  
+  // Validation operations
+  setValidationResults: (errors: ValidationError[], warnings: ValidationError[]) => void;
+  toggleValidationPanel: () => void;
+  clearValidation: () => void;
+  
+  // Save/Load/Export operations
+  saveFlow: () => void;
+  loadSavedFlow: () => boolean;
+  exportFlow: () => void;
+  importFlow: (flowData: string) => void;
   
   // History operations
   undo: () => void;
@@ -154,6 +174,10 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   selectedNode: null,
   selectedNodes: [],
   clipboard: null,
+  validationErrors: [],
+  validationWarnings: [],
+  showValidationPanel: false,
+  lastSaved: null,
   history: {
     past: [],
     future: [],
@@ -339,5 +363,90 @@ export const useFlowStore = create<FlowState>((set, get) => ({
         future: [],
       },
     });
+  },
+
+  setValidationResults: (errors, warnings) => {
+    set({ validationErrors: errors, validationWarnings: warnings });
+  },
+
+  toggleValidationPanel: () => {
+    set({ showValidationPanel: !get().showValidationPanel });
+  },
+
+  clearValidation: () => {
+    set({ validationErrors: [], validationWarnings: [], showValidationPanel: false });
+  },
+
+  saveFlow: () => {
+    const { nodes, edges } = get();
+    const now = new Date();
+    const flowData = {
+      nodes,
+      edges,
+      savedAt: now.toISOString(),
+      version: "1.0",
+    };
+    localStorage.setItem("telcoflow_saved", JSON.stringify(flowData));
+    set({ lastSaved: now });
+  },
+
+  loadSavedFlow: () => {
+    try {
+      const saved = localStorage.getItem("telcoflow_saved");
+      if (!saved) return false;
+
+      const flowData = JSON.parse(saved);
+      const savedDate = flowData.savedAt ? new Date(flowData.savedAt) : null;
+      set({
+        nodes: flowData.nodes || [],
+        edges: flowData.edges || [],
+        lastSaved: savedDate,
+        history: { past: [], future: [] },
+      });
+      return true;
+    } catch (error) {
+      console.error("Failed to load flow:", error);
+      return false;
+    }
+  },
+
+  exportFlow: () => {
+    const { nodes, edges } = get();
+    const flowData = {
+      nodes,
+      edges,
+      exportedAt: new Date().toISOString(),
+      version: "1.0",
+      metadata: {
+        name: "TelcoFlow Export",
+        description: "Call flow exported from TelcoFlow",
+      },
+    };
+
+    const blob = new Blob([JSON.stringify(flowData, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `telcoflow_${Date.now()}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  },
+
+  importFlow: (flowData) => {
+    try {
+      const parsed = JSON.parse(flowData);
+      set({
+        nodes: parsed.nodes || [],
+        edges: parsed.edges || [],
+        history: { past: [], future: [] },
+      });
+    } catch (error) {
+      console.error("Failed to import flow:", error);
+      throw new Error("Invalid flow data");
+    }
   },
 }));
