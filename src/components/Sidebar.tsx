@@ -1,14 +1,77 @@
 // src/components/Sidebar.tsx
-import React from "react";
+import React, { useRef } from "react";
 import * as Icons from "lucide-react";
 import { NODE_DEFINITIONS } from "../types/nodes";
 import type { NodeType } from "../types/nodes";
 
 const Sidebar: React.FC = () => {
+  const touchTrackingRef = useRef<{ active: boolean; nodeType: NodeType | null }>({
+    active: false,
+    nodeType: null,
+  });
+
   const onDragStart = (event: React.DragEvent, nodeType: NodeType) => {
     event.dataTransfer.setData("application/reactflow", nodeType);
     event.dataTransfer.effectAllowed = "move";
   };
+
+  // Touch support for mobile drag-and-drop
+  const onTouchStart = (_event: React.TouchEvent, nodeType: NodeType) => {
+    touchTrackingRef.current.active = true;
+    touchTrackingRef.current.nodeType = nodeType;
+    sessionStorage.setItem("dragNodeType", nodeType);
+  };
+
+  // Global touch end handler
+  React.useEffect(() => {
+    const handleGlobalTouchEnd = (event: TouchEvent) => {
+      if (!touchTrackingRef.current.active || !touchTrackingRef.current.nodeType) {
+        return;
+      }
+
+      const touch = event.changedTouches[0];
+      if (!touch) return;
+
+      // Find the canvas element by checking if touch ended over it
+      const canvasElement = document.querySelector("[class*='react-flow']") as HTMLElement;
+      if (!canvasElement) {
+        touchTrackingRef.current.active = false;
+        touchTrackingRef.current.nodeType = null;
+        return;
+      }
+
+      const bounds = canvasElement.getBoundingClientRect();
+      const x = touch.clientX;
+      const y = touch.clientY;
+
+      // Check if touch ended inside canvas bounds
+      if (x >= bounds.left && x <= bounds.right && y >= bounds.top && y <= bounds.bottom) {
+        const nodeType = touchTrackingRef.current.nodeType;
+        
+        // Dispatch event on document for global listen
+        const dropEvent = new CustomEvent("canvasDropNode", {
+          detail: {
+            nodeType,
+            x: x - bounds.left,
+            y: y - bounds.top,
+            clientX: x,
+            clientY: y,
+          },
+          bubbles: true,
+        });
+        document.dispatchEvent(dropEvent);
+      }
+
+      sessionStorage.removeItem("dragNodeType");
+      touchTrackingRef.current.active = false;
+      touchTrackingRef.current.nodeType = null;
+    };
+
+    document.addEventListener("touchend", handleGlobalTouchEnd, false);
+    return () => {
+      document.removeEventListener("touchend", handleGlobalTouchEnd, false);
+    };
+  }, []);
 
   // Group nodes by category
   const nodesByCategory = Object.values(NODE_DEFINITIONS).reduce((acc, node) => {
@@ -28,7 +91,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="w-72 bg-slate-900/60 border-r border-slate-800 flex flex-col overflow-hidden">
+    <div className="w-full md:w-72 bg-slate-900/60 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col overflow-hidden">
       <div className="p-4 border-b border-slate-800">
         <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wide">
           Node Library
@@ -49,6 +112,7 @@ const Sidebar: React.FC = () => {
                     key={node.type}
                     draggable
                     onDragStart={(e) => onDragStart(e, node.type)}
+                    onTouchStart={(e) => onTouchStart(e, node.type)}
                     className="
                       group cursor-grab active:cursor-grabbing
                       bg-slate-800/50 hover:bg-slate-800 
@@ -56,6 +120,7 @@ const Sidebar: React.FC = () => {
                       rounded-lg px-3 py-2.5
                       transition-all duration-200
                       hover:scale-[1.02] hover:shadow-lg
+                      touch-none
                     "
                     style={{
                       borderLeftWidth: "3px",

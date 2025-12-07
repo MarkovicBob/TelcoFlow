@@ -26,7 +26,7 @@ export const IVRMenuNode: React.FC<NodeProps<IVRMenuNodeData>> = ({
       <Handle
         type="target"
         position={Position.Top}
-        className="w-3 h-3 !bg-blue-500 !border-2 !border-slate-900"
+        className="w-3 h-3 bg-blue-500! border-2! border-slate-900!"
       />
 
       {/* Header */}
@@ -57,7 +57,7 @@ export const IVRMenuNode: React.FC<NodeProps<IVRMenuNodeData>> = ({
             type="source"
             position={Position.Bottom}
             id={`output-${option.key}`}
-            className="w-3 h-3 !bg-blue-500 !border-2 !border-slate-900"
+            className="w-3 h-3 bg-blue-500! border-2! border-slate-900!"
             style={{
               left: `${((i + 1) * 100) / (outputCount + 1)}%`,
               transform: "translateX(-50%)",

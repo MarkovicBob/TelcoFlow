@@ -25,7 +25,7 @@ export const DecisionNode: React.FC<NodeProps<DecisionNodeData>> = ({
       <Handle
         type="target"
         position={Position.Top}
-        className="w-3 h-3 !bg-blue-500 !border-2 !border-slate-900"
+        className="w-3 h-3 bg-blue-500! border-2! border-slate-900!"
       />
 
       {/* Header */}
@@ -53,7 +53,7 @@ export const DecisionNode: React.FC<NodeProps<DecisionNodeData>> = ({
             type="source"
             position={Position.Bottom}
             id="true"
-            className="w-3 h-3 !bg-green-500 !border-2 !border-slate-900"
+            className="w-3 h-3 bg-green-500! border-2! border-slate-900!"
           />
         </div>
         <div className="flex flex-col items-center">
@@ -62,7 +62,7 @@ export const DecisionNode: React.FC<NodeProps<DecisionNodeData>> = ({
             type="source"
             position={Position.Bottom}
             id="false"
-            className="w-3 h-3 !bg-red-500 !border-2 !border-slate-900"
+            className="w-3 h-3 bg-red-500! border-2! border-slate-900!"
           />
         </div>
       </div>

@@ -16,66 +16,46 @@
 - [x] ~~Initialize project with Vite + React + TypeScript~~
 - [x] ~~Setup Tailwind CSS~~
 - [x] ~~Install ReactFlow~~
-- [ ] Install additional dependencies:
+- [x] ~~Install additional dependencies:~~
   ```bash
   npm install zustand react-hook-form zod lucide-react
   npm install -D @types/node
   ```
-- [ ] Setup project structure:
-  ```
-  src/
-  ├── components/
-  │   ├── layout/
-  │   │   ├── Header.tsx
-  │   │   ├── Sidebar.tsx
-  │   │   └── Footer.tsx
-  │   ├── canvas/
-  │   │   ├── FlowCanvas.tsx
-  │   │   ├── Toolbar.tsx
-  │   │   └── MiniMap.tsx
-  │   ├── nodes/           (custom node components)
-  │   └── panels/
-  │       ├── NodeLibrary.tsx
-  │       └── NodeDetails.tsx
-  ├── store/
-  │   └── flowStore.ts     (Zustand)
-  ├── types/
-  │   ├── flow.ts
-  │   └── nodes.ts
-  └── utils/
-      ├── validation.ts
-      └── nodeFactory.ts
-  ```
-- [ ] Create Zustand store for flow state
-- [ ] Setup TypeScript types for all node types
+- [x] ~~Setup project structure~~
+- [x] ~~Create Zustand store for flow state~~
+- [x] ~~Setup TypeScript types for all node types~~
 
 #### Day 3-4: Node Components
-- [ ] Create base node component with common structure
-- [ ] Implement **Start Node** (green, entry point)
-- [ ] Implement **End Node** (red, terminate)
-- [ ] Implement **IVR Menu Node** (blue, with multiple outputs)
-- [ ] Implement **Play Message Node** (indigo)
-- [ ] Implement **Transfer Node** (purple)
-- [ ] Add proper styling for each node type
-- [ ] Add node icons (Lucide React)
+- [x] ~~Create base node component with common structure~~
+- [x] ~~Implement **Start Node** (green, entry point)~~
+- [x] ~~Implement **End Node** (red, terminate)~~
+- [x] ~~Implement **IVR Menu Node** (blue, with multiple outputs)~~
+- [x] ~~Implement **Play Message Node** (indigo)~~
+- [x] ~~Implement **Transfer Node** (purple)~~
+- [x] ~~Implement all 12 node types (+ Decision, Queue, API Call, Get Input, Record, Wait, Set Variable)~~
+- [x] ~~Add proper styling for each node type~~
+- [x] ~~Add node icons (Lucide React)~~
 
 #### Day 5-6: Drag & Drop + Canvas
-- [ ] Setup ReactFlow canvas with proper configuration
-- [ ] Enable drag & drop from sidebar to canvas
-- [ ] Implement node connection logic
-- [ ] Add canvas controls (zoom, pan, fit view)
-- [ ] Add mini-map for navigation
-- [ ] Implement node selection/multi-selection
-- [ ] Add copy/paste functionality
-- [ ] Implement undo/redo (store history)
+- [x] ~~Setup ReactFlow canvas with proper configuration~~
+- [x] ~~Enable drag & drop from sidebar to canvas (desktop + mobile)~~
+- [x] ~~Implement node connection logic~~
+- [x] ~~Add canvas controls (zoom, pan, fit view)~~
+- [x] ~~Add mini-map for navigation~~
+- [x] ~~Implement node selection/multi-selection (Shift+Click, Ctrl+Click)~~
+- [x] ~~Add copy/paste functionality (Ctrl+C, Ctrl+V)~~
+- [x] ~~Implement undo/redo (store history)~~
 
 #### Day 7: Week 1 Testing & Polish
-- [ ] Test all node types
-- [ ] Test drag & drop
-- [ ] Test connections
-- [ ] Fix any bugs
-- [ ] Code review & refactoring
-- [ ] **Git commit:** "Week 1: Core flow builder complete"
+- [x] ~~Test all node types~~
+- [x] ~~Test drag & drop (desktop + mobile)~~
+- [x] ~~Test connections~~
+- [x] ~~Test copy/paste functionality~~
+- [x] ~~Test multi-selection (Shift+Click, Ctrl+Click)~~
+- [x] ~~Test undo/redo~~
+- [x] ~~Add Test Flow validation button~~
+- [x] ~~Code review & refactoring~~
+- [x] ~~**Git commit:** "Week 1: Core flow builder complete"~~
 
 **Week 1 Deliverable:** 
 ✅ Fully functional drag & drop flow builder  

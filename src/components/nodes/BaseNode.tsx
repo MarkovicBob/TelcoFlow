@@ -39,7 +39,7 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
         <Handle
           type="target"
           position={Position.Top}
-          className="w-3 h-3 !bg-blue-500 !border-2 !border-slate-900"
+          className="w-3 h-3 bg-blue-500! border-2! border-slate-900!"
         />
       )}
 
@@ -65,7 +65,7 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
         <Handle
           type="source"
           position={Position.Bottom}
-          className="w-3 h-3 !bg-blue-500 !border-2 !border-slate-900"
+          className="w-3 h-3 bg-blue-500! border-2! border-slate-900!"
         />
       )}
       {hasOutput && outputCount > 1 && (
@@ -76,7 +76,7 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
               type="source"
               position={Position.Bottom}
               id={`output-${i}`}
-              className="w-3 h-3 !bg-blue-500 !border-2 !border-slate-900 !relative"
+              className="w-3 h-3 bg-blue-500! border-2! border-slate-900! relative!"
               style={{
                 left: `${((i + 1) * 100) / (outputCount + 1)}%`,
                 transform: "translateX(-50%)",

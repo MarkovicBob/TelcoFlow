@@ -1,4 +1,3 @@
-// src/components/FlowCanvas.tsx
 import "reactflow/dist/style.css";
 import React, { useCallback, useRef } from "react";
 import ReactFlow, {
@@ -24,7 +23,10 @@ const FlowCanvas: React.FC = () => {
     onEdgesChange,
     onConnect,
     addNode,
-    selectNode,
+    selectNodeMulti,
+    clearSelection,
+    copyNode,
+    pasteNode,
   } = useFlowStore();
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -52,19 +54,119 @@ const FlowCanvas: React.FC = () => {
     [reactFlowInstance, addNode]
   );
 
-  const onNodeClick = useCallback(
-    (_event: React.MouseEvent, node: typeof nodes[0]) => {
-      selectNode(node);
+  // Touch support for mobile drag-and-drop
+  const onTouchMove = useCallback(
+    () => {
+      // Touch se kreće
     },
-    [selectNode]
+    []
+  );
+
+  const onTouchEnd = useCallback(
+    () => {
+      // Handled via custom event from Sidebar
+    },
+    []
+  );
+
+  // Suppress wheel and touch events to prevent passive listener warnings
+  React.useEffect(() => {
+    const element = reactFlowWrapper.current;
+    if (!element) return;
+
+    const preventPassive = (e: Event) => {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
+    };
+
+    element.addEventListener("touchmove", preventPassive, { passive: false });
+    element.addEventListener("wheel", preventPassive, { passive: false });
+
+    return () => {
+      element.removeEventListener("touchmove", preventPassive);
+      element.removeEventListener("wheel", preventPassive);
+    };
+  }, []);
+  React.useEffect(() => {
+    const handleCanvasDrop = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const { nodeType, clientX, clientY } = customEvent.detail;
+      
+      if (!nodeType || !reactFlowInstance) {
+        return;
+      }
+
+      const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
+      if (!reactFlowBounds) {
+        return;
+      }
+
+      const position = reactFlowInstance.screenToFlowPosition({
+        x: clientX - reactFlowBounds.left,
+        y: clientY - reactFlowBounds.top,
+      });
+
+      addNode(nodeType as NodeType, position);
+    };
+
+    // Listen on document level for custom drop events
+    document.addEventListener("canvasDropNode", handleCanvasDrop);
+    
+    return () => {
+      document.removeEventListener("canvasDropNode", handleCanvasDrop);
+    };
+  }, [reactFlowInstance, addNode]);
+
+  const onNodeClick = useCallback(
+    (event: React.MouseEvent, node: typeof nodes[0]) => {
+      const isMultiSelect = event.shiftKey || event.ctrlKey || event.metaKey;
+      selectNodeMulti(node.id, isMultiSelect);
+    },
+    [selectNodeMulti]
   );
 
   const onPaneClick = useCallback(() => {
-    selectNode(null);
-  }, [selectNode]);
+    clearSelection();
+  }, [clearSelection]);
+
+  // Keyboard shortcuts for copy/paste
+  React.useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "c") {
+        event.preventDefault();
+        copyNode();
+      } else if ((event.ctrlKey || event.metaKey) && event.key === "v") {
+        event.preventDefault();
+        if (reactFlowInstance && reactFlowWrapper.current) {
+          // Paste at center of canvas
+          const bounds = reactFlowWrapper.current.getBoundingClientRect();
+          const centerX = bounds.width / 2;
+          const centerY = bounds.height / 2;
+          
+          const position = reactFlowInstance.screenToFlowPosition({
+            x: centerX,
+            y: centerY,
+          });
+          
+          pasteNode(position);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [copyNode, pasteNode, reactFlowInstance]);
 
   return (
-    <div ref={reactFlowWrapper} className="h-full w-full bg-slate-950">
+    <div 
+      ref={reactFlowWrapper} 
+      className="h-full w-full bg-slate-950 min-h-[60vh] md:min-h-0 touch-manipulation"
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}

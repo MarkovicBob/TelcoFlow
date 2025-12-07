@@ -9,6 +9,8 @@ interface FlowState {
   nodes: Node<NodeData>[];
   edges: Edge[];
   selectedNode: Node<NodeData> | null;
+  selectedNodes: string[]; // Array of node IDs for multi-selection
+  clipboard: Node<NodeData> | null;
   
   // History for undo/redo
   history: {
@@ -28,6 +30,12 @@ interface FlowState {
   updateNode: (id: string, data: Partial<NodeData>) => void;
   deleteNode: (id: string) => void;
   selectNode: (node: Node<NodeData> | null) => void;
+  selectNodeMulti: (nodeId: string, multiSelect: boolean) => void; // For Shift+Click and Ctrl+Click
+  clearSelection: () => void;
+  
+  // Copy/Paste operations
+  copyNode: () => void;
+  pasteNode: (position: { x: number; y: number }) => void;
   
   // History operations
   undo: () => void;
@@ -144,6 +152,8 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   nodes: [],
   edges: [],
   selectedNode: null,
+  selectedNodes: [],
+  clipboard: null,
   history: {
     past: [],
     future: [],
@@ -211,7 +221,38 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   },
 
   selectNode: (node) => {
-    set({ selectedNode: node });
+    set({ selectedNode: node, selectedNodes: node ? [node.id] : [] });
+  },
+
+  selectNodeMulti: (nodeId, multiSelect) => {
+    const state = get();
+    const currentSelectedNodes = state.selectedNodes;
+    
+    if (multiSelect) {
+      // Shift+Click or Ctrl+Click behavior
+      if (currentSelectedNodes.includes(nodeId)) {
+        // If already selected, toggle off
+        set({
+          selectedNodes: currentSelectedNodes.filter((id) => id !== nodeId),
+          selectedNode: null,
+        });
+      } else {
+        // Add to selection
+        set({
+          selectedNodes: [...currentSelectedNodes, nodeId],
+        });
+      }
+    } else {
+      // Single click - replace selection
+      set({
+        selectedNodes: [nodeId],
+        selectedNode: state.nodes.find((n) => n.id === nodeId) || null,
+      });
+    }
+  },
+
+  clearSelection: () => {
+    set({ selectedNode: null, selectedNodes: [] });
   },
 
   undo: () => {
@@ -267,6 +308,36 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       edges,
       selectedNode: null,
       history: { past: [], future: [] },
+    });
+  },
+
+  copyNode: () => {
+    const selectedNode = get().selectedNode;
+    if (!selectedNode) return;
+
+    set({ clipboard: selectedNode });
+  },
+
+  pasteNode: (position) => {
+    const clipboard = get().clipboard;
+    if (!clipboard) return;
+
+    const newNodeId = nanoid();
+    const newNode: Node<NodeData> = {
+      id: newNodeId,
+      type: clipboard.type,
+      position,
+      data: clipboard.data as NodeData,
+    };
+
+    const state = get();
+    set({
+      nodes: [...state.nodes, newNode],
+      selectedNode: newNode,
+      history: {
+        past: [...state.history.past, { nodes: state.nodes, edges: state.edges }],
+        future: [],
+      },
     });
   },
 }));

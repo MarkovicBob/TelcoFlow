@@ -1,24 +1,29 @@
-// src/App.tsx
-import React from "react";
-import { ReactFlowProvider } from "reactflow";
-import Header from "./components/Header";
-import Sidebar from "./components/Sidebar";
 import FlowCanvas from "./components/FlowCanvas";
+import Header from "./components/Header";
+import React from "react";
+import Sidebar from "./components/Sidebar";
 import Toolbar from "./components/Toolbar";
+import { ReactFlowProvider } from "reactflow";
+import NodeDetailsPanel from "./components/NodeDetailsPanel";
+
+// src/App.tsx
 
 const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
       <Header />
 
-      <main className="flex flex-1 overflow-hidden">
+      <main className="flex flex-col md:flex-row flex-1 overflow-hidden">
         <Sidebar />
-        
-        <div className="flex-1 flex flex-col">
+
+        <div className="flex-1 flex flex-col min-h-[50vh]">
           <ReactFlowProvider>
             <Toolbar />
             <FlowCanvas />
           </ReactFlowProvider>
+        </div>
+        <div className="hidden md:block">
+          <NodeDetailsPanel />
         </div>
       </main>
 
@@ -29,7 +34,7 @@ const App: React.FC = () => {
           <span>Auto-saved just now</span>
         </div>
         <div>
-          <span>Built with ❤️ by Bob | December 2025</span>
+          <span>Markovic Bob | December 2025</span>
         </div>
       </footer>
     </div>
