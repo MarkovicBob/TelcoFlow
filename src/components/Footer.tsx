@@ -1,6 +1,7 @@
-// src/components/Footer.tsx
-import { useFlowStore } from "../store/flowStore";
 import { Clock } from "lucide-react";
+import { useFlowStore } from "../store/flowStore";
+
+// src/components/Footer.tsx
 
 const Footer = () => {
   const lastSaved = useFlowStore((state) => state.lastSaved);
@@ -11,15 +12,15 @@ const Footer = () => {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
-    
+
     if (diffMins === 0) return "Just now";
     if (diffMins === 1) return "1 minute ago";
     if (diffMins < 60) return `${diffMins} minutes ago`;
-    
+
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours === 1) return "1 hour ago";
     if (diffHours < 24) return `${diffHours} hours ago`;
-    
+
     // For older saves, show exact time
     return date.toLocaleString();
   };
@@ -31,9 +32,7 @@ const Footer = () => {
           <Clock size={14} />
           <span>Last saved: {formatTimestamp(lastSaved)}</span>
         </div>
-        <div>
-          TelcoFlow v1.0
-        </div>
+        <div>TelcoFlow v1.0</div>
       </div>
     </div>
   );

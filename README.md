@@ -8,6 +8,7 @@
 TelcoFlow is a visual programming platform for designing, testing, and deploying telecommunications call flows. It empowers telecom engineers and business users to create complex IVR systems, call routing logic, and customer interaction workflows without deep programming knowledge.
 
 ### Key Differentiators
+
 - **Telecom-Specific**: Built specifically for telecom use cases (IVR, call routing, queue management)
 - **Production-Ready**: Enterprise-grade validation, error handling, and testing capabilities
 - **Visual First**: Intuitive drag-and-drop interface with real-time flow simulation
@@ -126,22 +127,24 @@ TelcoFlow is a visual programming platform for designing, testing, and deploying
 ### Phase 1: Core Flow Builder (Week 1-2)
 
 #### 1.1 Node Types Library
-| Node Type | Icon | Purpose | Key Properties |
-|-----------|------|---------|---------------|
-| **Start** | 🟢 | Entry point | Trigger type (inbound/scheduled) |
-| **IVR Menu** | 📱 | DTMF/Voice input | Audio, options, timeout, retries |
-| **Play Message** | 🔊 | Play audio/TTS | Message text, audio file, language |
-| **Get Input** | ⌨️ | Collect DTMF/speech | Input length, timeout, validation |
-| **Decision** | 🔀 | Conditional routing | Conditions, variables, operators |
-| **Transfer** | ☎️ | Call transfer | Destination, type (warm/cold) |
-| **Queue** | 👥 | Hold queue | Queue name, priority, max wait |
-| **API Call** | 🌐 | External integration | URL, method, headers, mapping |
-| **Record** | 🎙️ | Call recording | Duration, format, storage |
-| **Wait** | ⏱️ | Delay execution | Duration, units |
-| **Set Variable** | 📝 | Store data | Variable name, value, type |
-| **End** | 🔴 | Terminate call | Reason, disposition code |
+
+| Node Type        | Icon | Purpose              | Key Properties                     |
+| ---------------- | ---- | -------------------- | ---------------------------------- |
+| **Start**        | 🟢   | Entry point          | Trigger type (inbound/scheduled)   |
+| **IVR Menu**     | 📱   | DTMF/Voice input     | Audio, options, timeout, retries   |
+| **Play Message** | 🔊   | Play audio/TTS       | Message text, audio file, language |
+| **Get Input**    | ⌨️   | Collect DTMF/speech  | Input length, timeout, validation  |
+| **Decision**     | 🔀   | Conditional routing  | Conditions, variables, operators   |
+| **Transfer**     | ☎️   | Call transfer        | Destination, type (warm/cold)      |
+| **Queue**        | 👥   | Hold queue           | Queue name, priority, max wait     |
+| **API Call**     | 🌐   | External integration | URL, method, headers, mapping      |
+| **Record**       | 🎙️   | Call recording       | Duration, format, storage          |
+| **Wait**         | ⏱️   | Delay execution      | Duration, units                    |
+| **Set Variable** | 📝   | Store data           | Variable name, value, type         |
+| **End**          | 🔴   | Terminate call       | Reason, disposition code           |
 
 #### 1.2 Canvas Features
+
 - ✅ Drag & drop nodes from library
 - ✅ Connect nodes with edges (arrows)
 - ✅ Multi-select (Ctrl+Click)
@@ -155,6 +158,7 @@ TelcoFlow is a visual programming platform for designing, testing, and deploying
 - ✅ Auto-layout algorithm
 
 #### 1.3 Node Properties Panel
+
 - Dynamic form based on node type
 - Real-time validation
 - Error highlighting
@@ -166,6 +170,7 @@ TelcoFlow is a visual programming platform for designing, testing, and deploying
 ### Phase 2: Business Logic & Testing (Week 2-3)
 
 #### 2.1 Variables & Expressions
+
 ```javascript
 // Built-in variables
 ${caller.phone}      // Caller's phone number
@@ -188,6 +193,7 @@ ${customer.tier == 'premium'}
 ```
 
 #### 2.2 Flow Validation
+
 - ✓ No orphaned nodes
 - ✓ All paths lead to END node
 - ✓ No circular references
@@ -197,6 +203,7 @@ ${customer.tier == 'premium'}
 - ✓ API endpoints reachable
 
 #### 2.3 Flow Simulator
+
 - Step-by-step execution
 - Variable inspector
 - Breakpoints
@@ -209,6 +216,7 @@ ${customer.tier == 'premium'}
 ### Phase 3: Professional Features (Week 3-4)
 
 #### 3.1 Project Management
+
 - Multiple flow projects
 - Project metadata (name, description, tags)
 - Version history
@@ -218,6 +226,7 @@ ${customer.tier == 'premium'}
 - Archive/Delete
 
 #### 3.2 Import/Export
+
 ```json
 {
   "version": "1.0",
@@ -234,6 +243,7 @@ ${customer.tier == 'premium'}
 ```
 
 #### 3.3 Deployment & Integration
+
 - Export as JSON
 - Generate documentation (Markdown/PDF)
 - Export flow diagram (PNG/SVG)
@@ -247,6 +257,7 @@ ${customer.tier == 'premium'}
 ## 🛠️ Technical Architecture
 
 ### Tech Stack
+
 ```
 Frontend:
 ├── React 19 + TypeScript
@@ -270,6 +281,7 @@ DevOps:
 ```
 
 ### Folder Structure
+
 ```
 src/
 ├── components/
@@ -304,6 +316,7 @@ src/
 ## 📅 Development Roadmap
 
 ### Week 1: Foundation
+
 - ✅ Setup project structure
 - ✅ Basic ReactFlow integration
 - ✅ Custom node components (5-6 types)
@@ -311,6 +324,7 @@ src/
 - ✅ Basic canvas controls
 
 ### Week 2: Advanced Features
+
 - ⬜ Node properties panel (dynamic forms)
 - ⬜ Flow validation system
 - ⬜ Variable system
@@ -318,6 +332,7 @@ src/
 - ⬜ Import/Export JSON
 
 ### Week 3: Testing & Simulation
+
 - ⬜ Flow simulator UI
 - ⬜ Execution engine
 - ⬜ DTMF simulator
@@ -325,6 +340,7 @@ src/
 - ⬜ Test logs & timeline
 
 ### Week 4: Polish & Deploy
+
 - ⬜ Templates library
 - ⬜ Documentation generator
 - ⬜ Export to PNG/PDF
@@ -368,7 +384,7 @@ When presenting this project:
 
 1. **Problem Statement**: "Telecom operators need rapid service development without vendor lock-in"
 2. **Solution**: "Visual low-code platform reducing time-to-market from months to days"
-3. **Technical Depth**: 
+3. **Technical Depth**:
    - Type-safe TypeScript architecture
    - Custom validation engine
    - Real-time flow simulation

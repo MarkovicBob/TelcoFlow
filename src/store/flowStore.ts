@@ -1,10 +1,11 @@
-// src/store/flowStore.ts
-import { create } from "zustand";
-import type { Node, Edge, Connection, NodeChange, EdgeChange } from "reactflow";
-import { addEdge, applyNodeChanges, applyEdgeChanges } from "reactflow";
 import { nanoid } from "nanoid";
-import type { NodeType, NodeData } from "../types/nodes";
+import type { Connection, Edge, EdgeChange, Node, NodeChange } from "reactflow";
+import { addEdge, applyEdgeChanges, applyNodeChanges } from "reactflow";
+import { create } from "zustand";
+import type { NodeData, NodeType } from "../types/nodes";
 import type { ValidationError } from "../utils/flowValidation";
+
+// src/store/flowStore.ts
 
 interface FlowState {
   nodes: Node<NodeData>[];
@@ -12,28 +13,31 @@ interface FlowState {
   selectedNode: Node<NodeData> | null;
   selectedNodes: string[]; // Array of node IDs for multi-selection
   clipboard: Node<NodeData> | null;
-  
+
   // Validation state
   validationErrors: ValidationError[];
   validationWarnings: ValidationError[];
   showValidationPanel: boolean;
-  
+
   // Save/Load state
   lastSaved: Date | null;
-  
+
+  // Simulator variables
+  simulatorVariables: Record<string, unknown>;
+
   // History for undo/redo
   history: {
     past: Array<{ nodes: Node<NodeData>[]; edges: Edge[] }>;
     future: Array<{ nodes: Node<NodeData>[]; edges: Edge[] }>;
   };
-  
+
   // Actions
   setNodes: (nodes: Node<NodeData>[]) => void;
   setEdges: (edges: Edge[]) => void;
   onNodesChange: (changes: NodeChange[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
   onConnect: (connection: Connection) => void;
-  
+
   // Node operations
   addNode: (type: NodeType, position: { x: number; y: number }) => void;
   updateNode: (id: string, data: Partial<NodeData>) => void;
@@ -41,28 +45,36 @@ interface FlowState {
   selectNode: (node: Node<NodeData> | null) => void;
   selectNodeMulti: (nodeId: string, multiSelect: boolean) => void; // For Shift+Click and Ctrl+Click
   clearSelection: () => void;
-  
+
   // Copy/Paste operations
   copyNode: () => void;
   pasteNode: (position: { x: number; y: number }) => void;
-  
+
   // Validation operations
-  setValidationResults: (errors: ValidationError[], warnings: ValidationError[]) => void;
+  setValidationResults: (
+    errors: ValidationError[],
+    warnings: ValidationError[]
+  ) => void;
   toggleValidationPanel: () => void;
   clearValidation: () => void;
-  
+
   // Save/Load/Export operations
   saveFlow: () => void;
   loadSavedFlow: () => boolean;
   exportFlow: () => void;
   importFlow: (flowData: string) => void;
-  
+
+  // Simulator variable operations
+  setSimulatorVariable: (key: string, value: unknown) => void;
+  getSimulatorVariable: (key: string) => unknown;
+  resetSimulatorVariables: () => void;
+
   // History operations
   undo: () => void;
   redo: () => void;
   canUndo: () => boolean;
   canRedo: () => boolean;
-  
+
   // Utility
   clearFlow: () => void;
   loadFlow: (nodes: Node<NodeData>[], edges: Edge[]) => void;
@@ -178,13 +190,14 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   validationWarnings: [],
   showValidationPanel: false,
   lastSaved: null,
+  simulatorVariables: {},
   history: {
     past: [],
     future: [],
   },
 
   setNodes: (nodes) => set({ nodes }),
-  
+
   setEdges: (edges) => set({ edges }),
 
   onNodesChange: (changes) => {
@@ -217,7 +230,10 @@ export const useFlowStore = create<FlowState>((set, get) => ({
     set({
       nodes: [...state.nodes, newNode],
       history: {
-        past: [...state.history.past, { nodes: state.nodes, edges: state.edges }],
+        past: [
+          ...state.history.past,
+          { nodes: state.nodes, edges: state.edges },
+        ],
         future: [],
       },
     });
@@ -235,10 +251,15 @@ export const useFlowStore = create<FlowState>((set, get) => ({
     const state = get();
     set({
       nodes: state.nodes.filter((node) => node.id !== id),
-      edges: state.edges.filter((edge) => edge.source !== id && edge.target !== id),
+      edges: state.edges.filter(
+        (edge) => edge.source !== id && edge.target !== id
+      ),
       selectedNode: state.selectedNode?.id === id ? null : state.selectedNode,
       history: {
-        past: [...state.history.past, { nodes: state.nodes, edges: state.edges }],
+        past: [
+          ...state.history.past,
+          { nodes: state.nodes, edges: state.edges },
+        ],
         future: [],
       },
     });
@@ -251,7 +272,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   selectNodeMulti: (nodeId, multiSelect) => {
     const state = get();
     const currentSelectedNodes = state.selectedNodes;
-    
+
     if (multiSelect) {
       // Shift+Click or Ctrl+Click behavior
       if (currentSelectedNodes.includes(nodeId)) {
@@ -314,7 +335,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   },
 
   canUndo: () => get().history.past.length > 0,
-  
+
   canRedo: () => get().history.future.length > 0,
 
   clearFlow: () => {
@@ -359,7 +380,10 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       nodes: [...state.nodes, newNode],
       selectedNode: newNode,
       history: {
-        past: [...state.history.past, { nodes: state.nodes, edges: state.edges }],
+        past: [
+          ...state.history.past,
+          { nodes: state.nodes, edges: state.edges },
+        ],
         future: [],
       },
     });
@@ -374,7 +398,11 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   },
 
   clearValidation: () => {
-    set({ validationErrors: [], validationWarnings: [], showValidationPanel: false });
+    set({
+      validationErrors: [],
+      validationWarnings: [],
+      showValidationPanel: false,
+    });
   },
 
   saveFlow: () => {
@@ -448,5 +476,19 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       console.error("Failed to import flow:", error);
       throw new Error("Invalid flow data");
     }
+  },
+
+  setSimulatorVariable: (key, value) => {
+    set((state) => ({
+      simulatorVariables: { ...state.simulatorVariables, [key]: value },
+    }));
+  },
+
+  getSimulatorVariable: (key) => {
+    return get().simulatorVariables[key] ?? null;
+  },
+
+  resetSimulatorVariables: () => {
+    set({ simulatorVariables: {} });
   },
 }));

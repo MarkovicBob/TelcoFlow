@@ -1,19 +1,20 @@
-// src/components/NodeDetailsPanel.tsx
 import React, { useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
+import type { Node } from "reactflow";
+import { useFlowStore } from "../store/flowStore";
+import { NODE_DEFINITIONS } from "../types/nodes";
+import type { NodeData, NodeType } from "../types/nodes";
+import { nodeValidationSchemas } from "../utils/validation";
+
+// src/components/NodeDetailsPanel.tsx
 import type {
   UseFormRegister,
   UseFormRegisterReturn,
   UseFormWatch,
   FieldErrors,
 } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { X } from "lucide-react";
-import { useFlowStore } from "../store/flowStore";
-import { NODE_DEFINITIONS } from "../types/nodes";
-import type { Node } from "reactflow";
-import type { NodeData, NodeType } from "../types/nodes";
-import { nodeValidationSchemas } from "../utils/validation";
 
 const NodeDetailsPanel: React.FC = () => {
   const { selectedNode, updateNode, clearSelection } = useFlowStore();
@@ -51,12 +52,22 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
   onUpdate,
   onClose,
 }) => {
-  const { register, handleSubmit, formState: { errors }, watch, reset, setFocus } = useForm<NodeData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+    setFocus,
+  } = useForm<NodeData>({
     resolver: zodResolver(nodeValidationSchemas[nodeType]),
     defaultValues: node.data as NodeData,
   });
 
-  const [toast, setToast] = useState<{ message: string; variant: "error" | "success" } | null>(null);
+  const [toast, setToast] = useState<{
+    message: string;
+    variant: "error" | "success";
+  } | null>(null);
 
   useEffect(() => {
     if (!errors || Object.keys(errors).length === 0) return;
@@ -71,7 +82,10 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
 
   const onSubmitError = (formErrors: FieldErrors<NodeData>) => {
     const first = Object.values(formErrors)[0];
-    const message = typeof first === "object" && first?.message ? String(first.message) : "Please fix validation errors.";
+    const message =
+      typeof first === "object" && first?.message
+        ? String(first.message)
+        : "Please fix validation errors.";
     setToast({ message, variant: "error" });
   };
 
@@ -84,7 +98,11 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
       {toast && (
         <div
           className={`absolute right-4 top-4 px-4 py-2 rounded-lg text-sm shadow-lg transition-opacity duration-200
-            ${toast.variant === "error" ? "bg-red-900/70 text-red-50 border border-red-500/40" : "bg-emerald-900/60 text-emerald-50 border border-emerald-500/30"}
+            ${
+              toast.variant === "error"
+                ? "bg-red-900/70 text-red-50 border border-red-500/40"
+                : "bg-emerald-900/60 text-emerald-50 border border-emerald-500/30"
+            }
           `}
         >
           {toast.message}
@@ -105,7 +123,10 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        <form onSubmit={handleSubmit(onSubmit, onSubmitError)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit, onSubmitError)}
+          className="space-y-4"
+        >
           {/* Label Field */}
           <FormSection title="Basic Information">
             <FormField
@@ -185,10 +206,7 @@ const FormField: React.FC<FormFieldProps> = ({
         {label}
       </label>
       {options ? (
-        <select
-          {...(register as object)}
-          className={resolvedClasses}
-        >
+        <select {...(register as object)} className={resolvedClasses}>
           <option value="">Select {label}</option>
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>

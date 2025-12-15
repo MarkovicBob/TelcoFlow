@@ -1,12 +1,13 @@
 import FlowCanvas from "./components/FlowCanvas";
+import Footer from "./components/Footer";
 import Header from "./components/Header";
+import NodeDetailsPanel from "./components/NodeDetailsPanel";
 import React, { useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import Toolbar from "./components/Toolbar";
-import { ReactFlowProvider } from "reactflow";
-import NodeDetailsPanel from "./components/NodeDetailsPanel";
 import ValidationPanel from "./components/ValidationPanel";
-import Footer from "./components/Footer";
+import SimulatorPanel from "./components/SimulatorPanel";
+import { ReactFlowProvider } from "reactflow";
 import { useFlowStore } from "./store/flowStore";
 
 // src/App.tsx
@@ -42,6 +43,7 @@ const App: React.FC = () => {
             <Toolbar />
             <FlowCanvas />
             <ValidationPanel />
+            <SimulatorPanel />
           </ReactFlowProvider>
         </div>
         <div className="hidden md:block">

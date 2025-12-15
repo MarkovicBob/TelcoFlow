@@ -1,10 +1,11 @@
-// src/components/nodes/IVRMenuNode.tsx
 import React from "react";
+import { Menu } from "lucide-react";
 import { Handle, Position } from "reactflow";
 import type { NodeProps } from "reactflow";
-import { Menu } from "lucide-react";
 import type { IVRMenuNodeData } from "../../types/nodes";
 import { NODE_DEFINITIONS } from "../../types/nodes";
+
+// src/components/nodes/IVRMenuNode.tsx
 
 export const IVRMenuNode: React.FC<NodeProps<IVRMenuNodeData>> = ({
   data,
@@ -40,9 +41,13 @@ export const IVRMenuNode: React.FC<NodeProps<IVRMenuNodeData>> = ({
 
       {/* Body */}
       <div className="px-3 py-3">
-        <div className="text-sm font-medium text-slate-100 mb-1">{data.label}</div>
+        <div className="text-sm font-medium text-slate-100 mb-1">
+          {data.label}
+        </div>
         {data.ttsText && (
-          <div className="text-xs text-slate-400 mb-2 italic">"{data.ttsText.substring(0, 40)}..."</div>
+          <div className="text-xs text-slate-400 mb-2 italic">
+            "{data.ttsText.substring(0, 40)}..."
+          </div>
         )}
         <div className="text-xs text-slate-500">
           Options: {outputCount} | Timeout: {data.timeout}s

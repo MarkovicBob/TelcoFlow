@@ -1,15 +1,16 @@
-// src/components/ValidationPanel.tsx
 import React from "react";
-import { X, AlertCircle, AlertTriangle, CheckCircle } from "lucide-react";
+import { AlertCircle, AlertTriangle, CheckCircle, X } from "lucide-react";
 import { useFlowStore } from "../store/flowStore";
 
+// src/components/ValidationPanel.tsx
+
 const ValidationPanel: React.FC = () => {
-  const { 
-    validationErrors, 
-    validationWarnings, 
-    showValidationPanel, 
+  const {
+    validationErrors,
+    validationWarnings,
+    showValidationPanel,
     toggleValidationPanel,
-    nodes 
+    nodes,
   } = useFlowStore();
 
   if (!showValidationPanel) return null;

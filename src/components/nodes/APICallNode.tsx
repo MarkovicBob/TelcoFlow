@@ -1,10 +1,11 @@
-// src/components/nodes/APICallNode.tsx
 import React from "react";
+import { Plug } from "lucide-react";
 import { Handle, Position } from "reactflow";
 import type { NodeProps } from "reactflow";
-import { Plug } from "lucide-react";
 import type { APICallNodeData } from "../../types/nodes";
 import { NODE_DEFINITIONS } from "../../types/nodes";
+
+// src/components/nodes/APICallNode.tsx
 
 export const APICallNode: React.FC<NodeProps<APICallNodeData>> = ({
   data,
@@ -36,7 +37,9 @@ export const APICallNode: React.FC<NodeProps<APICallNodeData>> = ({
       </div>
 
       <div className="px-3 py-3">
-        <div className="text-sm font-medium text-slate-100 mb-1">{data.label}</div>
+        <div className="text-sm font-medium text-slate-100 mb-1">
+          {data.label}
+        </div>
         <div className="text-xs text-slate-400 font-mono truncate">
           {data.method} {data.url || "https://api.example.com"}
         </div>

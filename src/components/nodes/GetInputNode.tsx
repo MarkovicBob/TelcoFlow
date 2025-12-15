@@ -1,10 +1,11 @@
-// src/components/nodes/GetInputNode.tsx
 import React from "react";
+import { Keyboard } from "lucide-react";
 import { Handle, Position } from "reactflow";
 import type { NodeProps } from "reactflow";
-import { Keyboard } from "lucide-react";
 import type { GetInputNodeData } from "../../types/nodes";
 import { NODE_DEFINITIONS } from "../../types/nodes";
+
+// src/components/nodes/GetInputNode.tsx
 
 export const GetInputNode: React.FC<NodeProps<GetInputNodeData>> = ({
   data,
@@ -36,7 +37,9 @@ export const GetInputNode: React.FC<NodeProps<GetInputNodeData>> = ({
       </div>
 
       <div className="px-3 py-3">
-        <div className="text-sm font-medium text-slate-100 mb-1">{data.label}</div>
+        <div className="text-sm font-medium text-slate-100 mb-1">
+          {data.label}
+        </div>
         <div className="text-xs text-slate-400">
           Type: {data.inputType} | Timeout: {data.timeout}s
         </div>

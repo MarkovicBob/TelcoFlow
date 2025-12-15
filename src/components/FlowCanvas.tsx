@@ -1,5 +1,10 @@
 import "reactflow/dist/style.css";
 import React, { useCallback, useRef } from "react";
+import type { ReactFlowInstance } from "reactflow";
+import { useFlowStore } from "../store/flowStore";
+import type { NodeType } from "../types/nodes";
+import { nodeTypes } from "./nodes";
+
 import ReactFlow, {
   Background,
   Controls,
@@ -7,14 +12,11 @@ import ReactFlow, {
   BackgroundVariant,
   Panel,
 } from "reactflow";
-import type { ReactFlowInstance } from "reactflow";
-import { useFlowStore } from "../store/flowStore";
-import { nodeTypes } from "./nodes";
-import type { NodeType } from "../types/nodes";
 
 const FlowCanvas: React.FC = () => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const [reactFlowInstance, setReactFlowInstance] = React.useState<ReactFlowInstance | null>(null);
+  const [reactFlowInstance, setReactFlowInstance] =
+    React.useState<ReactFlowInstance | null>(null);
 
   const {
     nodes,
@@ -38,7 +40,9 @@ const FlowCanvas: React.FC = () => {
     (event: React.DragEvent) => {
       event.preventDefault();
 
-      const type = event.dataTransfer.getData("application/reactflow") as NodeType;
+      const type = event.dataTransfer.getData(
+        "application/reactflow"
+      ) as NodeType;
       if (!type || !reactFlowInstance) return;
 
       const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
@@ -55,19 +59,13 @@ const FlowCanvas: React.FC = () => {
   );
 
   // Touch support for mobile drag-and-drop
-  const onTouchMove = useCallback(
-    () => {
-      // Touch se kreće
-    },
-    []
-  );
+  const onTouchMove = useCallback(() => {
+    // Touch se kreće
+  }, []);
 
-  const onTouchEnd = useCallback(
-    () => {
-      // Handled via custom event from Sidebar
-    },
-    []
-  );
+  const onTouchEnd = useCallback(() => {
+    // Handled via custom event from Sidebar
+  }, []);
 
   // Suppress wheel and touch events to prevent passive listener warnings
   React.useEffect(() => {
@@ -92,7 +90,7 @@ const FlowCanvas: React.FC = () => {
     const handleCanvasDrop = (event: Event) => {
       const customEvent = event as CustomEvent;
       const { nodeType, clientX, clientY } = customEvent.detail;
-      
+
       if (!nodeType || !reactFlowInstance) {
         return;
       }
@@ -112,14 +110,14 @@ const FlowCanvas: React.FC = () => {
 
     // Listen on document level for custom drop events
     document.addEventListener("canvasDropNode", handleCanvasDrop);
-    
+
     return () => {
       document.removeEventListener("canvasDropNode", handleCanvasDrop);
     };
   }, [reactFlowInstance, addNode]);
 
   const onNodeClick = useCallback(
-    (event: React.MouseEvent, node: typeof nodes[0]) => {
+    (event: React.MouseEvent, node: (typeof nodes)[0]) => {
       const isMultiSelect = event.shiftKey || event.ctrlKey || event.metaKey;
       selectNodeMulti(node.id, isMultiSelect);
     },
@@ -143,12 +141,12 @@ const FlowCanvas: React.FC = () => {
           const bounds = reactFlowWrapper.current.getBoundingClientRect();
           const centerX = bounds.width / 2;
           const centerY = bounds.height / 2;
-          
+
           const position = reactFlowInstance.screenToFlowPosition({
             x: centerX,
             y: centerY,
           });
-          
+
           pasteNode(position);
         }
       }
@@ -161,8 +159,8 @@ const FlowCanvas: React.FC = () => {
   }, [copyNode, pasteNode, reactFlowInstance]);
 
   return (
-    <div 
-      ref={reactFlowWrapper} 
+    <div
+      ref={reactFlowWrapper}
       className="h-full w-full bg-slate-950 min-h-[60vh] md:min-h-0 touch-manipulation"
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -188,13 +186,13 @@ const FlowCanvas: React.FC = () => {
           style: { stroke: "#64748b", strokeWidth: 2 },
         }}
       >
-        <Background 
-          variant={BackgroundVariant.Dots} 
-          gap={20} 
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={20}
           size={1}
           color="#1e293b"
         />
-        <Controls 
+        <Controls
           className="bg-slate-800 border border-slate-700 rounded-lg"
           showInteractive={false}
         />
@@ -220,12 +218,17 @@ const FlowCanvas: React.FC = () => {
           }}
           maskColor="rgba(15, 23, 42, 0.8)"
         />
-        
+
         {/* Info Panel */}
-        <Panel position="top-left" className="bg-slate-900/90 border border-slate-700 rounded-lg px-4 py-2">
+        <Panel
+          position="top-left"
+          className="bg-slate-900/90 border border-slate-700 rounded-lg px-4 py-2"
+        >
           <div className="text-xs text-slate-400">
-            <span className="font-medium text-slate-300">Nodes:</span> {nodes.length} | 
-            <span className="font-medium text-slate-300 ml-2">Edges:</span> {edges.length}
+            <span className="font-medium text-slate-300">Nodes:</span>{" "}
+            {nodes.length} |
+            <span className="font-medium text-slate-300 ml-2">Edges:</span>{" "}
+            {edges.length}
           </div>
         </Panel>
       </ReactFlow>

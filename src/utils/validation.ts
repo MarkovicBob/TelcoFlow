@@ -1,6 +1,7 @@
-// src/utils/validation.ts
 import { z } from "zod";
 import type { NodeType } from "../types/nodes";
+
+// src/utils/validation.ts
 
 // Validation schemas for each node type
 export const nodeValidationSchemas: Record<NodeType, z.ZodSchema> = {
@@ -147,7 +148,10 @@ export const validateNode = (type: NodeType, data: unknown) => {
     return { valid: true, errors: [] };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { valid: false, errors: error.issues.map((e) => `${e.path.join(".")}: ${e.message}`) };
+      return {
+        valid: false,
+        errors: error.issues.map((e) => `${e.path.join(".")}: ${e.message}`),
+      };
     }
     return { valid: false, errors: ["Unknown validation error"] };
   }

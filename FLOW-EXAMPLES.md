@@ -11,6 +11,7 @@ Ovaj dokument sadrži konkretne primere telecom flow-ova koje ćeš moći da kre
 **Estimated Nodes:** 8
 
 ### Flow Diagram
+
 ```
                     ┌─────────┐
                     │ START   │
@@ -40,11 +41,13 @@ Ovaj dokument sadrži konkretne primere telecom flow-ova koje ćeš moći da kre
 ### Node Configuration
 
 **1. START Node**
+
 - Type: `start`
 - Trigger: Inbound call
 - Set variables: `${caller.phone}`, `${call.timestamp}`
 
 **2. IVR MENU Node**
+
 - Name: "Main Menu"
 - Audio: "Thank you for calling. Press 1 for Sales, 2 for Support, 3 for Billing."
 - Options:
@@ -56,11 +59,13 @@ Ovaj dokument sadrži konkretne primere telecom flow-ova koje ćeš moći da kre
 - Invalid input: Repeat message
 
 **3-5. TRANSFER/QUEUE Nodes**
+
 - Transfer Sales: Extension 1001
 - Queue Support: Priority normal, max wait 300s
 - Transfer Billing: Extension 1003
 
 **6. END Node**
+
 - Reason: "Call completed"
 
 ---
@@ -72,6 +77,7 @@ Ovaj dokument sadrži konkretne primere telecom flow-ova koje ćeš moći da kre
 **Estimated Nodes:** 12
 
 ### Flow Diagram
+
 ```
                     ┌─────────┐
                     │ START   │
@@ -101,6 +107,7 @@ Ovaj dokument sadrži konkretne primere telecom flow-ova koje ćeš moći da kre
 ```
 
 ### Variables Used
+
 ```javascript
 ${system.time}           // Current time (HH:mm)
 ${system.day}            // Day of week (Mon-Sun)
@@ -110,9 +117,10 @@ ${business.days}         // ["Mon","Tue","Wed","Thu","Fri"]
 ```
 
 ### Decision Logic
+
 ```javascript
 // Business hours check
-(${system.time} >= ${business.start} && 
+(${system.time} >= ${business.start} &&
  ${system.time} <= ${business.end} &&
  ${business.days}.includes(${system.day}))
 ```
@@ -126,6 +134,7 @@ ${business.days}         // ["Mon","Tue","Wed","Thu","Fri"]
 **Estimated Nodes:** 15
 
 ### Flow Diagram
+
 ```
                      ┌─────────┐
                      │ START   │
@@ -158,6 +167,7 @@ ${business.days}         // ["Mon","Tue","Wed","Thu","Fri"]
 ```
 
 ### API Integration
+
 ```javascript
 // CRM Lookup
 Endpoint: POST /api/crm/lookup
@@ -177,6 +187,7 @@ ${customer.account_balance} = response.balance
 ```
 
 ### Conditional Routing
+
 ```javascript
 // VIP check
 ${customer.tier} == "platinum" || ${customer.tier} == "gold"
@@ -194,6 +205,7 @@ ${customer.tier} == "platinum" || ${customer.tier} == "gold"
 **Estimated Nodes:** 10
 
 ### Flow Diagram
+
 ```
                    ┌─────────┐
                    │ START   │
@@ -230,6 +242,7 @@ ${customer.tier} == "platinum" || ${customer.tier} == "gold"
 ```
 
 ### Variables
+
 ```javascript
 ${rating}                // 1-5 user input
 ${call.previous_agent}   // Agent who handled call
@@ -239,6 +252,7 @@ ${survey.timestamp}      // When survey completed
 ```
 
 ### API Call (Send Feedback)
+
 ```javascript
 Endpoint: POST /api/feedback
 Body: {
@@ -260,6 +274,7 @@ Body: {
 **Estimated Nodes:** 18
 
 ### Flow Diagram
+
 ```
                     ┌─────────┐
                     │ START   │
@@ -295,6 +310,7 @@ Body: {
 ```
 
 ### Callback Logic
+
 ```javascript
 // Check queue status
 GET /api/queue/support/status
@@ -325,6 +341,7 @@ if (${queue.wait_time} > 300) {
 **Estimated Nodes:** 14
 
 ### Flow Diagram
+
 ```
                     ┌─────────┐
                     │ START   │
@@ -351,6 +368,7 @@ if (${queue.wait_time} > 300) {
 ```
 
 ### Language Variables
+
 ```javascript
 ${lang}                    // "en", "sr", "de", etc.
 ${messages.welcome[lang]}  // Localized messages
@@ -380,6 +398,7 @@ ${messages} = {
 **Estimated Nodes:** 20
 
 ### Flow Diagram
+
 ```
                     ┌─────────┐
                     │ START   │
@@ -420,6 +439,7 @@ ${messages} = {
 ```
 
 ### Emergency Features
+
 - **Immediate Transfer**: No queue, direct to available agent
 - **Alert System**: SMS/Email to supervisor
 - **Full Recording**: Auto-enable recording
@@ -435,6 +455,7 @@ ${messages} = {
 **Estimated Nodes:** 12
 
 ### Flow Diagram
+
 ```
                     ┌─────────┐
                     │ START   │
@@ -470,6 +491,7 @@ ${messages} = {
 ```
 
 ### Dynamic TTS
+
 ```javascript
 // Fetch balance
 GET /api/account/${account_id}/balance
@@ -480,13 +502,13 @@ Response: {
 }
 
 // Generate dynamic message
-message = "Your current balance is " + 
-          ${balance.currency} + " " + 
-          ${balance.balance} + 
-          ". Last payment was on " + 
+message = "Your current balance is " +
+          ${balance.currency} + " " +
+          ${balance.balance} +
+          ". Last payment was on " +
           ${balance.last_payment} + "."
 
-// Result: "Your current balance is EUR 1250.50. 
+// Result: "Your current balance is EUR 1250.50.
 //          Last payment was on 2025-01-01."
 ```
 
@@ -495,36 +517,42 @@ message = "Your current balance is " +
 ## Template Categories
 
 ### 1. **Basic Templates**
+
 - Simple IVR Menu
 - Two-Option Choice
 - Direct Transfer
 - Queue & Hold
 
 ### 2. **Customer Service**
+
 - Support IVR
 - Complaint Handling
 - Satisfaction Survey
 - Callback Request
 
 ### 3. **Sales & Marketing**
+
 - Sales IVR
 - Product Information
 - Order Status
 - Promotional Campaign
 
 ### 4. **Technical Support**
+
 - Tiered Support
 - Troubleshooting Guide
 - Remote Assistance
 - Ticket Creation
 
 ### 5. **Self-Service**
+
 - Balance Inquiry
 - Bill Payment
 - Appointment Booking
 - Status Check
 
 ### 6. **Advanced**
+
 - Multi-Language
 - Business Hours Routing
 - VIP Fast Track
@@ -537,12 +565,14 @@ message = "Your current balance is " +
 Za svaki flow, treba testirati:
 
 ### Happy Path
+
 ✓ Normalan tok bez greške  
 ✓ Sve opcije funkcionišu  
 ✓ API pozivi uspešni  
 ✓ Završava se na END node-u
 
 ### Edge Cases
+
 ⚠ Invalid user input  
 ⚠ Timeout na input  
 ⚠ API failure/timeout  
@@ -550,6 +580,7 @@ Za svaki flow, treba testirati:
 ⚠ Queue full
 
 ### Error Handling
+
 ❌ Network error  
 ❌ Invalid data format  
 ❌ Missing required field  
@@ -560,19 +591,20 @@ Za svaki flow, treba testirati:
 
 ## Performance Benchmarks
 
-| Metric | Target | Excellent |
-|--------|--------|-----------|
-| Node execution | < 100ms | < 50ms |
-| API call | < 500ms | < 200ms |
-| TTS generation | < 1s | < 500ms |
-| Total flow time | < 30s | < 15s |
-| Concurrent calls | 100+ | 500+ |
+| Metric           | Target  | Excellent |
+| ---------------- | ------- | --------- |
+| Node execution   | < 100ms | < 50ms    |
+| API call         | < 500ms | < 200ms   |
+| TTS generation   | < 1s    | < 500ms   |
+| Total flow time  | < 30s   | < 15s     |
+| Concurrent calls | 100+    | 500+      |
 
 ---
 
 ## Export Examples
 
 ### JSON Export
+
 ```json
 {
   "version": "1.0",
@@ -590,6 +622,7 @@ Za svaki flow, treba testirati:
 ```
 
 ### Documentation Export
+
 - PDF with flow diagram
 - Node configuration table
 - Variable reference

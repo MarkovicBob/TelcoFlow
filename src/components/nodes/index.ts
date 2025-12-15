@@ -1,3 +1,16 @@
+import { APICallNode } from "./APICallNode";
+import { DecisionNode } from "./DecisionNode";
+import { EndNode } from "./EndNode";
+import { GetInputNode } from "./GetInputNode";
+import { IVRMenuNode } from "./IVRMenuNode";
+import { PlayMessageNode } from "./PlayMessageNode";
+import { QueueNode } from "./QueueNode";
+import { RecordNode } from "./RecordNode";
+import { SetVariableNode } from "./SetVariableNode";
+import { StartNode } from "./StartNode";
+import { TransferNode } from "./TransferNode";
+import { WaitNode } from "./WaitNode";
+
 // src/components/nodes/index.ts
 export { StartNode } from "./StartNode";
 export { EndNode } from "./EndNode";
@@ -14,18 +27,6 @@ export { SetVariableNode } from "./SetVariableNode";
 export { BaseNode } from "./BaseNode";
 
 // Node type mapping for ReactFlow
-import { StartNode } from "./StartNode";
-import { EndNode } from "./EndNode";
-import { IVRMenuNode } from "./IVRMenuNode";
-import { TransferNode } from "./TransferNode";
-import { QueueNode } from "./QueueNode";
-import { PlayMessageNode } from "./PlayMessageNode";
-import { DecisionNode } from "./DecisionNode";
-import { GetInputNode } from "./GetInputNode";
-import { APICallNode } from "./APICallNode";
-import { RecordNode } from "./RecordNode";
-import { WaitNode } from "./WaitNode";
-import { SetVariableNode } from "./SetVariableNode";
 
 export const nodeTypes = {
   start: StartNode,

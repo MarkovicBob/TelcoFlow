@@ -3,6 +3,7 @@
 ## Color Palette
 
 ### Dark Theme (Primary)
+
 ```css
 --slate-950: #020617    /* Background */
 --slate-900: #0f172a    /* Panels */
@@ -20,6 +21,7 @@
 ```
 
 ### Node Colors (by Type)
+
 ```css
 --node-start: #22c55e      /* Green - Entry point */
 --node-end: #ef4444        /* Red - Terminate */
@@ -56,6 +58,7 @@ font-family: 'Inter', -apple-system, system-ui, sans-serif
 ## Component Specifications
 
 ### Node Component
+
 ```
 ┌─────────────────────────┐
 │ 🟢 START               │ ← Header (colored by type)
@@ -75,6 +78,7 @@ Border: 2px solid (color varies by type)
 ```
 
 ### IVR Menu Node (Detailed)
+
 ```
 ┌─────────────────────────┐
 │ 📱 IVR MENU            │
@@ -94,6 +98,7 @@ Multiple connection points at bottom
 ```
 
 ### Decision Node
+
 ```
       ┌───────────────┐
       │ 🔀 DECISION  │
@@ -115,6 +120,7 @@ Diamond shape (optional visual)
 ## Layout Specifications
 
 ### Main Application Grid
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │ Header: 64px height                                 │
@@ -132,6 +138,7 @@ Diamond shape (optional visual)
 ```
 
 ### Sidebar Structure
+
 ```
 ┌──────────────────────┐
 │  NODE LIBRARY        │ ← Section header
@@ -165,6 +172,7 @@ Gap between items: 8px
 ```
 
 ### Canvas Toolbar
+
 ```
 ┌─────────────────────────────────────────────────────────┐
 │ [◀ Undo] [▶ Redo] │ [🔍-] [100%] [🔍+] │ [⊞ Fit View]  │
@@ -177,6 +185,7 @@ Border-bottom: 1px solid slate-800
 ```
 
 ### Details Panel (Right Sidebar)
+
 ```
 ┌──────────────────────────────┐
 │ [✕ Close]                    │
@@ -223,6 +232,7 @@ Scrollable content
 ## Flow Simulator UI
 
 ### Simulator Modal (Overlay)
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ 🎬 FLOW SIMULATOR - Customer Support IVR      [Minimize] [✕]│
@@ -273,6 +283,7 @@ Shadow: 0 25px 50px rgba(0,0,0,0.5)
 ## Interaction States
 
 ### Node States
+
 ```
 Normal:     border-2, shadow-md
 Hover:      border-3, shadow-lg, scale-105
@@ -282,6 +293,7 @@ Executing:  pulse animation, border-green-500
 ```
 
 ### Button States
+
 ```
 Primary:
   Normal:  bg-blue-500, text-white
@@ -296,6 +308,7 @@ Secondary:
 ```
 
 ### Connection Lines (Edges)
+
 ```
 Normal:     stroke-slate-600, stroke-width-2
 Hover:      stroke-blue-400, stroke-width-3
@@ -308,6 +321,7 @@ Animated:   stroke-dasharray animated (for execution)
 ## Icons & Visual Assets
 
 ### Node Icons (Lucide Icons)
+
 - Start: `PlayCircle`
 - IVR Menu: `Menu`
 - Get Input: `Keyboard`
@@ -322,6 +336,7 @@ Animated:   stroke-dasharray animated (for execution)
 - End: `XCircle`
 
 ### Toolbar Icons
+
 - Undo: `Undo2`
 - Redo: `Redo2`
 - Zoom In: `ZoomIn`
@@ -337,45 +352,77 @@ Animated:   stroke-dasharray animated (for execution)
 ## Animations
 
 ### Entrance Animations
+
 ```css
 /* Fade in */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Slide in from right */
 @keyframes slideInRight {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 /* Scale in */
 @keyframes scaleIn {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 ```
 
 ### Interactive Animations
+
 ```css
 /* Pulse (for executing nodes) */
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* Shake (for errors) */
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  75% {
+    transform: translateX(10px);
+  }
 }
 
 /* Flow animation (for edges during execution) */
 @keyframes flowAnimation {
-  from { stroke-dashoffset: 24; }
-  to { stroke-dashoffset: 0; }
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 ```
 
@@ -427,12 +474,14 @@ Animated:   stroke-dasharray animated (for execution)
 ## Export Formats
 
 ### Flow Diagram (PNG)
+
 - Resolution: 2400×1600 (high-res)
 - Background: white or transparent
 - Include: grid, nodes, edges, labels
 - Watermark: "TelcoFlow" (optional)
 
 ### Documentation (PDF)
+
 ```
 Page 1: Cover (flow name, metadata)
 Page 2: Flow diagram (full size)
@@ -442,6 +491,7 @@ Page 5: Test results (if available)
 ```
 
 ### JSON Schema
+
 ```json
 {
   "version": "1.0",

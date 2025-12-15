@@ -10,9 +10,11 @@
 ## 📅 Week-by-Week Plan
 
 ### **Week 1: Foundation & Core Builder** (Dec 7-13)
-*Focus: Napraviti solid foundation sa osnovnim drag & drop funkcionalnostima*
+
+_Focus: Napraviti solid foundation sa osnovnim drag & drop funkcionalnostima_
 
 #### Day 1-2: Project Setup & Architecture
+
 - [x] ~~Initialize project with Vite + React + TypeScript~~
 - [x] ~~Setup Tailwind CSS~~
 - [x] ~~Install ReactFlow~~
@@ -26,6 +28,7 @@
 - [x] ~~Setup TypeScript types for all node types~~
 
 #### Day 3-4: Node Components
+
 - [x] ~~Create base node component with common structure~~
 - [x] ~~Implement **Start Node** (green, entry point)~~
 - [x] ~~Implement **End Node** (red, terminate)~~
@@ -37,6 +40,7 @@
 - [x] ~~Add node icons (Lucide React)~~
 
 #### Day 5-6: Drag & Drop + Canvas
+
 - [x] ~~Setup ReactFlow canvas with proper configuration~~
 - [x] ~~Enable drag & drop from sidebar to canvas (desktop + mobile)~~
 - [x] ~~Implement node connection logic~~
@@ -47,6 +51,7 @@
 - [x] ~~Implement undo/redo (store history)~~
 
 #### Day 7: Week 1 Testing & Polish
+
 - [x] ~~Test all node types~~
 - [x] ~~Test drag & drop (desktop + mobile)~~
 - [x] ~~Test connections~~
@@ -57,7 +62,7 @@
 - [x] ~~Code review & refactoring~~
 - [x] ~~**Git commit:** "Week 1: Core flow builder complete"~~
 
-**Week 1 Deliverable:** 
+**Week 1 Deliverable:**
 ✅ Fully functional drag & drop flow builder  
 ✅ 6+ node types  
 ✅ Canvas controls working  
@@ -66,9 +71,11 @@
 ---
 
 ### **Week 2: Node Configuration & Validation** (Dec 14-20)
-*Focus: Node properties panel, validation engine, save/load*
+
+_Focus: Node properties panel, validation engine, save/load_
 
 #### Day 8-9: Node Properties Panel
+
 - [ ] Create dynamic properties panel component
 - [ ] Implement form generation based on node type
 - [ ] Add form validation with Zod
@@ -84,6 +91,7 @@
 - [ ] Add real-time validation with error messages
 
 #### Day 10-11: Advanced Node Types
+
 - [ ] Implement **Decision Node** (conditional routing)
 - [ ] Implement **Queue Node** (hold music, wait time)
 - [ ] Implement **API Call Node** (external integration)
@@ -94,6 +102,7 @@
 - [ ] Configure properties for each new node type
 
 #### Day 12-13: Flow Validation Engine
+
 - [x] ~~Create validation utility functions~~
 - [x] ~~Implement validation rules:~~
   - [x] ~~No orphaned nodes~~
@@ -106,6 +115,7 @@
 - [x] ~~Add "Validate Flow" button in toolbar~~
 
 #### Day 14: Save/Load & Export
+
 - [x] ~~Implement save flow to localStorage~~
 - [x] ~~Implement load flow from localStorage~~
 - [x] ~~Create export to JSON functionality~~
@@ -123,9 +133,11 @@
 ---
 
 ### **Week 3: Flow Simulator & Testing** (Dec 21-27)
-*Focus: Build execution engine and visual simulator*
+
+_Focus: Build execution engine and visual simulator_
 
 #### Day 15-16: Variables & Expressions
+
 - [ ] Implement variable system
 - [ ] Create variable parser/resolver
 - [ ] Add built-in variables:
@@ -142,6 +154,7 @@
 - [ ] Create variable inspector component
 
 #### Day 17-18: Flow Execution Engine
+
 - [ ] Create flow executor class
 - [ ] Implement node execution logic for each type
 - [ ] Add execution state tracking
@@ -152,6 +165,7 @@
 - [ ] Create execution timeline
 
 #### Day 19-20: Visual Simulator UI
+
 - [ ] Create simulator modal/overlay
 - [ ] Add call controls (play, pause, stop, step)
 - [ ] Implement DTMF pad simulator
@@ -162,6 +176,7 @@
 - [ ] Add playback speed control (0.5x, 1x, 2x)
 
 #### Day 21: Testing & Debugging
+
 - [ ] Test execution with all node types
 - [ ] Test complex flows (loops, conditions)
 - [ ] Test error scenarios
@@ -178,9 +193,11 @@
 ---
 
 ### **Week 4: Professional Features & Polish** (Dec 28 - Jan 3)
-*Focus: Multi-project, templates, deployment, documentation*
+
+_Focus: Multi-project, templates, deployment, documentation_
 
 #### Day 22-23: Project Management
+
 - [ ] Create project list/dashboard view
 - [ ] Implement multiple projects support
 - [ ] Add project metadata (name, description, tags)
@@ -196,6 +213,7 @@
   - [ ] Callback Queue
 
 #### Day 24-25: Advanced Export & Documentation
+
 - [ ] Export flow as PNG (canvas screenshot)
 - [ ] Export flow as PDF with documentation:
   - [ ] Cover page
@@ -208,6 +226,7 @@
 - [ ] Add keyboard shortcuts help modal
 
 #### Day 26-27: UI/UX Polish
+
 - [ ] Add loading states
 - [ ] Add empty states (no nodes, no projects)
 - [ ] Improve animations (node drag, connections)
@@ -218,6 +237,7 @@
 - [ ] Add accessibility (ARIA labels, keyboard nav)
 
 #### Day 28: Final Testing & Deployment
+
 - [ ] Full end-to-end testing
 - [ ] Performance optimization
 - [ ] Fix all remaining bugs
@@ -240,6 +260,7 @@
 ## 📦 Dependencies Checklist
 
 ### Core
+
 - [x] React 19
 - [x] TypeScript
 - [x] Vite
@@ -247,22 +268,26 @@
 - [x] ReactFlow
 
 ### State & Forms
+
 - [ ] Zustand (state management)
 - [ ] React Hook Form (forms)
 - [ ] Zod (validation)
 
 ### UI Components
+
 - [ ] Lucide React (icons)
 - [ ] react-hot-toast (notifications)
 - [ ] @headlessui/react (modals, dialogs)
 
 ### Utilities
+
 - [x] nanoid (ID generation)
 - [ ] date-fns (date formatting)
 - [ ] html-to-image (canvas export)
 - [ ] jspdf (PDF export)
 
 ### Dev Tools
+
 - [ ] ESLint + Prettier
 - [ ] Husky (git hooks)
 - [ ] Vitest (testing - optional)
@@ -272,6 +297,7 @@
 ## 🎯 Feature Priorities
 
 ### Must Have (P0)
+
 - ✅ Drag & drop node builder
 - ✅ 10+ node types
 - ✅ Node connections
@@ -282,6 +308,7 @@
 - ✅ Export JSON
 
 ### Should Have (P1)
+
 - [ ] Multiple projects
 - [ ] Templates
 - [ ] Export PNG/PDF
@@ -289,6 +316,7 @@
 - [ ] Execution logging
 
 ### Nice to Have (P2)
+
 - [ ] Dark/light theme
 - [ ] Collaborative editing
 - [ ] Backend API
@@ -300,6 +328,7 @@
 ## 🐛 Testing Checklist
 
 ### Week 1
+
 - [ ] All nodes can be dragged to canvas
 - [ ] Nodes can be connected
 - [ ] Canvas zoom/pan works
@@ -307,6 +336,7 @@
 - [ ] Copy/paste works
 
 ### Week 2
+
 - [ ] Properties panel shows for each node
 - [ ] Form validation works
 - [ ] Flow validation detects errors
@@ -314,6 +344,7 @@
 - [ ] Export JSON works
 
 ### Week 3
+
 - [ ] Variables resolve correctly
 - [ ] Flow executes node by node
 - [ ] Simulator UI controls work
@@ -321,6 +352,7 @@
 - [ ] Execution log is accurate
 
 ### Week 4
+
 - [ ] Multiple projects work
 - [ ] Templates load correctly
 - [ ] PNG export works
@@ -332,21 +364,25 @@
 ## 📊 Progress Tracking
 
 ### Week 1: Core Builder
+
 Status: 🟢 **In Progress**  
 Progress: 15%  
 Blockers: None
 
 ### Week 2: Configuration
+
 Status: ⚪ **Not Started**  
 Progress: 0%  
 Blockers: Week 1 must complete
 
 ### Week 3: Simulator
+
 Status: ⚪ **Not Started**  
 Progress: 0%  
 Blockers: Week 2 must complete
 
 ### Week 4: Polish & Deploy
+
 Status: ⚪ **Not Started**  
 Progress: 0%  
 Blockers: Week 3 must complete
@@ -358,24 +394,27 @@ Blockers: Week 3 must complete
 ### Demo Script (5 minutes)
 
 **Minute 1: Introduction**
+
 > "Hi, I'm Bob. I built TelcoFlow, a low-code platform for designing telecom call flows, inspired by ECT Telecoms' T-LCAP solution."
 
 **Minute 2: Problem Statement**
+
 > "Telecom operators spend months developing IVR systems with traditional coding. Non-technical users can't make changes without developers."
 
 **Minute 3: Solution Demo**
-> [Show drag & drop]
-> [Create simple IVR flow]
-> [Configure node properties]
-> [Run simulator]
+
+> [Show drag & drop] > [Create simple IVR flow] > [Configure node properties] > [Run simulator]
 
 **Minute 4: Technical Depth**
+
 > "Built with React + TypeScript for type safety, ReactFlow for the visual editor, and Zustand for state management. I implemented a custom validation engine and execution simulator."
 
 **Minute 5: Business Value**
+
 > "This reduces time-to-market from months to days, lowers OPEX by enabling business users, and reduces errors through visual validation."
 
 ### Key Talking Points
+
 1. **Type Safety**: Full TypeScript, Zod validation
 2. **Architecture**: Clean separation (components, store, utils)
 3. **User Experience**: Professional UI, intuitive workflow
@@ -383,6 +422,7 @@ Blockers: Week 3 must complete
 5. **Production Ready**: Error handling, validation, testing
 
 ### Questions to Expect
+
 - **Q: Why this tech stack?**  
   A: React for component reusability, TypeScript for safety, ReactFlow for proven graph visualization, Zustand for simple state management without Redux boilerplate.
 
@@ -400,6 +440,7 @@ Blockers: Week 3 must complete
 ## 📝 Daily Commit Strategy
 
 ### Commit Message Format
+
 ```
 [Week X][Day Y] Brief description
 
@@ -410,6 +451,7 @@ Blockers: Week 3 must complete
 ```
 
 ### Example Commits
+
 ```
 [Week 1][Day 1] Project setup and architecture
 [Week 1][Day 3] Added 6 core node types
@@ -423,17 +465,20 @@ Blockers: Week 3 must complete
 ## 🚀 Deployment Strategy
 
 ### Development
+
 - Local: `npm run dev`
 - Build: `npm run build`
 - Preview: `npm run preview`
 
 ### Production
+
 1. **Frontend Hosting:** Vercel (free, automatic deploys)
 2. **Domain:** telcoflow.vercel.app (or custom)
 3. **CI/CD:** GitHub Actions for auto-deploy on push
 4. **Monitoring:** Vercel Analytics
 
 ### Docker (Bonus)
+
 ```dockerfile
 FROM node:20-alpine
 WORKDIR /app
@@ -461,13 +506,16 @@ CMD ["npm", "run", "preview"]
 ## 🎓 Learning Resources
 
 ### ReactFlow
+
 - Docs: https://reactflow.dev/docs
 - Examples: https://reactflow.dev/examples
 
 ### Zustand
+
 - Docs: https://zustand-demo.pmnd.rs/
 
 ### Telecom Concepts
+
 - IVR: Interactive Voice Response
 - DTMF: Dual-Tone Multi-Frequency
 - TTS: Text-to-Speech
@@ -479,6 +527,7 @@ CMD ["npm", "run", "preview"]
 ## ✅ Definition of Done
 
 A feature is "done" when:
+
 - [ ] Code is written and tested
 - [ ] No TypeScript errors
 - [ ] UI is responsive
@@ -499,6 +548,7 @@ A feature is "done" when:
 ## 💪 Let's Build This!
 
 **Next Steps:**
+
 1. Review this roadmap
 2. Install dependencies
 3. Start Week 1, Day 1 tasks
@@ -506,6 +556,7 @@ A feature is "done" when:
 5. Ship v1.0 by January 7, 2026
 
 **Remember:**
+
 - Quality > Quantity
 - Ship features incrementally
 - Test as you build

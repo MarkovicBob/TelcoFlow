@@ -1,6 +1,7 @@
-// src/utils/flowValidation.ts
-import type { Node, Edge } from "reactflow";
+import type { Edge, Node } from "reactflow";
 import type { NodeData } from "../types/nodes";
+
+// src/utils/flowValidation.ts
 
 export interface ValidationError {
   id: string;
@@ -69,7 +70,9 @@ export function validateFlow(
       warnings.push({
         id: `orphaned-${node.id}`,
         type: "warning",
-        message: `Node "${node.data.label || node.type}" is not connected to the flow.`,
+        message: `Node "${
+          node.data.label || node.type
+        }" is not connected to the flow.`,
         nodeId: node.id,
       });
     });
@@ -240,7 +243,10 @@ function validateNodeFields(nodes: Node<NodeData>[]): ValidationError[] {
     // Type-specific validation
     switch (node.type) {
       case "transfer":
-        if ("destination" in data && (!data.destination || data.destination.trim() === "")) {
+        if (
+          "destination" in data &&
+          (!data.destination || data.destination.trim() === "")
+        ) {
           errors.push({
             id: `destination-${node.id}`,
             type: "error",
@@ -251,7 +257,10 @@ function validateNodeFields(nodes: Node<NodeData>[]): ValidationError[] {
         break;
 
       case "queue":
-        if ("queueName" in data && (!data.queueName || data.queueName.trim() === "")) {
+        if (
+          "queueName" in data &&
+          (!data.queueName || data.queueName.trim() === "")
+        ) {
           errors.push({
             id: `queue-${node.id}`,
             type: "error",
@@ -273,7 +282,10 @@ function validateNodeFields(nodes: Node<NodeData>[]): ValidationError[] {
         break;
 
       case "getInput":
-        if ("variableName" in data && (!data.variableName || data.variableName.trim() === "")) {
+        if (
+          "variableName" in data &&
+          (!data.variableName || data.variableName.trim() === "")
+        ) {
           errors.push({
             id: `variable-${node.id}`,
             type: "error",
@@ -284,7 +296,10 @@ function validateNodeFields(nodes: Node<NodeData>[]): ValidationError[] {
         break;
 
       case "setVariable":
-        if ("variableName" in data && (!data.variableName || data.variableName.trim() === "")) {
+        if (
+          "variableName" in data &&
+          (!data.variableName || data.variableName.trim() === "")
+        ) {
           errors.push({
             id: `variable-${node.id}`,
             type: "error",
@@ -295,7 +310,10 @@ function validateNodeFields(nodes: Node<NodeData>[]): ValidationError[] {
         break;
 
       case "decision":
-        if ("condition" in data && (!data.condition || data.condition.trim() === "")) {
+        if (
+          "condition" in data &&
+          (!data.condition || data.condition.trim() === "")
+        ) {
           errors.push({
             id: `condition-${node.id}`,
             type: "error",
@@ -308,18 +326,30 @@ function validateNodeFields(nodes: Node<NodeData>[]): ValidationError[] {
       case "playMessage":
       case "ivr":
         if ("audioType" in data) {
-          if (data.audioType === "tts" && "ttsText" in data && (!data.ttsText || data.ttsText.trim() === "")) {
+          if (
+            data.audioType === "tts" &&
+            "ttsText" in data &&
+            (!data.ttsText || data.ttsText.trim() === "")
+          ) {
             errors.push({
               id: `tts-${node.id}`,
               type: "error",
-              message: `${node.type === "ivr" ? "IVR" : "Play Message"} node "${data.label}" is missing TTS text.`,
+              message: `${node.type === "ivr" ? "IVR" : "Play Message"} node "${
+                data.label
+              }" is missing TTS text.`,
               nodeId: node.id,
             });
-          } else if (data.audioType === "file" && "audioFile" in data && (!data.audioFile || data.audioFile.trim() === "")) {
+          } else if (
+            data.audioType === "file" &&
+            "audioFile" in data &&
+            (!data.audioFile || data.audioFile.trim() === "")
+          ) {
             errors.push({
               id: `audio-${node.id}`,
               type: "error",
-              message: `${node.type === "ivr" ? "IVR" : "Play Message"} node "${data.label}" is missing audio file.`,
+              message: `${node.type === "ivr" ? "IVR" : "Play Message"} node "${
+                data.label
+              }" is missing audio file.`,
               nodeId: node.id,
             });
           }

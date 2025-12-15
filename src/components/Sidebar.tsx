@@ -1,11 +1,15 @@
-// src/components/Sidebar.tsx
-import React, { useRef } from "react";
 import * as Icons from "lucide-react";
+import React, { useRef } from "react";
 import { NODE_DEFINITIONS } from "../types/nodes";
 import type { NodeType } from "../types/nodes";
 
+// src/components/Sidebar.tsx
+
 const Sidebar: React.FC = () => {
-  const touchTrackingRef = useRef<{ active: boolean; nodeType: NodeType | null }>({
+  const touchTrackingRef = useRef<{
+    active: boolean;
+    nodeType: NodeType | null;
+  }>({
     active: false,
     nodeType: null,
   });
@@ -25,7 +29,10 @@ const Sidebar: React.FC = () => {
   // Global touch end handler
   React.useEffect(() => {
     const handleGlobalTouchEnd = (event: TouchEvent) => {
-      if (!touchTrackingRef.current.active || !touchTrackingRef.current.nodeType) {
+      if (
+        !touchTrackingRef.current.active ||
+        !touchTrackingRef.current.nodeType
+      ) {
         return;
       }
 
@@ -33,7 +40,9 @@ const Sidebar: React.FC = () => {
       if (!touch) return;
 
       // Find the canvas element by checking if touch ended over it
-      const canvasElement = document.querySelector("[class*='react-flow']") as HTMLElement;
+      const canvasElement = document.querySelector(
+        "[class*='react-flow']"
+      ) as HTMLElement;
       if (!canvasElement) {
         touchTrackingRef.current.active = false;
         touchTrackingRef.current.nodeType = null;
@@ -45,9 +54,14 @@ const Sidebar: React.FC = () => {
       const y = touch.clientY;
 
       // Check if touch ended inside canvas bounds
-      if (x >= bounds.left && x <= bounds.right && y >= bounds.top && y <= bounds.bottom) {
+      if (
+        x >= bounds.left &&
+        x <= bounds.right &&
+        y >= bounds.top &&
+        y <= bounds.bottom
+      ) {
         const nodeType = touchTrackingRef.current.nodeType;
-        
+
         // Dispatch event on document for global listen
         const dropEvent = new CustomEvent("canvasDropNode", {
           detail: {
@@ -74,13 +88,16 @@ const Sidebar: React.FC = () => {
   }, []);
 
   // Group nodes by category
-  const nodesByCategory = Object.values(NODE_DEFINITIONS).reduce((acc, node) => {
-    if (!acc[node.category]) {
-      acc[node.category] = [];
-    }
-    acc[node.category].push(node);
-    return acc;
-  }, {} as Record<string, typeof NODE_DEFINITIONS[NodeType][]>);
+  const nodesByCategory = Object.values(NODE_DEFINITIONS).reduce(
+    (acc, node) => {
+      if (!acc[node.category]) {
+        acc[node.category] = [];
+      }
+      acc[node.category].push(node);
+      return acc;
+    },
+    {} as Record<string, (typeof NODE_DEFINITIONS)[NodeType][]>
+  );
 
   const categoryLabels = {
     control: "Control Flow",
@@ -106,7 +123,9 @@ const Sidebar: React.FC = () => {
             </h3>
             <div className="space-y-2">
               {nodes.map((node) => {
-                const Icon = Icons[node.icon as keyof typeof Icons] as React.ComponentType<{ size?: number }>;
+                const Icon = Icons[
+                  node.icon as keyof typeof Icons
+                ] as React.ComponentType<{ size?: number }>;
                 return (
                   <div
                     key={node.type}

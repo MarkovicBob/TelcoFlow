@@ -1,11 +1,12 @@
-// src/components/nodes/BaseNode.tsx
+import * as Icons from "lucide-react";
 import React from "react";
 import { Handle, Position } from "reactflow";
 import type { NodeProps } from "reactflow";
-import * as Icons from "lucide-react";
+import { useFlowStore } from "../../store/flowStore";
 import type { NodeData } from "../../types/nodes";
 import { NODE_DEFINITIONS } from "../../types/nodes";
-import { useFlowStore } from "../../store/flowStore";
+
+// src/components/nodes/BaseNode.tsx
 
 interface BaseNodeProps extends NodeProps<NodeData> {
   icon?: keyof typeof Icons;
@@ -25,14 +26,16 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
   outputCount = 1,
 }) => {
   const definition = NODE_DEFINITIONS[type as keyof typeof NODE_DEFINITIONS];
-  const Icon = Icons[definition?.icon as keyof typeof Icons] as React.ComponentType<{ size?: number }>;
+  const Icon = Icons[
+    definition?.icon as keyof typeof Icons
+  ] as React.ComponentType<{ size?: number }>;
   const color = definition?.color || "#3b82f6";
-  
+
   // Check if node has validation errors/warnings
   const { validationErrors, validationWarnings } = useFlowStore();
   const hasError = validationErrors.some((err) => err.nodeId === id);
   const hasWarning = validationWarnings.some((warn) => warn.nodeId === id);
-  
+
   // Determine border color based on validation state
   const borderColor = hasError ? "#ef4444" : hasWarning ? "#f59e0b" : color;
 
@@ -60,12 +63,16 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
         style={{ color }}
       >
         {Icon && <Icon size={16} />}
-        <span className="uppercase tracking-wide">{definition?.label || type}</span>
+        <span className="uppercase tracking-wide">
+          {definition?.label || type}
+        </span>
       </div>
 
       {/* Body */}
       <div className="px-3 py-3">
-        <div className="text-sm font-medium text-slate-100 mb-1">{data.label}</div>
+        <div className="text-sm font-medium text-slate-100 mb-1">
+          {data.label}
+        </div>
         {data.description && (
           <div className="text-xs text-slate-400">{data.description}</div>
         )}

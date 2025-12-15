@@ -1,12 +1,13 @@
-// src/components/nodes/QueueNode.tsx
 import React from "react";
 import type { NodeProps } from "reactflow";
-import { BaseNode } from "./BaseNode";
 import type { QueueNodeData } from "../../types/nodes";
+import { BaseNode } from "./BaseNode";
+
+// src/components/nodes/QueueNode.tsx
 
 export const QueueNode: React.FC<NodeProps<QueueNodeData>> = (props) => {
   const { data } = props;
-  
+
   return (
     <BaseNode {...props}>
       {data.queueName && (

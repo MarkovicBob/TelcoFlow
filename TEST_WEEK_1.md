@@ -3,6 +3,7 @@
 ## Desktop Testing
 
 ### Node Creation & Dragging
+
 - [ ] Drag "Start" node from sidebar to canvas
 - [ ] Drag "End" node from sidebar to canvas
 - [ ] Verify node is created at drop position
@@ -21,6 +22,7 @@
   - [ ] Set Variable (teal)
 
 ### Node Selection
+
 - [ ] Click a node to select it (should highlight)
 - [ ] Click another node with Shift held (should add to selection)
 - [ ] Click a node with Ctrl/Cmd held (should toggle selection)
@@ -28,6 +30,7 @@
 - [ ] Right-click menu (if implemented)
 
 ### Node Properties
+
 - [ ] Select a node to see properties panel on right
 - [ ] Verify panel shows correct properties for node type
 - [ ] Edit a property and verify it updates
@@ -35,12 +38,14 @@
 - [ ] Verify properties persist after deselection
 
 ### Connections
+
 - [ ] Drag from node output handle to another node input
 - [ ] Verify edge is created
 - [ ] Delete edge by clicking X
 - [ ] Verify edge connects from output to input
 
 ### Copy/Paste
+
 - [ ] Select a node
 - [ ] Press Ctrl+C to copy
 - [ ] Press Ctrl+V to paste
@@ -49,6 +54,7 @@
 - [ ] Copy/paste multiple times
 
 ### Undo/Redo
+
 - [ ] Drag a node and move it
 - [ ] Press Ctrl+Z to undo
 - [ ] Verify node returns to previous position
@@ -62,6 +68,7 @@
   - [ ] Copy/Paste
 
 ### Canvas Controls
+
 - [ ] Zoom in/out with mouse wheel
 - [ ] Pan canvas by middle-mouse drag
 - [ ] Click "Fit View" button (should center all nodes)
@@ -69,6 +76,7 @@
 - [ ] Verify snap-to-grid (nodes align to 15px grid)
 
 ### Responsive Design
+
 - [ ] Test on desktop (1920x1080)
 - [ ] Resize browser to tablet size (1024x768)
   - [ ] Toolbar wraps properly
@@ -83,6 +91,7 @@
 ### Mobile Testing (Touch)
 
 #### Drag & Drop
+
 - [ ] Tap-hold sidebar node
 - [ ] Drag to canvas
 - [ ] Release to drop
@@ -90,16 +99,19 @@
 - [ ] Test on multiple node types
 
 #### Node Selection
+
 - [ ] Tap a node to select
 - [ ] Tap another with 2-finger hold for multi-select (if supported)
 - [ ] Verify selection state changes
 
 #### Canvas Controls
+
 - [ ] Two-finger pinch to zoom
 - [ ] Single-finger drag to pan
 - [ ] Verify controls are touch-friendly
 
 ### Console Checks
+
 - [ ] Open browser DevTools (F12)
 - [ ] Look for any error messages
 - [ ] Check for warnings
@@ -107,6 +119,7 @@
 - [ ] Network tab: verify assets load correctly
 
 ### Performance
+
 - [ ] 20+ nodes on canvas
 - [ ] Drag nodes smoothly
 - [ ] No lag when zooming
@@ -114,6 +127,7 @@
 - [ ] FPS stays 60+ (in DevTools Performance tab)
 
 ### Accessibility
+
 - [ ] Keyboard navigation works (Tab between nodes?)
 - [ ] Color contrast is sufficient
 - [ ] Icons have readable sizes
@@ -122,13 +136,17 @@
 ## Test Results
 
 ### Passed Tests
+
 - [ ] ...
 
 ### Failed Tests
+
 - [ ] ...
 
 ### Bugs Found
+
 - [ ] ...
 
 ### Notes
+
 - ...

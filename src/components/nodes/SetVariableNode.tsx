@@ -1,12 +1,15 @@
-// src/components/nodes/SetVariableNode.tsx
 import React from "react";
 import type { NodeProps } from "reactflow";
-import { BaseNode } from "./BaseNode";
 import type { SetVariableNodeData } from "../../types/nodes";
+import { BaseNode } from "./BaseNode";
 
-export const SetVariableNode: React.FC<NodeProps<SetVariableNodeData>> = (props) => {
+// src/components/nodes/SetVariableNode.tsx
+
+export const SetVariableNode: React.FC<NodeProps<SetVariableNodeData>> = (
+  props
+) => {
   const { data } = props;
-  
+
   return (
     <BaseNode {...props}>
       {data && (
