@@ -4,44 +4,52 @@ import type { NodeHandler } from "./types";
 
 // src/utils/simulator/handlers.ts
 
-export const getNodeHandlers = (
-  edges: Edge[]
-): Record<string, NodeHandler> => ({
-  start: async ({ node, addLog }) => {
+export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
+  const getSingleNext = (nodeId: string) => {
+    const edge = edges.find((e) => e.source === nodeId);
+    return edge ? edge.target : null;
+  };
+
+  const startHandler: NodeHandler = async ({ node, addLog }) => {
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "start",
       message: "Flow started",
     });
-    const edge = edges.find((e) => e.source === node.id);
-    return { nextNodeId: edge ? edge.target : null };
-  },
+    return { nextNodeId: getSingleNext(node.id) };
+  };
 
-  end: async ({ node, addLog }) => {
+  const endHandler: NodeHandler = async ({ node, addLog }) => {
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "end",
       message: "Flow ended",
     });
     return { nextNodeId: null };
-  },
+  };
 
-  "set-variable": async ({ node, variables, addLog }) => {
+  const setVariableHandler: NodeHandler = async ({
+    node,
+    variables,
+    addLog,
+  }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const varName = data?.variableName ?? "unknown";
     const value = data?.value ?? "";
     variables.values[String(varName)] = value;
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "set-variable",
       message: `Set ${varName} = ${JSON.stringify(value)}`,
       data: { varName, value },
     });
-    const edge = edges.find((e) => e.source === node.id);
-    return { nextNodeId: edge ? edge.target : null };
-  },
+    return { nextNodeId: getSingleNext(node.id) };
+  };
 
-  decision: async ({ node, variables, addLog }) => {
+  const decisionHandler: NodeHandler = async ({ node, variables, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const condition = (data?.condition as string) || "true";
     const result = evaluateExpression(condition, {
@@ -57,6 +65,7 @@ export const getNodeHandlers = (
       decisionEdges[0];
 
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "decision",
       message: `Decision: "${condition}" => ${isTrue}`,
@@ -64,80 +73,95 @@ export const getNodeHandlers = (
     });
 
     return { nextNodeId: nextEdge ? nextEdge.target : null };
-  },
+  };
 
-  ivr: async ({ node, addLog }) => {
+  const ivrHandler: NodeHandler = async ({ node, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const prompt = (data?.prompt as string) || "IVR";
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "ivr",
       message: `IVR: ${prompt}`,
     });
-    const edge = edges.find((e) => e.source === node.id);
-    return { nextNodeId: edge ? edge.target : null };
-  },
+    return { nextNodeId: getSingleNext(node.id) };
+  };
 
-  queue: async ({ node, addLog }) => {
+  const queueHandler: NodeHandler = async ({ node, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const holdMusic = (data?.holdMusic as string) || "default";
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "queue",
       message: `Queue with hold music: ${holdMusic}`,
     });
-    const edge = edges.find((e) => e.source === node.id);
-    return { nextNodeId: edge ? edge.target : null };
-  },
+    return { nextNodeId: getSingleNext(node.id) };
+  };
 
-  "api-call": async ({ node, addLog }) => {
+  const apiCallHandler: NodeHandler = async ({ node, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const endpoint = (data?.endpoint as string) || "http://localhost";
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "api-call",
       message: `API Call to: ${endpoint} (simulated)`,
       data: { endpoint },
     });
-    const edge = edges.find((e) => e.source === node.id);
-    return { nextNodeId: edge ? edge.target : null };
-  },
+    return { nextNodeId: getSingleNext(node.id) };
+  };
 
-  "get-input": async ({ node, variables, addLog }) => {
+  const getInputHandler: NodeHandler = async ({ node, variables, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const inputType = (data?.inputType as string) || "dtmf";
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "get-input",
       message: `Get input (${inputType}) - using mock value`,
     });
-    // Mock: set a variable with input
     variables.values["last_input"] = "1"; // Mock input
-    const edge = edges.find((e) => e.source === node.id);
-    return { nextNodeId: edge ? edge.target : null };
-  },
+    return { nextNodeId: getSingleNext(node.id) };
+  };
 
-  wait: async ({ node, addLog }) => {
+  const waitHandler: NodeHandler = async ({ node, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const duration = (data?.duration as number) || 1;
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "wait",
       message: `Wait for ${duration} seconds`,
     });
-    const edge = edges.find((e) => e.source === node.id);
-    return { nextNodeId: edge ? edge.target : null };
-  },
+    return { nextNodeId: getSingleNext(node.id) };
+  };
 
-  record: async ({ node, addLog }) => {
+  const recordHandler: NodeHandler = async ({ node, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const maxDuration = (data?.maxDuration as number) || 10;
     addLog({
+      level: "info",
       nodeId: node.id,
       nodeType: node.type || "record",
       message: `Record call (max ${maxDuration}s) - simulated`,
     });
-    const edge = edges.find((e) => e.source === node.id);
-    return { nextNodeId: edge ? edge.target : null };
-  },
-});
+    return { nextNodeId: getSingleNext(node.id) };
+  };
+
+  return {
+    start: startHandler,
+    end: endHandler,
+    "set-variable": setVariableHandler,
+    setVariable: setVariableHandler,
+    decision: decisionHandler,
+    ivr: ivrHandler,
+    queue: queueHandler,
+    "api-call": apiCallHandler,
+    apiCall: apiCallHandler,
+    "get-input": getInputHandler,
+    getInput: getInputHandler,
+    wait: waitHandler,
+    record: recordHandler,
+  };
+};

@@ -19,15 +19,29 @@ export function createSimulatorEngine(): SimulatorEngine {
     maxSteps: 500,
     variables: { values: {} },
     logs: [],
+    metrics: {
+      totalDuration: 0,
+      nodeExecutionCount: {},
+      errorCount: 0,
+      warningCount: 0,
+    },
+    startTime: null,
+    endTime: null,
   };
 
-  const addLog = (entry: {
-    nodeId: string;
-    nodeType: string;
-    message: string;
-    data?: Record<string, unknown>;
-  }) => {
-    state.logs.push({ timestamp: timestamp(), ...entry });
+  const addLog = (
+    entry: {
+      level: "info" | "warn" | "error" | "debug";
+      nodeId: string;
+      nodeType: string;
+      message: string;
+      data?: Record<string, unknown>;
+    },
+    duration?: number
+  ) => {
+    state.logs.push({ timestamp: timestamp(), duration, ...entry });
+    if (entry.level === "error") state.metrics.errorCount++;
+    if (entry.level === "warn") state.metrics.warningCount++;
   };
 
   const getStartNode = () => nodes.find((n) => n.type === "start") || null;
@@ -41,13 +55,22 @@ export function createSimulatorEngine(): SimulatorEngine {
     const handler = handlers[type];
     if (!handler) {
       addLog({
+        level: "error",
         nodeId: node.id,
         nodeType: type,
         message: "No handler for node type",
       });
       return { nextNodeId: null };
     }
-    return handler({ node, variables: state.variables, addLog });
+    const startTime = performance.now();
+    const result = await handler({ node, variables: state.variables, addLog });
+    const duration = performance.now() - startTime;
+    
+    // Update metrics
+    state.metrics.nodeExecutionCount[type] =
+      (state.metrics.nodeExecutionCount[type] || 0) + 1;
+    
+    return { ...result, duration };
   };
 
   const stepInternal = async () => {
@@ -55,6 +78,7 @@ export function createSimulatorEngine(): SimulatorEngine {
     if (state.stepsExecuted >= state.maxSteps) {
       state.status = "error";
       addLog({
+        level: "error",
         nodeId: state.currentNodeId || "-",
         nodeType: "system",
         message: "Max steps reached",
@@ -65,7 +89,12 @@ export function createSimulatorEngine(): SimulatorEngine {
     const node = getNodeById(state.currentNodeId) || getStartNode();
     if (!node) {
       state.status = "error";
-      addLog({ nodeId: "-", nodeType: "system", message: "No start node" });
+      addLog({
+        level: "error",
+        nodeId: "-",
+        nodeType: "system",
+        message: "No start node",
+      });
       return;
     }
 
@@ -74,18 +103,29 @@ export function createSimulatorEngine(): SimulatorEngine {
 
     if ("error" in result) {
       state.status = "error";
-      addLog({
-        nodeId: node.id,
-        nodeType: node.type || "unknown",
-        message: result.error,
-      });
+      addLog(
+        {
+          level: "error",
+          nodeId: node.id,
+          nodeType: node.type || "unknown",
+          message: result.error,
+        },
+        (result as { duration?: number }).duration
+      );
       return;
     }
 
     state.stepsExecuted += 1;
-    const { nextNodeId } = result as { nextNodeId: string | null };
+    const { nextNodeId } = result as {
+      nextNodeId: string | null;
+      duration?: number;
+    };
     if (!nextNodeId) {
       state.status = "completed";
+      state.endTime = Date.now();
+      if (state.startTime) {
+        state.metrics.totalDuration = state.endTime - state.startTime;
+      }
     } else {
       state.currentNodeId = nextNodeId;
     }
@@ -102,10 +142,19 @@ export function createSimulatorEngine(): SimulatorEngine {
         maxSteps: options?.maxSteps ?? 500,
         variables: { values: {} },
         logs: [],
+        metrics: {
+          totalDuration: 0,
+          nodeExecutionCount: {},
+          errorCount: 0,
+          warningCount: 0,
+        },
+        startTime: null,
+        endTime: null,
       };
     },
     start: async () => {
       state.status = "running";
+      state.startTime = Date.now();
       await stepInternal();
       while (
         state.status === "running" &&
@@ -138,6 +187,14 @@ export function createSimulatorEngine(): SimulatorEngine {
       state.status = "idle";
       state.variables = { values: {} };
       state.logs = [];
+      state.metrics = {
+        totalDuration: 0,
+        nodeExecutionCount: {},
+        errorCount: 0,
+        warningCount: 0,
+      };
+      state.startTime = null;
+      state.endTime = null;
     },
     getState: () => state,
   };

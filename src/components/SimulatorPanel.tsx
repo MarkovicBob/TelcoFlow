@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   ChevronDown,
   ChevronUp,
   Eye,
@@ -28,7 +29,14 @@ const SimulatorPanel = () => {
   const [stepsExecuted, setStepsExecuted] = useState(0);
   const [showVariables, setShowVariables] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
+  const [showMetrics, setShowMetrics] = useState(false);
   const [logs, setLogs] = useState<SimulationLogEntry[]>([]);
+  const [metrics, setMetrics] = useState({
+    totalDuration: 0,
+    nodeExecutionCount: {} as Record<string, number>,
+    errorCount: 0,
+    warningCount: 0,
+  });
 
   const syncState = () => {
     const s = engine.getState();
@@ -37,6 +45,7 @@ const SimulatorPanel = () => {
     setCurrentSimulatorNodeId(s.currentNodeId);
     setStepsExecuted(s.stepsExecuted);
     setLogs([...s.logs]);
+    setMetrics({ ...s.metrics });
   };
 
   const init = () => {
@@ -69,6 +78,26 @@ const SimulatorPanel = () => {
   };
 
   const currentNode = nodes.find((n) => n.id === currentNodeId);
+
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case "error":
+        return "text-red-400";
+      case "warn":
+        return "text-yellow-400";
+      case "info":
+        return "text-blue-400";
+      case "debug":
+        return "text-slate-500";
+      default:
+        return "text-slate-400";
+    }
+  };
+
+  const formatDuration = (ms?: number) => {
+    if (!ms) return "";
+    return ms < 1 ? "<1ms" : `${ms.toFixed(1)}ms`;
+  };
 
   return (
     <div className="absolute bottom-4 left-4 bg-slate-900 border border-slate-800 rounded-lg w-96 max-h-[600px] shadow-lg overflow-hidden flex flex-col">
@@ -168,6 +197,73 @@ const SimulatorPanel = () => {
           )}
         </div>
 
+        {/* Metrics section */}
+        <div className="border-b border-slate-800">
+          <button
+            onClick={() => setShowMetrics(!showMetrics)}
+            className="w-full px-3 py-2 flex items-center justify-between text-xs text-slate-300 hover:bg-slate-800 transition-colors"
+          >
+            <span className="font-medium flex items-center gap-2">
+              <BarChart3 size={14} /> Metrics
+            </span>
+            {showMetrics ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          </button>
+          {showMetrics && (
+            <div className="px-3 py-2 bg-slate-950">
+              <div className="text-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Total Duration:</span>
+                  <span className="text-slate-200 font-mono">
+                    {metrics.totalDuration > 0
+                      ? `${metrics.totalDuration}ms`
+                      : "-"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Errors:</span>
+                  <span
+                    className={`font-mono ${
+                      metrics.errorCount > 0 ? "text-red-400" : "text-slate-500"
+                    }`}
+                  >
+                    {metrics.errorCount}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Warnings:</span>
+                  <span
+                    className={`font-mono ${
+                      metrics.warningCount > 0
+                        ? "text-yellow-400"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {metrics.warningCount}
+                  </span>
+                </div>
+                {Object.keys(metrics.nodeExecutionCount).length > 0 && (
+                  <div className="mt-3 pt-2 border-t border-slate-800">
+                    <div className="text-slate-400 mb-1">Node Executions:</div>
+                    {Object.entries(metrics.nodeExecutionCount).map(
+                      ([type, count]) => (
+                        <div
+                          key={type}
+                          className="flex items-center justify-between ml-2"
+                        >
+                          <span className="text-slate-500">{type}:</span>
+                          <span className="text-slate-300 font-mono">
+                            {count}
+                          </span>
+                        </div>
+                      )
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Logs section */}
         <div className="border-b border-slate-800">
           <button
@@ -187,15 +283,25 @@ const SimulatorPanel = () => {
                 logs.map((log, idx) => (
                   <div
                     key={idx}
-                    className="text-xs text-slate-400 py-1 border-b border-slate-800 last:border-b-0"
+                    className="text-xs text-slate-400 py-1.5 border-b border-slate-800 last:border-b-0"
                   >
-                    <div className="text-slate-300 font-mono flex items-center gap-2">
+                    <div className="font-mono flex items-center gap-2 mb-0.5">
                       <span className="text-slate-500">[{idx + 1}]</span>
-                      <span className="text-yellow-400">{log.nodeType}</span>
+                      <span className={`uppercase text-[10px] font-bold ${
+                        getLevelColor(log.level)
+                      }`}>
+                        {log.level}
+                      </span>
+                      <span className="text-slate-500">{log.nodeType}</span>
+                      {log.duration && (
+                        <span className="text-slate-600 ml-auto">
+                          {formatDuration(log.duration)}
+                        </span>
+                      )}
                     </div>
                     <div className="text-slate-200 ml-6">{log.message}</div>
                     {log.data && (
-                      <div className="text-slate-500 ml-6 text-xs">
+                      <div className="text-slate-500 ml-6 text-[10px] font-mono">
                         {JSON.stringify(log.data, null, 0)}
                       </div>
                     )}

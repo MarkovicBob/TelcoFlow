@@ -84,12 +84,21 @@ class Tokenizer {
       return { type: "VARIABLE", value: ident };
     }
 
+    // Three-char operators
+    const threeChar = this.input.slice(this.pos, this.pos + 3);
+    if (["===", "!=="].includes(threeChar)) {
+      this.advance();
+      this.advance();
+      this.advance();
+      return { type: "COMPARISON", value: threeChar };
+    }
+
     // Two-char operators
-    const twoChar = ch + this.input[this.pos + 1];
-    if (["===", "!==", "<=", ">=", "&&", "||"].includes(twoChar)) {
+    const twoChar = this.input.slice(this.pos, this.pos + 2);
+    if (["==", "!=", "<=", ">=", "&&", "||"].includes(twoChar)) {
       this.advance();
       this.advance();
-      if (["===", "!=="].includes(twoChar) || ["<=", ">="].includes(twoChar)) {
+      if (["==", "!=", "<=", ">="].includes(twoChar)) {
         return { type: "COMPARISON", value: twoChar };
       }
       return {
@@ -101,12 +110,10 @@ class Tokenizer {
     // Single-char operators
     if (["<", ">", "=", "!"].includes(ch)) {
       this.advance();
-      if (ch === "=" || ch === "!") {
-        const next = this.peek();
-        if (next === "=") {
-          this.advance();
-          return { type: "COMPARISON", value: ch + "=" };
-        }
+      const next = this.peek();
+      if (next === "=") {
+        this.advance();
+        return { type: "COMPARISON", value: ch + "=" };
       }
       return { type: "COMPARISON", value: ch };
     }

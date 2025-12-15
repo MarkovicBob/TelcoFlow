@@ -1,3 +1,4 @@
+import { describe, expect, it } from "vitest";
 import { evaluateExpression } from "../evaluator";
 
 // src/utils/simulator/__tests__/evaluator.test.ts
