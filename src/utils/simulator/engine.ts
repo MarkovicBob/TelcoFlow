@@ -1,7 +1,12 @@
 import type { Node } from "reactflow";
 import type { NodeData } from "../../types/nodes";
-import type { SimulatorEngine, SimulationState, SimulatorEngineOptions, NodeHandler } from "./types";
 import { getNodeHandlers } from "./handlers";
+import type {
+  NodeHandler,
+  SimulationState,
+  SimulatorEngine,
+  SimulatorEngineOptions,
+} from "./types";
 
 const timestamp = () => new Date().toISOString();
 
@@ -16,12 +21,18 @@ export function createSimulatorEngine(): SimulatorEngine {
     logs: [],
   };
 
-  const addLog = (entry: { nodeId: string; nodeType: string; message: string; data?: Record<string, unknown> }) => {
+  const addLog = (entry: {
+    nodeId: string;
+    nodeType: string;
+    message: string;
+    data?: Record<string, unknown>;
+  }) => {
     state.logs.push({ timestamp: timestamp(), ...entry });
   };
 
   const getStartNode = () => nodes.find((n) => n.type === "start") || null;
-  const getNodeById = (id: string | null) => (id ? nodes.find((n) => n.id === id) || null : null);
+  const getNodeById = (id: string | null) =>
+    id ? nodes.find((n) => n.id === id) || null : null;
 
   let handlers: Record<string, NodeHandler> = {};
 
@@ -29,7 +40,11 @@ export function createSimulatorEngine(): SimulatorEngine {
     const type = node.type || "unknown";
     const handler = handlers[type];
     if (!handler) {
-      addLog({ nodeId: node.id, nodeType: type, message: "No handler for node type" });
+      addLog({
+        nodeId: node.id,
+        nodeType: type,
+        message: "No handler for node type",
+      });
       return { nextNodeId: null };
     }
     return handler({ node, variables: state.variables, addLog });
@@ -39,7 +54,11 @@ export function createSimulatorEngine(): SimulatorEngine {
     if (state.status === "completed" || state.status === "stopped") return;
     if (state.stepsExecuted >= state.maxSteps) {
       state.status = "error";
-      addLog({ nodeId: state.currentNodeId || "-", nodeType: "system", message: "Max steps reached" });
+      addLog({
+        nodeId: state.currentNodeId || "-",
+        nodeType: "system",
+        message: "Max steps reached",
+      });
       return;
     }
 
@@ -55,7 +74,11 @@ export function createSimulatorEngine(): SimulatorEngine {
 
     if ("error" in result) {
       state.status = "error";
-      addLog({ nodeId: node.id, nodeType: node.type || "unknown", message: result.error });
+      addLog({
+        nodeId: node.id,
+        nodeType: node.type || "unknown",
+        message: result.error,
+      });
       return;
     }
 
@@ -84,7 +107,11 @@ export function createSimulatorEngine(): SimulatorEngine {
     start: async () => {
       state.status = "running";
       await stepInternal();
-      while (state.status === "running" && state.currentNodeId && state.stepsExecuted < state.maxSteps) {
+      while (
+        state.status === "running" &&
+        state.currentNodeId &&
+        state.stepsExecuted < state.maxSteps
+      ) {
         await stepInternal();
       }
     },

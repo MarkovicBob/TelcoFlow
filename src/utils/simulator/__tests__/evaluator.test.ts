@@ -1,6 +1,6 @@
-// src/utils/simulator/__tests__/evaluator.test.ts
-
 import { evaluateExpression } from "../evaluator";
+
+// src/utils/simulator/__tests__/evaluator.test.ts
 
 describe("Expression Evaluator", () => {
   it("should evaluate simple comparisons", () => {
@@ -30,6 +30,8 @@ describe("Expression Evaluator", () => {
 
   it("should handle complex expressions", () => {
     const ctx = { variables: { balance: 100, threshold: 50 } };
-    expect(evaluateExpression("balance > threshold && balance < 200", ctx)).toBe(true);
+    expect(
+      evaluateExpression("balance > threshold && balance < 200", ctx)
+    ).toBe(true);
   });
 });

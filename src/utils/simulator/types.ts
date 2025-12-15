@@ -1,7 +1,13 @@
-import type { Node, Edge } from "reactflow";
+import type { Edge, Node } from "reactflow";
 import type { NodeData } from "../../types/nodes";
 
-export type SimulatorStatus = "idle" | "running" | "paused" | "stopped" | "completed" | "error";
+export type SimulatorStatus =
+  | "idle"
+  | "running"
+  | "paused"
+  | "stopped"
+  | "completed"
+  | "error";
 
 export interface SimulationLogEntry {
   timestamp: string;
@@ -36,7 +42,11 @@ export interface SimulatorEngineOptions {
 }
 
 export interface SimulatorEngine {
-  init: (nodes: Node<NodeData>[], edges: Edge[], options?: SimulatorEngineOptions) => void;
+  init: (
+    nodes: Node<NodeData>[],
+    edges: Edge[],
+    options?: SimulatorEngineOptions
+  ) => void;
   start: () => Promise<void>;
   pause: () => void;
   resume: () => Promise<void>;

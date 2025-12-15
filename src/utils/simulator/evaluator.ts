@@ -92,7 +92,10 @@ class Tokenizer {
       if (["===", "!=="].includes(twoChar) || ["<=", ">="].includes(twoChar)) {
         return { type: "COMPARISON", value: twoChar };
       }
-      return { type: twoChar === "&&" ? "LOGICAL_AND" : "LOGICAL_OR", value: twoChar };
+      return {
+        type: twoChar === "&&" ? "LOGICAL_AND" : "LOGICAL_OR",
+        value: twoChar,
+      };
     }
 
     // Single-char operators
@@ -157,7 +160,10 @@ class Parser {
 
   private parseLogicalOr(): ASTNode {
     let left = this.parseLogicalAnd();
-    while (["LOGICAL_OR", "||"].includes(this.peek().type) || this.peek().value === "or") {
+    while (
+      ["LOGICAL_OR", "||"].includes(this.peek().type) ||
+      this.peek().value === "or"
+    ) {
       this.advance();
       const right = this.parseLogicalAnd();
       left = { type: "BINARY_OP", op: "||", left, right };
@@ -167,7 +173,10 @@ class Parser {
 
   private parseLogicalAnd(): ASTNode {
     let left = this.parseComparison();
-    while (["LOGICAL_AND", "&&"].includes(this.peek().type) || this.peek().value === "and") {
+    while (
+      ["LOGICAL_AND", "&&"].includes(this.peek().type) ||
+      this.peek().value === "and"
+    ) {
       this.advance();
       const right = this.parseComparison();
       left = { type: "BINARY_OP", op: "&&", left, right };
@@ -216,18 +225,21 @@ class Parser {
   }
 }
 
-export type ASTNode = {
-  type: "LITERAL";
-  value: unknown;
-} | {
-  type: "VARIABLE";
-  name: string;
-} | {
-  type: "BINARY_OP";
-  op: string;
-  left: ASTNode;
-  right: ASTNode;
-};
+export type ASTNode =
+  | {
+      type: "LITERAL";
+      value: unknown;
+    }
+  | {
+      type: "VARIABLE";
+      name: string;
+    }
+  | {
+      type: "BINARY_OP";
+      op: string;
+      left: ASTNode;
+      right: ASTNode;
+    };
 
 class Evaluator {
   evaluate(node: ASTNode, ctx: EvaluationContext): unknown {
@@ -272,7 +284,10 @@ class Evaluator {
   }
 }
 
-export function evaluateExpression(expression: string, ctx: EvaluationContext): unknown {
+export function evaluateExpression(
+  expression: string,
+  ctx: EvaluationContext
+): unknown {
   try {
     const tokenizer = new Tokenizer(expression);
     const tokens = tokenizer.tokenize();

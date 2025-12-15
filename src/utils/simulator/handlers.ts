@@ -1,17 +1,28 @@
-// src/utils/simulator/handlers.ts
-import type { NodeHandler } from "./types";
-import { evaluateExpression } from "./evaluator";
 import type { Edge } from "reactflow";
+import { evaluateExpression } from "./evaluator";
+import type { NodeHandler } from "./types";
 
-export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => ({
+// src/utils/simulator/handlers.ts
+
+export const getNodeHandlers = (
+  edges: Edge[]
+): Record<string, NodeHandler> => ({
   start: async ({ node, addLog }) => {
-    addLog({ nodeId: node.id, nodeType: node.type || "start", message: "Flow started" });
+    addLog({
+      nodeId: node.id,
+      nodeType: node.type || "start",
+      message: "Flow started",
+    });
     const edge = edges.find((e) => e.source === node.id);
     return { nextNodeId: edge ? edge.target : null };
   },
 
   end: async ({ node, addLog }) => {
-    addLog({ nodeId: node.id, nodeType: node.type || "end", message: "Flow ended" });
+    addLog({
+      nodeId: node.id,
+      nodeType: node.type || "end",
+      message: "Flow ended",
+    });
     return { nextNodeId: null };
   },
 
@@ -33,7 +44,9 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => (
   decision: async ({ node, variables, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const condition = (data?.condition as string) || "true";
-    const result = evaluateExpression(condition, { variables: variables.values });
+    const result = evaluateExpression(condition, {
+      variables: variables.values,
+    });
     const isTrue = Boolean(result);
 
     const decisionEdges = edges.filter((e) => e.source === node.id);
@@ -56,7 +69,11 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => (
   ivr: async ({ node, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const prompt = (data?.prompt as string) || "IVR";
-    addLog({ nodeId: node.id, nodeType: node.type || "ivr", message: `IVR: ${prompt}` });
+    addLog({
+      nodeId: node.id,
+      nodeType: node.type || "ivr",
+      message: `IVR: ${prompt}`,
+    });
     const edge = edges.find((e) => e.source === node.id);
     return { nextNodeId: edge ? edge.target : null };
   },
@@ -64,7 +81,11 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => (
   queue: async ({ node, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const holdMusic = (data?.holdMusic as string) || "default";
-    addLog({ nodeId: node.id, nodeType: node.type || "queue", message: `Queue with hold music: ${holdMusic}` });
+    addLog({
+      nodeId: node.id,
+      nodeType: node.type || "queue",
+      message: `Queue with hold music: ${holdMusic}`,
+    });
     const edge = edges.find((e) => e.source === node.id);
     return { nextNodeId: edge ? edge.target : null };
   },

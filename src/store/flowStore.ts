@@ -24,6 +24,7 @@ interface FlowState {
 
   // Simulator variables
   simulatorVariables: Record<string, unknown>;
+  currentSimulatorNodeId: string | null;
 
   // History for undo/redo
   history: {
@@ -68,6 +69,7 @@ interface FlowState {
   setSimulatorVariable: (key: string, value: unknown) => void;
   getSimulatorVariable: (key: string) => unknown;
   resetSimulatorVariables: () => void;
+  setCurrentSimulatorNodeId: (nodeId: string | null) => void;
 
   // History operations
   undo: () => void;
@@ -191,6 +193,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   showValidationPanel: false,
   lastSaved: null,
   simulatorVariables: {},
+  currentSimulatorNodeId: null,
   history: {
     past: [],
     future: [],
@@ -490,5 +493,9 @@ export const useFlowStore = create<FlowState>((set, get) => ({
 
   resetSimulatorVariables: () => {
     set({ simulatorVariables: {} });
+  },
+
+  setCurrentSimulatorNodeId: (nodeId) => {
+    set({ currentSimulatorNodeId: nodeId });
   },
 }));

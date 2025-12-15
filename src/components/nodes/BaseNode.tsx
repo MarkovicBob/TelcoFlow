@@ -32,9 +32,11 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
   const color = definition?.color || "#3b82f6";
 
   // Check if node has validation errors/warnings
-  const { validationErrors, validationWarnings } = useFlowStore();
+  const { validationErrors, validationWarnings, currentSimulatorNodeId } =
+    useFlowStore();
   const hasError = validationErrors.some((err) => err.nodeId === id);
   const hasWarning = validationWarnings.some((warn) => warn.nodeId === id);
+  const isSimulating = currentSimulatorNodeId === id;
 
   // Determine border color based on validation state
   const borderColor = hasError ? "#ef4444" : hasWarning ? "#f59e0b" : color;
@@ -44,6 +46,11 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
       className={`
         bg-slate-900 rounded-lg shadow-lg border-2 transition-all
         ${selected ? "ring-2 ring-blue-400 scale-105" : ""}
+        ${
+          isSimulating
+            ? "ring-2 ring-green-400 scale-110 shadow-xl shadow-green-500/50"
+            : ""
+        }
         ${hasError ? "animate-pulse" : ""}
       `}
       style={{ borderColor, minWidth: "200px" }}

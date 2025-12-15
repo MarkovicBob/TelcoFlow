@@ -4,9 +4,9 @@ import Header from "./components/Header";
 import NodeDetailsPanel from "./components/NodeDetailsPanel";
 import React, { useEffect } from "react";
 import Sidebar from "./components/Sidebar";
+import SimulatorPanel from "./components/SimulatorPanel";
 import Toolbar from "./components/Toolbar";
 import ValidationPanel from "./components/ValidationPanel";
-import SimulatorPanel from "./components/SimulatorPanel";
 import { ReactFlowProvider } from "reactflow";
 import { useFlowStore } from "./store/flowStore";
 
