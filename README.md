@@ -167,6 +167,31 @@ TelcoFlow is a visual programming platform for designing, testing, and deploying
 - Variable picker/autocomplete
 - Expression builder
 
+### How to Use the Simulator
+
+1. **Open the Simulator Panel**
+   - Located at bottom-left of the canvas
+   - Auto-opens when you start simulation
+
+2. **Run Your Flow**
+   ```
+   Play   → Run entire flow automatically
+   Step   → Execute one node at a time
+   Pause  → Pause during execution
+   Reset  → Clear state and start over
+   ```
+
+3. **Monitor Execution**
+   - **Variables**: View all variable values in real-time
+   - **Logs**: See execution history with timestamps
+   - **Metrics**: Track performance and error counts
+   - **Issues**: Quick access to errors and warnings
+
+4. **Filter & Debug**
+   - Filter logs by level (All/Info/Warn/Error)
+   - Click on Issues to see all errors at once
+   - Red banner appears on execution errors
+
 ### Phase 2: Business Logic & Testing (Week 2-3)
 
 #### 2.1 Variables & Expressions
@@ -198,6 +223,40 @@ ${customer.tier == 'premium'}
 - ✓ All paths lead to END node
 - ✓ No circular references
 - ✓ Required fields filled
+
+#### 2.3 Flow Simulator & Testing
+
+**Real-time Flow Execution**
+- ✅ Step-by-step execution engine
+- ✅ Play/Pause/Step/Reset controls
+- ✅ Visual node highlighting during execution
+- ✅ Variable tracking and inspection
+- ✅ Execution metrics (duration, node counts)
+- ✅ Error detection and reporting
+
+**Expression Evaluator**
+```javascript
+// Supported operators
+==, !=, >, <, >=, <=   // Comparisons
+&&, ||                  // Logical operators
+
+// Example conditions
+plan === "gold"
+balance > 100 && status === "active"
+call_duration > 300 || priority === "high"
+```
+
+**Execution Logs**
+- Color-coded by level (INFO, WARN, ERROR)
+- Per-node execution duration
+- Filter logs by level
+- Detailed error messages with node context
+
+**Metrics Dashboard**
+- Total execution duration
+- Node execution counts by type
+- Error and warning counts
+- Real-time variable values
 - ✓ Valid expressions
 - ✓ Audio files exist
 - ✓ API endpoints reachable

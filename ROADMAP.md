@@ -138,9 +138,9 @@ _Focus: Build execution engine and visual simulator_
 
 #### Day 15-16: Variables & Expressions
 
-- [ ] Implement variable system
-- [ ] Create variable parser/resolver
-- [ ] Add built-in variables:
+- [x] ~~Implement variable system~~
+- [x] ~~Create variable parser/resolver~~
+- [x] ~~Add built-in variables:~~
   ```javascript
   ${caller.phone}
   ${caller.name}
@@ -148,41 +148,41 @@ _Focus: Build execution engine and visual simulator_
   ${system.time}
   ${system.date}
   ```
-- [ ] Create expression evaluator
-- [ ] Support operators: `==`, `!=`, `>`, `<`, `>=`, `<=`, `&&`, `||`
-- [ ] Add variable picker in properties panel
-- [ ] Create variable inspector component
+- [x] ~~Create expression evaluator~~
+- [x] ~~Support operators: `==`, `!=`, `>`, `<`, `>=`, `<=`, `&&`, `||`~~
+- [x] ~~Add variable picker in properties panel~~
+- [x] ~~Create variable inspector component~~
 
 #### Day 17-18: Flow Execution Engine
 
-- [ ] Create flow executor class
-- [ ] Implement node execution logic for each type
-- [ ] Add execution state tracking
-- [ ] Implement path traversal algorithm
-- [ ] Handle conditional routing (Decision nodes)
-- [ ] Support loops (with max iteration limit)
-- [ ] Add execution logging
-- [ ] Create execution timeline
+- [x] ~~Create flow executor class~~
+- [x] ~~Implement node execution logic for each type~~
+- [x] ~~Add execution state tracking~~
+- [x] ~~Implement path traversal algorithm~~
+- [x] ~~Handle conditional routing (Decision nodes)~~
+- [x] ~~Support loops (with max iteration limit)~~
+- [x] ~~Add execution logging~~
+- [x] ~~Create execution timeline~~
 
 #### Day 19-20: Visual Simulator UI
 
-- [ ] Create simulator modal/overlay
-- [ ] Add call controls (play, pause, stop, step)
-- [ ] Implement DTMF pad simulator
-- [ ] Create execution log viewer
-- [ ] Add variable inspector (real-time)
-- [ ] Highlight currently executing node
-- [ ] Animate edges during execution
-- [ ] Add playback speed control (0.5x, 1x, 2x)
+- [x] ~~Create simulator modal/overlay~~
+- [x] ~~Add call controls (play, pause, stop, step)~~
+- [ ] Implement DTMF pad simulator (optional for Week 4)
+- [x] ~~Create execution log viewer~~
+- [x] ~~Add variable inspector (real-time)~~
+- [x] ~~Highlight currently executing node~~
+- [ ] Animate edges during execution (optional for Week 4)
+- [ ] Add playback speed control (0.5x, 1x, 2x) (optional for Week 4)
 
 #### Day 21: Testing & Debugging
 
-- [ ] Test execution with all node types
-- [ ] Test complex flows (loops, conditions)
-- [ ] Test error scenarios
-- [ ] Add breakpoint support (optional)
-- [ ] Fix bugs
-- [ ] **Git commit:** "Week 3: Flow simulator complete"
+- [x] ~~Test execution with all node types~~
+- [x] ~~Test complex flows (loops, conditions)~~
+- [x] ~~Test error scenarios~~
+- [ ] Add breakpoint support (optional for Week 4)
+- [x] ~~Fix bugs~~
+- [x] ~~**Git commit:** "Week 3: Flow simulator complete"~~
 
 **Week 3 Deliverable:**
 ✅ Working variable system  
