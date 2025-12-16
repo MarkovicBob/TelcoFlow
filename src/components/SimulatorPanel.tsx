@@ -1,8 +1,10 @@
 import {
+  AlertCircle,
   BarChart3,
   ChevronDown,
   ChevronUp,
   Eye,
+  Filter,
   Logs,
   Pause,
   Play,
@@ -30,6 +32,8 @@ const SimulatorPanel = () => {
   const [showVariables, setShowVariables] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
   const [showMetrics, setShowMetrics] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
+  const [logLevelFilter, setLogLevelFilter] = useState<"all" | "info" | "warn" | "error">("all");
   const [logs, setLogs] = useState<SimulationLogEntry[]>([]);
   const [metrics, setMetrics] = useState({
     totalDuration: 0,
@@ -78,6 +82,14 @@ const SimulatorPanel = () => {
   };
 
   const currentNode = nodes.find((n) => n.id === currentNodeId);
+
+  const errorLogs = logs.filter((log) => log.level === "error");
+  const warnLogs = logs.filter((log) => log.level === "warn");
+  
+  const filteredLogs = logs.filter((log) => {
+    if (logLevelFilter === "all") return true;
+    return log.level === logLevelFilter;
+  });
 
   const getLevelColor = (level: string) => {
     switch (level) {
@@ -156,6 +168,19 @@ const SimulatorPanel = () => {
           </span>
         </div>
       </div>
+
+      {/* Error Banner */}
+      {status === "error" && errorLogs.length > 0 && (
+        <div className="bg-red-900/20 border-y border-red-800 px-3 py-2 flex items-start gap-2">
+          <AlertCircle size={16} className="text-red-400 mt-0.5 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-semibold text-red-300 mb-1">Execution Error</div>
+            <div className="text-xs text-red-200">
+              {errorLogs[errorLogs.length - 1].message}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tabs content */}
       <div className="flex-1 overflow-y-auto">
@@ -264,6 +289,50 @@ const SimulatorPanel = () => {
           )}
         </div>
 
+        {/* Errors section */}
+        {(errorLogs.length > 0 || warnLogs.length > 0) && (
+          <div className="border-b border-slate-800">
+            <button
+              onClick={() => setShowErrors(!showErrors)}
+              className="w-full px-3 py-2 flex items-center justify-between text-xs text-slate-300 hover:bg-slate-800 transition-colors"
+            >
+              <span className="font-medium flex items-center gap-2">
+                <AlertCircle size={14} className="text-red-400" />
+                Issues ({errorLogs.length + warnLogs.length})
+              </span>
+              {showErrors ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+            {showErrors && (
+              <div className="px-3 py-2 bg-slate-950 max-h-48 overflow-y-auto">
+                {errorLogs.map((log, idx) => (
+                  <div
+                    key={`error-${idx}`}
+                    className="text-xs py-1.5 border-b border-slate-800 last:border-b-0"
+                  >
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-red-400 font-bold text-[10px]">ERROR</span>
+                      <span className="text-slate-500">{log.nodeType}</span>
+                    </div>
+                    <div className="text-red-200 ml-0">{log.message}</div>
+                  </div>
+                ))}
+                {warnLogs.map((log, idx) => (
+                  <div
+                    key={`warn-${idx}`}
+                    className="text-xs py-1.5 border-b border-slate-800 last:border-b-0"
+                  >
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="text-yellow-400 font-bold text-[10px]">WARN</span>
+                      <span className="text-slate-500">{log.nodeType}</span>
+                    </div>
+                    <div className="text-yellow-200 ml-0">{log.message}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Logs section */}
         <div className="border-b border-slate-800">
           <button
@@ -271,16 +340,36 @@ const SimulatorPanel = () => {
             className="w-full px-3 py-2 flex items-center justify-between text-xs text-slate-300 hover:bg-slate-800 transition-colors"
           >
             <span className="font-medium flex items-center gap-2">
-              <Logs size={14} /> Logs ({logs.length})
+              <Logs size={14} /> Logs ({filteredLogs.length}/{logs.length})
             </span>
             {showLogs ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
           {showLogs && (
-            <div className="px-3 py-2 bg-slate-950 max-h-60 overflow-y-auto">
-              {logs.length === 0 ? (
-                <div className="text-xs text-slate-500">No logs yet</div>
+            <div className="bg-slate-950">
+              {/* Filter buttons */}
+              <div className="px-3 py-2 flex items-center gap-1 border-b border-slate-800">
+                <Filter size={12} className="text-slate-500 mr-1" />
+                {(["all", "info", "warn", "error"] as const).map((level) => (
+                  <button
+                    key={level}
+                    onClick={() => setLogLevelFilter(level)}
+                    className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase transition-colors ${
+                      logLevelFilter === level
+                        ? "bg-blue-600 text-white"
+                        : "bg-slate-800 text-slate-400 hover:bg-slate-700"
+                    }`}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+              <div className="px-3 py-2 max-h-60 overflow-y-auto">
+              {filteredLogs.length === 0 ? (
+                <div className="text-xs text-slate-500">
+                  {logs.length === 0 ? "No logs yet" : "No logs match filter"}
+                </div>
               ) : (
-                logs.map((log, idx) => (
+                filteredLogs.map((log, idx) => (
                   <div
                     key={idx}
                     className="text-xs text-slate-400 py-1.5 border-b border-slate-800 last:border-b-0"
@@ -308,6 +397,7 @@ const SimulatorPanel = () => {
                   </div>
                 ))
               )}
+            </div>
             </div>
           )}
         </div>
