@@ -1,8 +1,6 @@
 import domtoimage from "dom-to-image-more";
 import { jsPDF } from "jspdf";
 
-// @ts-expect-error - dom-to-image-more lacks official TypeScript types
-
 export const exportCanvasPNG = async (selector: string = ".react-flow") => {
   const el = document.querySelector(selector) as HTMLElement | null;
   if (!el) {
