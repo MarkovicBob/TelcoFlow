@@ -198,50 +198,45 @@ _Focus: Multi-project, templates, deployment, documentation_
 
 #### Day 22-23: Project Management
 
-- [ ] Create project list/dashboard view
-- [ ] Implement multiple projects support
-- [ ] Add project metadata (name, description, tags)
-- [ ] Create "New Project" flow
-- [ ] Add "Duplicate Project" feature
-- [ ] Implement project search/filter
-- [ ] Add project templates system
-- [ ] Create 5-6 pre-built templates:
-  - [ ] Basic IVR
-  - [ ] Customer Support
-  - [ ] After Hours
-  - [ ] VIP Fast Track
-  - [ ] Callback Queue
+- [x] ~~Add project metadata (name, description, tags)~~
+- [x] ~~Add project templates system~~
+- [x] ~~Create 2 pre-built templates:~~
+  - [x] ~~Customer Support IVR~~
+  - [x] ~~Simple Decision Route~~
+- [ ] Create project list/dashboard view (deferred)
+- [ ] Implement multiple projects support (deferred)
+- [ ] Create "New Project" flow (deferred)
+- [ ] Add "Duplicate Project" feature (deferred)
+- [ ] Implement project search/filter (deferred)
 
 #### Day 24-25: Advanced Export & Documentation
 
-- [ ] Export flow as PNG (canvas screenshot)
-- [ ] Export flow as PDF with documentation:
-  - [ ] Cover page
-  - [ ] Flow diagram
-  - [ ] Node details table
-  - [ ] Variables list
-- [ ] Generate Markdown documentation
-- [ ] Add "Share" functionality (copy link)
-- [ ] Create deployment guide
-- [ ] Add keyboard shortcuts help modal
+- [x] ~~Export flow as PNG (canvas screenshot)~~
+- [x] ~~Export flow as PDF~~
+- [x] ~~Generate Markdown documentation~~
+- [x] ~~Create deployment guide (DEPLOYMENT.md)~~
+- [ ] Add "Share" functionality (copy link) (deferred)
+- [ ] Add keyboard shortcuts help modal (deferred)
+- [ ] PDF with full documentation (cover page, node details, variables) (deferred)
 
-#### Day 26-27: UI/UX Polish
+#### UI/UX Polish (Optional - deferred to future releases)
 
 - [ ] Add loading states
 - [ ] Add empty states (no nodes, no projects)
 - [ ] Improve animations (node drag, connections)
 - [ ] Add toast notifications (save success, errors)
-- [ ] Implement dark/light theme toggle (optional)
+- [ ] Implement dark/light theme toggle
 - [ ] Add onboarding tour for first-time users
 - [ ] Improve responsive design (tablet support)
 - [ ] Add accessibility (ARIA labels, keyboard nav)
 
-#### Day 28: Final Testing & Deployment
+#### Day 26-28: Deployment & Polish
 
+- [x] ~~Docker setup (Dockerfile + docker-compose)~~
+- [x] ~~Deployment guide for Vercel/Netlify~~
+- [x] ~~README updated with deployment instructions~~
 - [ ] Full end-to-end testing
 - [ ] Performance optimization
-- [ ] Fix all remaining bugs
-- [ ] Write final documentation (README)
 - [ ] Create demo video/GIF
 - [ ] Deploy to Vercel/Netlify
 - [ ] Setup custom domain (optional)

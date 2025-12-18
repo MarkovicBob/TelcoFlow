@@ -1,0 +1,8 @@
+node_modules
+npm-debug.log*
+dist
+docker-compose.override.yml
+.git
+.gitignore
+.vscode
+.DS_Store

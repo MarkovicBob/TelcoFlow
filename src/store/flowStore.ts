@@ -14,6 +14,13 @@ interface FlowState {
   selectedNodes: string[]; // Array of node IDs for multi-selection
   clipboard: Node<NodeData> | null;
 
+  // Project metadata
+  projectMetadata: {
+    name: string;
+    description?: string;
+    tags?: string[];
+  };
+
   // Validation state
   validationErrors: ValidationError[];
   validationWarnings: ValidationError[];
@@ -64,6 +71,7 @@ interface FlowState {
   loadSavedFlow: () => boolean;
   exportFlow: () => void;
   importFlow: (flowData: string) => void;
+  setProjectMetadata: (meta: { name: string; description?: string; tags?: string[] }) => void;
 
   // Simulator variable operations
   setSimulatorVariable: (key: string, value: unknown) => void;
@@ -188,6 +196,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   selectedNode: null,
   selectedNodes: [],
   clipboard: null,
+  projectMetadata: { name: "Untitled Flow" },
   validationErrors: [],
   validationWarnings: [],
   showValidationPanel: false,
@@ -409,13 +418,14 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   },
 
   saveFlow: () => {
-    const { nodes, edges } = get();
+    const { nodes, edges, projectMetadata } = get();
     const now = new Date();
     const flowData = {
       nodes,
       edges,
       savedAt: now.toISOString(),
       version: "1.0",
+      metadata: projectMetadata,
     };
     localStorage.setItem("telcoflow_saved", JSON.stringify(flowData));
     set({ lastSaved: now });
@@ -442,16 +452,13 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   },
 
   exportFlow: () => {
-    const { nodes, edges } = get();
+    const { nodes, edges, projectMetadata } = get();
     const flowData = {
       nodes,
       edges,
       exportedAt: new Date().toISOString(),
       version: "1.0",
-      metadata: {
-        name: "TelcoFlow Export",
-        description: "Call flow exported from TelcoFlow",
-      },
+      metadata: projectMetadata,
     };
 
     const blob = new Blob([JSON.stringify(flowData, null, 2)], {
@@ -473,12 +480,17 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       set({
         nodes: parsed.nodes || [],
         edges: parsed.edges || [],
+        projectMetadata: parsed.metadata || { name: "Imported Flow" },
         history: { past: [], future: [] },
       });
     } catch (error) {
       console.error("Failed to import flow:", error);
       throw new Error("Invalid flow data");
     }
+  },
+
+  setProjectMetadata: (meta) => {
+    set({ projectMetadata: { ...get().projectMetadata, ...meta } });
   },
 
   setSimulatorVariable: (key, value) => {

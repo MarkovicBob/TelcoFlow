@@ -170,10 +170,12 @@ TelcoFlow is a visual programming platform for designing, testing, and deploying
 ### How to Use the Simulator
 
 1. **Open the Simulator Panel**
+
    - Located at bottom-left of the canvas
    - Auto-opens when you start simulation
 
 2. **Run Your Flow**
+
    ```
    Play   → Run entire flow automatically
    Step   → Execute one node at a time
@@ -182,6 +184,7 @@ TelcoFlow is a visual programming platform for designing, testing, and deploying
    ```
 
 3. **Monitor Execution**
+
    - **Variables**: View all variable values in real-time
    - **Logs**: See execution history with timestamps
    - **Metrics**: Track performance and error counts
@@ -227,6 +230,7 @@ ${customer.tier == 'premium'}
 #### 2.3 Flow Simulator & Testing
 
 **Real-time Flow Execution**
+
 - ✅ Step-by-step execution engine
 - ✅ Play/Pause/Step/Reset controls
 - ✅ Visual node highlighting during execution
@@ -235,6 +239,7 @@ ${customer.tier == 'premium'}
 - ✅ Error detection and reporting
 
 **Expression Evaluator**
+
 ```javascript
 // Supported operators
 ==, !=, >, <, >=, <=   // Comparisons
@@ -247,12 +252,14 @@ call_duration > 300 || priority === "high"
 ```
 
 **Execution Logs**
+
 - Color-coded by level (INFO, WARN, ERROR)
 - Per-node execution duration
 - Filter logs by level
 - Detailed error messages with node context
 
 **Metrics Dashboard**
+
 - Total execution duration
 - Node execution counts by type
 - Error and warning counts
@@ -400,10 +407,10 @@ src/
 
 ### Week 4: Polish & Deploy
 
-- ⬜ Templates library
-- ⬜ Documentation generator
-- ⬜ Export to PNG/PDF
-- ⬜ Docker setup
+- ✅ Templates library
+- ✅ Documentation generator (Markdown)
+- ✅ Export to PNG/PDF
+- ✅ Docker setup
 - ⬜ Deploy to production
 - ⬜ Demo video & documentation
 
@@ -424,6 +431,30 @@ npm run build
 # Preview production build
 npm run preview
 ```
+
+### Docker
+
+```bash
+# Build image
+docker build -t telcoflow:latest .
+
+# Run container
+docker run --rm -p 8080:80 telcoflow:latest
+
+# docker-compose (development convenience)
+docker compose up --build
+```
+
+Served at http://localhost:8080 when using Docker or docker-compose.
+
+### Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions on deploying to:
+
+- Vercel (recommended)
+- Netlify
+- Docker
+- Any static hosting provider
 
 ---
 

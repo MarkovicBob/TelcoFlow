@@ -1,6 +1,7 @@
 import type { Node } from "reactflow";
 import type { NodeData } from "../../types/nodes";
 import { getNodeHandlers } from "./handlers";
+
 import type {
   NodeHandler,
   SimulationState,
@@ -65,11 +66,11 @@ export function createSimulatorEngine(): SimulatorEngine {
     const startTime = performance.now();
     const result = await handler({ node, variables: state.variables, addLog });
     const duration = performance.now() - startTime;
-    
+
     // Update metrics
     state.metrics.nodeExecutionCount[type] =
       (state.metrics.nodeExecutionCount[type] || 0) + 1;
-    
+
     return { ...result, duration };
   };
 

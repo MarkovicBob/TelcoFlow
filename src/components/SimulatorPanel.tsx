@@ -1,3 +1,8 @@
+import { useMemo, useState } from "react";
+import { useFlowStore } from "../store/flowStore";
+import { createSimulatorEngine } from "../utils/simulator/engine";
+import type { SimulationLogEntry } from "../utils/simulator/types";
+
 import {
   AlertCircle,
   BarChart3,
@@ -11,10 +16,6 @@ import {
   RotateCcw,
   StepForward,
 } from "lucide-react";
-import { useMemo, useState } from "react";
-import { useFlowStore } from "../store/flowStore";
-import { createSimulatorEngine } from "../utils/simulator/engine";
-import type { SimulationLogEntry } from "../utils/simulator/types";
 
 const SimulatorPanel = () => {
   const {
@@ -33,7 +34,9 @@ const SimulatorPanel = () => {
   const [showLogs, setShowLogs] = useState(false);
   const [showMetrics, setShowMetrics] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
-  const [logLevelFilter, setLogLevelFilter] = useState<"all" | "info" | "warn" | "error">("all");
+  const [logLevelFilter, setLogLevelFilter] = useState<
+    "all" | "info" | "warn" | "error"
+  >("all");
   const [logs, setLogs] = useState<SimulationLogEntry[]>([]);
   const [metrics, setMetrics] = useState({
     totalDuration: 0,
@@ -85,7 +88,7 @@ const SimulatorPanel = () => {
 
   const errorLogs = logs.filter((log) => log.level === "error");
   const warnLogs = logs.filter((log) => log.level === "warn");
-  
+
   const filteredLogs = logs.filter((log) => {
     if (logLevelFilter === "all") return true;
     return log.level === logLevelFilter;
@@ -174,7 +177,9 @@ const SimulatorPanel = () => {
         <div className="bg-red-900/20 border-y border-red-800 px-3 py-2 flex items-start gap-2">
           <AlertCircle size={16} className="text-red-400 mt-0.5 shrink-0" />
           <div className="flex-1 min-w-0">
-            <div className="text-xs font-semibold text-red-300 mb-1">Execution Error</div>
+            <div className="text-xs font-semibold text-red-300 mb-1">
+              Execution Error
+            </div>
             <div className="text-xs text-red-200">
               {errorLogs[errorLogs.length - 1].message}
             </div>
@@ -310,7 +315,9 @@ const SimulatorPanel = () => {
                     className="text-xs py-1.5 border-b border-slate-800 last:border-b-0"
                   >
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-red-400 font-bold text-[10px]">ERROR</span>
+                      <span className="text-red-400 font-bold text-[10px]">
+                        ERROR
+                      </span>
                       <span className="text-slate-500">{log.nodeType}</span>
                     </div>
                     <div className="text-red-200 ml-0">{log.message}</div>
@@ -322,7 +329,9 @@ const SimulatorPanel = () => {
                     className="text-xs py-1.5 border-b border-slate-800 last:border-b-0"
                   >
                     <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-yellow-400 font-bold text-[10px]">WARN</span>
+                      <span className="text-yellow-400 font-bold text-[10px]">
+                        WARN
+                      </span>
                       <span className="text-slate-500">{log.nodeType}</span>
                     </div>
                     <div className="text-yellow-200 ml-0">{log.message}</div>
@@ -364,40 +373,42 @@ const SimulatorPanel = () => {
                 ))}
               </div>
               <div className="px-3 py-2 max-h-60 overflow-y-auto">
-              {filteredLogs.length === 0 ? (
-                <div className="text-xs text-slate-500">
-                  {logs.length === 0 ? "No logs yet" : "No logs match filter"}
-                </div>
-              ) : (
-                filteredLogs.map((log, idx) => (
-                  <div
-                    key={idx}
-                    className="text-xs text-slate-400 py-1.5 border-b border-slate-800 last:border-b-0"
-                  >
-                    <div className="font-mono flex items-center gap-2 mb-0.5">
-                      <span className="text-slate-500">[{idx + 1}]</span>
-                      <span className={`uppercase text-[10px] font-bold ${
-                        getLevelColor(log.level)
-                      }`}>
-                        {log.level}
-                      </span>
-                      <span className="text-slate-500">{log.nodeType}</span>
-                      {log.duration && (
-                        <span className="text-slate-600 ml-auto">
-                          {formatDuration(log.duration)}
+                {filteredLogs.length === 0 ? (
+                  <div className="text-xs text-slate-500">
+                    {logs.length === 0 ? "No logs yet" : "No logs match filter"}
+                  </div>
+                ) : (
+                  filteredLogs.map((log, idx) => (
+                    <div
+                      key={idx}
+                      className="text-xs text-slate-400 py-1.5 border-b border-slate-800 last:border-b-0"
+                    >
+                      <div className="font-mono flex items-center gap-2 mb-0.5">
+                        <span className="text-slate-500">[{idx + 1}]</span>
+                        <span
+                          className={`uppercase text-[10px] font-bold ${getLevelColor(
+                            log.level
+                          )}`}
+                        >
+                          {log.level}
                         </span>
+                        <span className="text-slate-500">{log.nodeType}</span>
+                        {log.duration && (
+                          <span className="text-slate-600 ml-auto">
+                            {formatDuration(log.duration)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-slate-200 ml-6">{log.message}</div>
+                      {log.data && (
+                        <div className="text-slate-500 ml-6 text-[10px] font-mono">
+                          {JSON.stringify(log.data, null, 0)}
+                        </div>
                       )}
                     </div>
-                    <div className="text-slate-200 ml-6">{log.message}</div>
-                    {log.data && (
-                      <div className="text-slate-500 ml-6 text-[10px] font-mono">
-                        {JSON.stringify(log.data, null, 0)}
-                      </div>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
+                  ))
+                )}
+              </div>
             </div>
           )}
         </div>
