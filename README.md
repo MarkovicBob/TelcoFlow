@@ -458,7 +458,16 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions on deploying to:
 
 ---
 
-## 📸 Screenshots (Coming Soon)
+## � Demo
+
+See [DEMO.md](DEMO.md) for:
+
+- How to record a demo video
+- Tools and tips for GIF creation
+- Custom domain setup instructions
+- Interview talking points
+
+---
 
 - Main Canvas View
 - Node Configuration
