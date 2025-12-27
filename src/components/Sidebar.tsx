@@ -9,9 +9,13 @@ const Sidebar: React.FC = () => {
   const touchTrackingRef = useRef<{
     active: boolean;
     nodeType: NodeType | null;
+    longPressTimer: number | null;
+    dragGhostEl: HTMLElement | null;
   }>({
     active: false,
     nodeType: null,
+    longPressTimer: null,
+    dragGhostEl: null,
   });
 
   const onDragStart = (event: React.DragEvent, nodeType: NodeType) => {
@@ -20,70 +24,123 @@ const Sidebar: React.FC = () => {
   };
 
   // Touch support for mobile drag-and-drop
-  const onTouchStart = (_event: React.TouchEvent, nodeType: NodeType) => {
-    touchTrackingRef.current.active = true;
-    touchTrackingRef.current.nodeType = nodeType;
-    sessionStorage.setItem("dragNodeType", nodeType);
+  const onTouchStart = (event: React.TouchEvent, nodeType: NodeType) => {
+    // Long-press to start drag (prevents accidental taps)
+    if (touchTrackingRef.current.longPressTimer) {
+      window.clearTimeout(touchTrackingRef.current.longPressTimer);
+      touchTrackingRef.current.longPressTimer = null;
+    }
+
+    const startTouch = event.touches[0];
+    const startX = startTouch?.clientX ?? 0;
+    const startY = startTouch?.clientY ?? 0;
+
+    touchTrackingRef.current.longPressTimer = window.setTimeout(() => {
+      touchTrackingRef.current.active = true;
+      touchTrackingRef.current.nodeType = nodeType;
+      sessionStorage.setItem("dragNodeType", nodeType);
+
+      // Create drag ghost element to visualize dragging on mobile
+      const ghost = document.createElement("div");
+      ghost.style.position = "fixed";
+      ghost.style.left = `${startX - 24}px`;
+      ghost.style.top = `${startY - 24}px`;
+      ghost.style.width = "48px";
+      ghost.style.height = "48px";
+      ghost.style.borderRadius = "10px";
+      ghost.style.background = "#0f172a";
+      ghost.style.border = "2px solid #3b82f6";
+      ghost.style.boxShadow = "0 8px 20px rgba(0,0,0,0.45)";
+      ghost.style.zIndex = "9999";
+      ghost.style.opacity = "0.9";
+      ghost.style.pointerEvents = "none";
+      ghost.style.transition = "transform 0.05s linear";
+      ghost.style.display = "flex";
+      ghost.style.alignItems = "center";
+      ghost.style.justifyContent = "center";
+      ghost.style.color = "#3b82f6";
+      ghost.style.fontSize = "11px";
+      ghost.textContent = "Drag";
+      document.body.appendChild(ghost);
+      touchTrackingRef.current.dragGhostEl = ghost;
+    }, 220); // ~220ms long-press
   };
 
   // Global touch end handler
   React.useEffect(() => {
+    const handleGlobalTouchMove = (event: TouchEvent) => {
+      if (!touchTrackingRef.current.active) return;
+      const touch = event.touches[0];
+      if (!touch) return;
+      const ghost = touchTrackingRef.current.dragGhostEl;
+      if (ghost) {
+        ghost.style.left = `${touch.clientX - 24}px`;
+        ghost.style.top = `${touch.clientY - 24}px`;
+      }
+      // prevent scrolling while dragging
+      if (event.cancelable) event.preventDefault();
+    };
+
     const handleGlobalTouchEnd = (event: TouchEvent) => {
       if (
         !touchTrackingRef.current.active ||
         !touchTrackingRef.current.nodeType
       ) {
+        // Clear any pending timer
+        if (touchTrackingRef.current.longPressTimer) {
+          window.clearTimeout(touchTrackingRef.current.longPressTimer);
+          touchTrackingRef.current.longPressTimer = null;
+        }
         return;
       }
 
       const touch = event.changedTouches[0];
       if (!touch) return;
 
-      // Find the canvas element by checking if touch ended over it
-      const canvasElement = document.querySelector(
-        "[class*='react-flow']"
-      ) as HTMLElement;
-      if (!canvasElement) {
-        touchTrackingRef.current.active = false;
-        touchTrackingRef.current.nodeType = null;
-        return;
-      }
-
-      const bounds = canvasElement.getBoundingClientRect();
-      const x = touch.clientX;
-      const y = touch.clientY;
-
-      // Check if touch ended inside canvas bounds
-      if (
-        x >= bounds.left &&
-        x <= bounds.right &&
-        y >= bounds.top &&
-        y <= bounds.bottom
-      ) {
-        const nodeType = touchTrackingRef.current.nodeType;
-
-        // Dispatch event on document for global listen
-        const dropEvent = new CustomEvent("canvasDropNode", {
-          detail: {
-            nodeType,
-            x: x - bounds.left,
-            y: y - bounds.top,
-            clientX: x,
-            clientY: y,
-          },
-          bubbles: true,
-        });
-        document.dispatchEvent(dropEvent);
-      }
+      // Always dispatch drop using screen coordinates; FlowCanvas will resolve position
+      const nodeType = touchTrackingRef.current.nodeType;
+      const dropEvent = new CustomEvent("canvasDropNode", {
+        detail: {
+          nodeType,
+          clientX: touch.clientX,
+          clientY: touch.clientY,
+        },
+        bubbles: true,
+      });
+      document.dispatchEvent(dropEvent);
 
       sessionStorage.removeItem("dragNodeType");
       touchTrackingRef.current.active = false;
       touchTrackingRef.current.nodeType = null;
+      if (touchTrackingRef.current.dragGhostEl) {
+        touchTrackingRef.current.dragGhostEl.remove();
+        touchTrackingRef.current.dragGhostEl = null;
+      }
     };
 
+    const handleTouchCancel = () => {
+      if (touchTrackingRef.current.longPressTimer) {
+        window.clearTimeout(touchTrackingRef.current.longPressTimer);
+        touchTrackingRef.current.longPressTimer = null;
+      }
+      if (touchTrackingRef.current.dragGhostEl) {
+        touchTrackingRef.current.dragGhostEl.remove();
+        touchTrackingRef.current.dragGhostEl = null;
+      }
+      touchTrackingRef.current.active = false;
+      touchTrackingRef.current.nodeType = null;
+      sessionStorage.removeItem("dragNodeType");
+    };
+
+    document.addEventListener("touchmove", handleGlobalTouchMove, {
+      passive: false,
+    });
     document.addEventListener("touchend", handleGlobalTouchEnd, false);
+    document.addEventListener("touchcancel", handleTouchCancel, false);
     return () => {
+      document.removeEventListener("touchmove", handleGlobalTouchMove);
       document.removeEventListener("touchend", handleGlobalTouchEnd, false);
+      document.removeEventListener("touchcancel", handleTouchCancel, false);
     };
   }, []);
 
