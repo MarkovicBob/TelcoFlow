@@ -1,5 +1,6 @@
 import "reactflow/dist/style.css";
 import React, { useCallback, useRef } from "react";
+import { BarChart3, Menu } from "lucide-react";
 import type { ReactFlowInstance } from "reactflow";
 import { useFlowStore } from "../store/flowStore";
 import type { NodeType } from "../types/nodes";
@@ -13,7 +14,15 @@ import ReactFlow, {
   Panel,
 } from "reactflow";
 
-const FlowCanvas: React.FC = () => {
+interface FlowCanvasProps {
+  onOpenSidebar?: () => void;
+  onOpenSimulator?: () => void;
+}
+
+const FlowCanvas: React.FC<FlowCanvasProps> = ({
+  onOpenSidebar,
+  onOpenSimulator,
+}) => {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [reactFlowInstance, setReactFlowInstance] =
     React.useState<ReactFlowInstance | null>(null);
@@ -169,7 +178,7 @@ const FlowCanvas: React.FC = () => {
   return (
     <div
       ref={reactFlowWrapper}
-      className="h-full w-full bg-slate-950 min-h-[60vh] md:min-h-0 touch-manipulation"
+      className="h-full w-full bg-slate-950 touch-manipulation overflow-hidden"
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
@@ -205,7 +214,7 @@ const FlowCanvas: React.FC = () => {
           showInteractive={false}
         />
         <MiniMap
-          className="bg-slate-900 border border-slate-700 rounded-lg"
+          className="hidden md:block bg-slate-900 border border-slate-700 rounded-lg"
           nodeColor={(node) => {
             const nodeType = node.type as NodeType;
             const colors: Record<string, string> = {
@@ -240,11 +249,29 @@ const FlowCanvas: React.FC = () => {
           </div>
         </Panel>
 
+        {/* Mobile Hamburger Controls */}
+        <Panel position="top-right" className="md:hidden flex gap-2">
+          <button
+            onClick={onOpenSidebar}
+            className="bg-slate-900/90 border border-slate-700 rounded-lg p-2 hover:bg-slate-800"
+            aria-label="Open node library"
+          >
+            <Menu size={20} className="text-slate-300" />
+          </button>
+          <button
+            onClick={onOpenSimulator}
+            className="bg-slate-900/90 border border-slate-700 rounded-lg p-2 hover:bg-slate-800"
+            aria-label="Open simulator"
+          >
+            <BarChart3 size={20} className="text-slate-300" />
+          </button>
+        </Panel>
+
         {/* Delete Selected (touch-friendly) */}
         {selectedNodes && selectedNodes.length > 0 && (
           <Panel
             position="bottom-left"
-            className="bg-slate-900/90 border border-slate-700 rounded-lg px-3 py-2"
+            className="bg-slate-900/90 border border-slate-700 rounded-lg px-3 py-2 md:mb-0 mb-2"
           >
             <button
               onClick={() => selectedNodes.forEach((id) => deleteNode(id))}
@@ -255,6 +282,36 @@ const FlowCanvas: React.FC = () => {
             </button>
           </Panel>
         )}
+
+        {/* Mobile MiniMap - Bottom Right Panel */}
+        <Panel position="bottom-right" className="md:hidden">
+          <div className="bg-slate-900/95 border border-slate-700 rounded-lg p-2 w-32 h-24 overflow-hidden">
+            <MiniMap
+              className="w-full h-full"
+              nodeColor={(node) => {
+                const nodeType = node.type as NodeType;
+                const colors: Record<string, string> = {
+                  start: "#22c55e",
+                  end: "#ef4444",
+                  ivr: "#3b82f6",
+                  transfer: "#8b5cf6",
+                  queue: "#f59e0b",
+                  playMessage: "#6366f1",
+                  getInput: "#ec4899",
+                  decision: "#f97316",
+                  apiCall: "#06b6d4",
+                  record: "#d946ef",
+                  wait: "#84cc16",
+                  setVariable: "#14b8a6",
+                };
+                return colors[nodeType] || "#3b82f6";
+              }}
+              maskColor="rgba(15, 23, 42, 0.8)"
+              pannable
+              zoomable
+            />
+          </div>
+        </Panel>
       </ReactFlow>
     </div>
   );

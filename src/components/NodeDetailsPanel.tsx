@@ -16,6 +16,94 @@ import type {
   FieldErrors,
 } from "react-hook-form";
 
+// Helper function to get usage information for each node type
+const getNodeUsageInfo = (nodeType: NodeType): string[] => {
+  const usageInfo: Record<NodeType, string[]> = {
+    start: [
+      "Defines the entry point when a call enters your flow",
+      "Configure trigger type: inbound, outbound, or scheduled calls",
+      "Every flow must have exactly one Start node",
+      "Connect to the next step in your call flow",
+    ],
+    end: [
+      "Terminates the active call session",
+      "Set a disposition code to track call outcomes",
+      "Specify a reason for ending the call",
+      "Use multiple End nodes for different call outcomes",
+    ],
+    ivr: [
+      "Create interactive voice menus with multiple options",
+      "Support both Text-to-Speech and audio file playback",
+      "Configure DTMF key mappings (0-9, *, #)",
+      "Set timeout and retry behavior for invalid inputs",
+      "Route callers to different paths based on their selection",
+    ],
+    transfer: [
+      "Transfer calls to phone numbers, extensions, or queues",
+      "Choose transfer type: warm, cold, or attended",
+      "Set timeout duration for transfer attempts",
+      "Handle failed transfers with alternative routing",
+    ],
+    queue: [
+      "Place callers in hold queue for available agents",
+      "Set priority levels: low, normal, high, urgent",
+      "Configure maximum wait time before timeout",
+      "Play hold music and position announcements",
+      "Track queue metrics and caller experience",
+    ],
+    playMessage: [
+      "Play audio messages or Text-to-Speech to callers",
+      "Upload custom audio files or use TTS",
+      "Select language and voice for TTS messages",
+      "Use for greetings, instructions, or information",
+      "Combine with other nodes for complex messaging",
+    ],
+    getInput: [
+      "Collect DTMF digits or speech input from callers",
+      "Set minimum and maximum input length",
+      "Define timeout for user response",
+      "Store input in variables for later use",
+      "Support both keypad and voice recognition",
+    ],
+    decision: [
+      "Create conditional branching based on variables or logic",
+      "Compare values, check conditions, or evaluate expressions",
+      "Route to True or False paths based on condition",
+      "Use for business logic and dynamic routing",
+      "Access variables from previous nodes",
+    ],
+    apiCall: [
+      "Call external REST APIs to fetch or send data",
+      "Support GET, POST, PUT, DELETE methods",
+      "Add custom headers and request body",
+      "Map API response to flow variables",
+      "Integrate with CRMs, databases, and external systems",
+    ],
+    record: [
+      "Record caller's voice message or conversation",
+      "Set maximum recording duration",
+      "Play beep before recording starts",
+      "Enable automatic transcription",
+      "Store recordings for later playback or analysis",
+    ],
+    wait: [
+      "Pause flow execution for specified time",
+      "Set duration in seconds or minutes",
+      "Use for delays between actions",
+      "Useful for pacing interactions or waiting for external events",
+    ],
+    setVariable: [
+      "Create or update flow variables",
+      "Store values as string, number, or boolean",
+      "Use expressions for dynamic values",
+      "Access variables in other nodes",
+      "Track state throughout the call flow",
+    ],
+  };
+
+  return usageInfo[nodeType] || ["No usage information available"];
+};
+
 const NodeDetailsPanel: React.FC = () => {
   const { selectedNode, updateNode, clearSelection, deleteNode } =
     useFlowStore();
@@ -101,10 +189,17 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
   }, [node.id, reset, node.data]);
 
   return (
-    <div className="w-full sm:w-96 bg-slate-900 border-t sm:border-t-0 sm:border-l border-slate-800 flex flex-col h-full relative">
+    <div
+      className="
+      w-full sm:w-72 md:w-64 lg:w-80 xl:w-96 
+      bg-slate-900 border-t sm:border-t-0 sm:border-l border-slate-800 
+      flex flex-col h-full relative overflow-hidden
+      text-xs sm:text-sm
+    "
+    >
       {toast && (
         <div
-          className={`absolute right-4 top-4 px-4 py-2 rounded-lg text-sm shadow-lg transition-opacity duration-200
+          className={`absolute right-4 top-4 px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm shadow-lg transition-opacity duration-200
             ${
               toast.variant === "error"
                 ? "bg-red-900/70 text-red-50 border border-red-500/40"
@@ -116,14 +211,14 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
         </div>
       )}
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-slate-800">
-        <h2 className="text-sm font-semibold text-slate-100">
+      <div className="flex items-center justify-between p-2 md:p-3 border-b border-slate-800 shrink-0">
+        <h2 className="text-[10px] md:text-xs font-semibold text-slate-100 leading-tight">
           {nodeDefinition.label.toUpperCase()} PROPERTIES
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-1.5">
           <button
             onClick={onDelete}
-            className="text-xs bg-red-600 hover:bg-red-500 text-white rounded px-2 py-1"
+            className="text-[10px] md:text-xs bg-red-600 hover:bg-red-500 text-white rounded px-1.5 py-0.5 md:px-2 md:py-1"
             aria-label="Delete node"
           >
             Delete
@@ -133,16 +228,16 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
             className="text-slate-400 hover:text-slate-200 transition-colors"
             aria-label="Close properties panel"
           >
-            <X size={18} />
+            <X size={14} />
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-2 md:p-3">
         <form
           onSubmit={handleSubmit(onSubmit, onSubmitError)}
-          className="space-y-4"
+          className="space-y-2 md:space-y-3"
         >
           {/* Label Field */}
           <FormSection title="Basic Information">
@@ -173,13 +268,59 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
           <button
             type="submit"
             className="
-              w-full px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700
-              text-white font-medium transition-colors
+              w-full px-3 py-1.5 md:px-4 md:py-2 rounded-lg bg-blue-600 hover:bg-blue-700
+              text-white text-xs md:text-sm font-medium transition-colors
               focus:outline-none focus:ring-2 focus:ring-blue-500
             "
           >
             Save Changes
           </button>
+
+          {/* Node Information */}
+          <div className="mt-4 p-3 md:p-4 bg-slate-800/50 border border-slate-700 rounded-lg">
+            <div className="flex items-start gap-2 mb-2">
+              <div
+                className="w-8 h-8 rounded-md flex items-center justify-center shrink-0"
+                style={{
+                  backgroundColor: nodeDefinition.color + "20",
+                  color: nodeDefinition.color,
+                }}
+              >
+                <span className="text-lg">ℹ️</span>
+              </div>
+              <div>
+                <h3 className="text-xs md:text-sm font-semibold text-slate-100 mb-1">
+                  About {nodeDefinition.label}
+                </h3>
+                <p className="text-[10px] md:text-xs text-slate-400 leading-relaxed">
+                  {nodeDefinition.description}
+                </p>
+              </div>
+            </div>
+
+            {/* Node-specific usage information */}
+            <div className="mt-3 pt-3 border-t border-slate-700/50">
+              <p className="text-[10px] md:text-xs font-medium text-slate-300 mb-2">
+                What you can do:
+              </p>
+              <ul className="space-y-1.5 text-[10px] md:text-xs text-slate-400">
+                {getNodeUsageInfo(nodeType).map((info, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="text-blue-400 mt-0.5">•</span>
+                    <span className="flex-1">{info}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mt-3 pt-3 border-t border-slate-700/50">
+              <p className="text-[9px] md:text-[10px] text-slate-500 italic">
+                Category:{" "}
+                {nodeDefinition.category.charAt(0).toUpperCase() +
+                  nodeDefinition.category.slice(1)}
+              </p>
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -206,8 +347,8 @@ const FormField: React.FC<FormFieldProps> = ({
   options,
 }) => {
   const baseFieldClasses = `
-    w-full px-3 py-2 rounded-md bg-slate-800
-    border text-slate-100 text-sm placeholder-slate-500
+    w-full px-2 py-1.5 md:px-3 md:py-2 rounded-md bg-slate-800
+    border text-slate-100 text-xs md:text-sm placeholder-slate-500
     focus:outline-none focus:ring-1
   `;
 
@@ -218,8 +359,8 @@ const FormField: React.FC<FormFieldProps> = ({
   }`;
 
   return (
-    <div className="space-y-1.5">
-      <label className="text-xs font-medium text-slate-400 uppercase tracking-wide">
+    <div className="space-y-1 md:space-y-1.5">
+      <label className="text-[10px] md:text-xs font-medium text-slate-400 uppercase tracking-wide">
         {label}
       </label>
       {options ? (

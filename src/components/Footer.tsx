@@ -26,10 +26,10 @@ const Footer = () => {
   };
 
   return (
-    <div className="bg-slate-900 border-t border-slate-800 px-4 py-2">
-      <div className="flex items-center justify-between text-xs text-slate-400">
-        <div className="flex items-center gap-2">
-          <Clock size={14} />
+    <div className="bg-slate-900 border-t border-slate-800 px-3 py-1.5 shrink-0 hidden lg:block">
+      <div className="flex items-center justify-between text-[10px] text-slate-400">
+        <div className="flex items-center gap-1.5">
+          <Clock size={12} />
           <span>Last saved: {formatTimestamp(lastSaved)}</span>
         </div>
         <div>TelcoFlow v1.0</div>
