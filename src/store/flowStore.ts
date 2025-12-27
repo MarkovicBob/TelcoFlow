@@ -71,7 +71,11 @@ interface FlowState {
   loadSavedFlow: () => boolean;
   exportFlow: () => void;
   importFlow: (flowData: string) => void;
-  setProjectMetadata: (meta: { name: string; description?: string; tags?: string[] }) => void;
+  setProjectMetadata: (meta: {
+    name: string;
+    description?: string;
+    tags?: string[];
+  }) => void;
 
   // Simulator variable operations
   setSimulatorVariable: (key: string, value: unknown) => void;

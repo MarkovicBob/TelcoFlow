@@ -1,4 +1,4 @@
-import type { Node, Edge } from "reactflow";
+import type { Edge, Node } from "reactflow";
 import type { NodeData, NodeType } from "../types/nodes";
 
 export interface FlowTemplateMetadata {
@@ -43,7 +43,10 @@ export const TEMPLATES: FlowTemplate[] = [
       tags: ["ivr", "queue", "support"],
     },
     nodes: [
-      makeNode("start-1", "start", 100, 100, { label: "Start", trigger: "inbound" }),
+      makeNode("start-1", "start", 100, 100, {
+        label: "Start",
+        trigger: "inbound",
+      }),
       makeNode("ivr-1", "ivr", 300, 100, {
         label: "Main Menu",
         audioType: "tts",
@@ -85,7 +88,10 @@ export const TEMPLATES: FlowTemplate[] = [
       tags: ["decision", "api"],
     },
     nodes: [
-      makeNode("start-2", "start", 100, 100, { label: "Start", trigger: "inbound" }),
+      makeNode("start-2", "start", 100, 100, {
+        label: "Start",
+        trigger: "inbound",
+      }),
       makeNode("set-2", "setVariable", 300, 100, {
         label: "Set Tier",
         variableName: "tier",
