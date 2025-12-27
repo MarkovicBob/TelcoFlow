@@ -48,16 +48,20 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="h-16 bg-slate-900 border-b border-slate-800 px-6 flex items-center justify-between">
-      <div className="flex items-center gap-3">
-        <Zap className="text-blue-500" size={24} />
+    <header className="h-12 md:h-14 lg:h-16 bg-slate-900 border-b border-slate-800 px-3 md:px-4 lg:px-6 flex items-center justify-between shrink-0">
+      <div className="flex items-center gap-2 md:gap-3">
+        <Zap className="text-blue-500" size={20} />
         <div>
-          <h1 className="text-xl font-semibold text-slate-100">TelcoFlow</h1>
-          <p className="text-xs text-slate-400">Low-Code Call Flow Builder</p>
+          <h1 className="text-base md:text-lg lg:text-xl font-semibold text-slate-100">
+            TelcoFlow
+          </h1>
+          <p className="text-[10px] md:text-xs text-slate-400">
+            Low-Code Call Flow Builder
+          </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-3 lg:gap-4">
         <div className="flex items-center gap-2">
           <Layers size={16} className="text-slate-400" />
           <select

@@ -14,9 +14,14 @@ import {
   Save,
   Download,
   Upload,
+  BarChart3,
 } from "lucide-react";
 
-const Toolbar: React.FC = () => {
+interface ToolbarProps {
+  onOpenSimulator?: () => void;
+}
+
+const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
   const {
@@ -75,17 +80,17 @@ const Toolbar: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-900 border-b border-slate-800 px-3 py-2 flex flex-wrap items-center gap-2 gap-y-3">
+    <div className="bg-slate-900 border-b border-slate-800 px-2 md:px-3 py-1.5 md:py-2 flex flex-wrap items-center gap-1.5 md:gap-2 shrink-0">
       {/* Undo/Redo */}
       <button
         onClick={undo}
         disabled={!canUndo()}
         className="
-          px-3 py-1.5 rounded-md border border-slate-700
+          px-2 md:px-3 py-1 md:py-1.5 rounded-md border border-slate-700
           hover:bg-slate-800 hover:border-blue-500
           disabled:opacity-50 disabled:cursor-not-allowed
-          transition-all text-xs sm:text-sm text-slate-300
-          flex items-center gap-2 shrink-0
+          transition-all text-xs text-slate-300
+          flex items-center gap-1 md:gap-2 shrink-0
         "
         title="Undo (Ctrl+Z)"
       >
@@ -164,6 +169,21 @@ const Toolbar: React.FC = () => {
       >
         <Play size={16} />
         <span className="hidden sm:inline">Test Flow</span>
+      </button>
+
+      {/* Simulator Button */}
+      <button
+        onClick={onOpenSimulator}
+        className="
+          px-3 py-1.5 rounded-md border border-slate-700
+          hover:bg-slate-800 hover:border-purple-500
+          transition-all text-xs sm:text-sm text-slate-300
+          flex items-center gap-2 shrink-0
+        "
+        title="Open Simulator"
+      >
+        <BarChart3 size={16} />
+        <span className="hidden sm:inline">Simulator</span>
       </button>
 
       <div className="flex-1 min-w-10" />

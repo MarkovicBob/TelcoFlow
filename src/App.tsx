@@ -2,7 +2,7 @@ import FlowCanvas from "./components/FlowCanvas";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import NodeDetailsPanel from "./components/NodeDetailsPanel";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import SimulatorPanel from "./components/SimulatorPanel";
 import Toolbar from "./components/Toolbar";
@@ -14,6 +14,9 @@ import { useFlowStore } from "./store/flowStore";
 
 const App: React.FC = () => {
   const { loadSavedFlow, saveFlow, nodes } = useFlowStore();
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [mobileSimulatorOpen, setMobileSimulatorOpen] = useState(false);
+  const [desktopSimulatorOpen, setDesktopSimulatorOpen] = useState(false);
 
   // Load saved flow on mount
   useEffect(() => {
@@ -32,23 +35,36 @@ const App: React.FC = () => {
     return () => clearInterval(interval);
   }, [saveFlow, nodes]);
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="h-screen bg-slate-950 text-slate-100 flex flex-col overflow-hidden">
       <Header />
 
-      <main className="flex flex-col md:flex-row flex-1 overflow-hidden relative">
-        <Sidebar />
+      <main className="flex flex-col md:flex-row flex-1 overflow-hidden relative min-h-0">
+        <Sidebar
+          mobileOpen={mobileSidebarOpen}
+          onMobileToggle={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+        />
 
         <div className="flex-1 flex flex-col min-h-[50vh]">
           <ReactFlowProvider>
-            <Toolbar />
-            <FlowCanvas />
+            <Toolbar onOpenSimulator={() => setDesktopSimulatorOpen(true)} />
+            <FlowCanvas
+              onOpenSidebar={() => setMobileSidebarOpen(true)}
+              onOpenSimulator={() => setMobileSimulatorOpen(true)}
+            />
             <ValidationPanel />
-            <SimulatorPanel />
+            <SimulatorPanel
+              mobileOpen={mobileSimulatorOpen}
+              onMobileToggle={() =>
+                setMobileSimulatorOpen(!mobileSimulatorOpen)
+              }
+              desktopOpen={desktopSimulatorOpen}
+              onDesktopToggle={() =>
+                setDesktopSimulatorOpen(!desktopSimulatorOpen)
+              }
+            />
           </ReactFlowProvider>
         </div>
-        <div className="hidden md:block">
-          <NodeDetailsPanel />
-        </div>
+        <NodeDetailsPanel />
       </main>
 
       {/* Footer */}
