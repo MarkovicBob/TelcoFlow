@@ -29,6 +29,8 @@ const FlowCanvas: React.FC = () => {
     clearSelection,
     copyNode,
     pasteNode,
+    deleteNode,
+    selectedNodes,
   } = useFlowStore();
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -149,6 +151,12 @@ const FlowCanvas: React.FC = () => {
 
           pasteNode(position);
         }
+      } else if (event.key === "Delete") {
+        // Delete selected nodes
+        if (selectedNodes && selectedNodes.length > 0) {
+          event.preventDefault();
+          selectedNodes.forEach((id) => deleteNode(id));
+        }
       }
     };
 
@@ -156,7 +164,7 @@ const FlowCanvas: React.FC = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [copyNode, pasteNode, reactFlowInstance]);
+  }, [copyNode, pasteNode, reactFlowInstance, deleteNode, selectedNodes]);
 
   return (
     <div
@@ -231,6 +239,22 @@ const FlowCanvas: React.FC = () => {
             {edges.length}
           </div>
         </Panel>
+
+        {/* Delete Selected (touch-friendly) */}
+        {selectedNodes && selectedNodes.length > 0 && (
+          <Panel
+            position="bottom-left"
+            className="bg-slate-900/90 border border-slate-700 rounded-lg px-3 py-2"
+          >
+            <button
+              onClick={() => selectedNodes.forEach((id) => deleteNode(id))}
+              className="text-xs bg-red-600 hover:bg-red-500 text-white rounded px-3 py-1"
+              aria-label="Delete selected nodes"
+            >
+              Delete Selected ({selectedNodes.length})
+            </button>
+          </Panel>
+        )}
       </ReactFlow>
     </div>
   );

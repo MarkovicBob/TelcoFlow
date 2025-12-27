@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Background -->
+  <rect width="256" height="256" fill="#0f172a" rx="60"/>
+  
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="zapGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="flowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Left Zap Icon -->
+  <g transform="translate(45, 60)">
+    <!-- Zap bolt -->
+    <path d="M30 0 L50 35 L35 35 L55 70 L15 40 L30 40 Z" fill="url(#zapGradient)" opacity="0.9"/>
+  </g>
+  
+  <!-- Right Flow Arrow -->
+  <g transform="translate(140, 70)">
+    <!-- Arrow pointing right and down (flow) -->
+    <path d="M10 10 L50 10 L50 30 L70 15 L50 0 L50 20 L10 20 Z" fill="url(#flowGradient)" opacity="0.9"/>
+  </g>
+  
+  <!-- Center circle accent -->
+  <circle cx="128" cy="128" r="40" fill="none" stroke="#64748b" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Bottom text (optional subtle accent) -->
+  <circle cx="128" cy="220" r="8" fill="#3b82f6" opacity="0.6"/>
+  <circle cx="145" cy="225" r="5" fill="#06b6d4" opacity="0.5"/>
+  <circle cx="110" cy="225" r="5" fill="#22c55e" opacity="0.5"/>
+</svg>

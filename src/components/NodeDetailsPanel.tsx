@@ -17,7 +17,8 @@ import type {
 } from "react-hook-form";
 
 const NodeDetailsPanel: React.FC = () => {
-  const { selectedNode, updateNode, clearSelection } = useFlowStore();
+  const { selectedNode, updateNode, clearSelection, deleteNode } =
+    useFlowStore();
 
   if (!selectedNode) {
     return null;
@@ -33,6 +34,10 @@ const NodeDetailsPanel: React.FC = () => {
       nodeDefinition={nodeDefinition}
       onUpdate={(data) => updateNode(selectedNode.id, data)}
       onClose={() => clearSelection()}
+      onDelete={() => {
+        deleteNode(selectedNode.id);
+        clearSelection();
+      }}
     />
   );
 };
@@ -43,6 +48,7 @@ interface DetailsPanelContentProps {
   nodeDefinition: (typeof NODE_DEFINITIONS)[NodeType];
   onUpdate: (data: NodeData) => void;
   onClose: () => void;
+  onDelete: () => void;
 }
 
 const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
@@ -51,6 +57,7 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
   nodeDefinition,
   onUpdate,
   onClose,
+  onDelete,
 }) => {
   const {
     register,
@@ -113,12 +120,22 @@ const DetailsPanelContent: React.FC<DetailsPanelContentProps> = ({
         <h2 className="text-sm font-semibold text-slate-100">
           {nodeDefinition.label.toUpperCase()} PROPERTIES
         </h2>
-        <button
-          onClick={onClose}
-          className="text-slate-400 hover:text-slate-200 transition-colors"
-        >
-          <X size={18} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onDelete}
+            className="text-xs bg-red-600 hover:bg-red-500 text-white rounded px-2 py-1"
+            aria-label="Delete node"
+          >
+            Delete
+          </button>
+          <button
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-200 transition-colors"
+            aria-label="Close properties panel"
+          >
+            <X size={18} />
+          </button>
+        </div>
       </div>
 
       {/* Content */}
