@@ -1,3 +1,4 @@
+import Account from "./components/Account";
 import ConfirmDialog from "./components/ConfirmDialog";
 import FlowCanvas from "./components/FlowCanvas";
 import Footer from "./components/Footer";
@@ -11,6 +12,7 @@ import Toolbar from "./components/Toolbar";
 import ValidationPanel from "./components/ValidationPanel";
 import { ReactFlowProvider } from "reactflow";
 import { useFlowStore } from "./store/flowStore";
+import { initializeUserStore, useUserStore } from "./store/userStore";
 
 // src/App.tsx
 
@@ -20,6 +22,7 @@ const App: React.FC = () => {
   const [mobileSimulatorOpen, setMobileSimulatorOpen] = useState(false);
   const [desktopSimulatorOpen, setDesktopSimulatorOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -36,8 +39,23 @@ const App: React.FC = () => {
     onConfirm: undefined,
   });
 
-  // Load saved flow on mount
+  // Initialize user store and load saved flow on mount
   useEffect(() => {
+    initializeUserStore();
+
+    // If no user, create a demo user
+    const currentUser = useUserStore.getState().user;
+    if (!currentUser) {
+      useUserStore.setState({
+        user: {
+          id: "user-default",
+          name: "Guest",
+          email: "guest@telcoflow.local",
+          createdAt: new Date(),
+        },
+      });
+    }
+
     loadSavedFlow();
   }, [loadSavedFlow]);
 
@@ -54,7 +72,7 @@ const App: React.FC = () => {
   }, [saveFlow, nodes]);
   return (
     <div className="h-screen bg-slate-950 text-slate-100 flex flex-col overflow-hidden">
-      <Header />
+      <Header onOpenAccount={() => setAccountOpen(true)} />
 
       <main className="flex flex-col md:flex-row flex-1 overflow-hidden relative min-h-0">
         <Sidebar
@@ -121,6 +139,10 @@ const App: React.FC = () => {
               onCancel={() =>
                 setConfirmDialog({ ...confirmDialog, isOpen: false })
               }
+            />
+            <Account
+              isOpen={accountOpen}
+              onClose={() => setAccountOpen(false)}
             />
           </ReactFlowProvider>
         </div>
