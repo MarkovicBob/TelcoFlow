@@ -1,19 +1,28 @@
+import React from "react";
+import {
+  Download,
+  FileText,
+  ImageDown,
+  LogOut,
+  Settings,
+  User,
+  Zap,
+} from "lucide-react";
+import { useState } from "react";
+import { useFlowStore } from "../store/flowStore";
+import { useUserStore } from "../store/userStore";
+import { exportMarkdown } from "../utils/exportDocs";
+import { exportCanvasPDF, exportCanvasPNG } from "../utils/exportImage";
 
 interface HeaderProps {
   onOpenAccount?: () => void;
 }
-import React from "react";
-import { Download, FileText, ImageDown, User, Zap, LogOut, Settings } from "lucide-react";
-import { useState } from "react";
-import { useUserStore } from "../store/userStore";
-import { useFlowStore } from "../store/flowStore";
-import { exportMarkdown } from "../utils/exportDocs";
-import { exportCanvasPDF, exportCanvasPNG } from "../utils/exportImage";
 
 // src/components/Header.tsx
 
 const Header: React.FC<HeaderProps> = ({ onOpenAccount }) => {
-  const { projectMetadata, setProjectMetadata, exportFlow, nodes, edges } = useFlowStore();
+  const { projectMetadata, setProjectMetadata, exportFlow, nodes, edges } =
+    useFlowStore();
   const { user, logout } = useUserStore();
   const [accountOpen, setAccountOpen] = useState(false);
   const [editingName, setEditingName] = useState(false);
@@ -66,7 +75,9 @@ const Header: React.FC<HeaderProps> = ({ onOpenAccount }) => {
                   type="text"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSaveProjectName()}
+                  onKeyPress={(e) =>
+                    e.key === "Enter" && handleSaveProjectName()
+                  }
                   className="bg-slate-800 border border-slate-700 text-slate-200 rounded px-2 py-1 w-32 text-sm focus:outline-none focus:border-blue-500"
                   autoFocus
                 />
@@ -153,7 +164,9 @@ const Header: React.FC<HeaderProps> = ({ onOpenAccount }) => {
                 <div className="absolute right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-lg z-50 overflow-hidden">
                   {/* User Info */}
                   <div className="p-3 border-b border-slate-700 bg-slate-900/50">
-                    <p className="text-sm font-semibold text-slate-100">{user.name}</p>
+                    <p className="text-sm font-semibold text-slate-100">
+                      {user.name}
+                    </p>
                     <p className="text-xs text-slate-400">{user.email}</p>
                   </div>
 

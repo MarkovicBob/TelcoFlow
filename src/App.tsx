@@ -1,5 +1,4 @@
 import Account from "./components/Account";
-import { useUserStore, initializeUserStore } from "./store/userStore";
 import ConfirmDialog from "./components/ConfirmDialog";
 import FlowCanvas from "./components/FlowCanvas";
 import Footer from "./components/Footer";
@@ -13,6 +12,7 @@ import Toolbar from "./components/Toolbar";
 import ValidationPanel from "./components/ValidationPanel";
 import { ReactFlowProvider } from "reactflow";
 import { useFlowStore } from "./store/flowStore";
+import { initializeUserStore, useUserStore } from "./store/userStore";
 
 // src/App.tsx
 
@@ -40,13 +40,13 @@ const App: React.FC = () => {
     onConfirm: undefined,
   });
 
-  // Load saved flow on mount
   // Initialize user store and load saved flow on mount
   useEffect(() => {
     initializeUserStore();
 
     // If no user, create a demo user
-    if (!user) {
+    const currentUser = useUserStore.getState().user;
+    if (!currentUser) {
       useUserStore.setState({
         user: {
           id: "user-default",
@@ -59,10 +59,6 @@ const App: React.FC = () => {
 
     loadSavedFlow();
   }, [loadSavedFlow]);
-            <Account
-              isOpen={accountOpen}
-              onClose={() => setAccountOpen(false)}
-            />
 
   // Auto-save every 2 minutes
   useEffect(() => {
@@ -144,6 +140,10 @@ const App: React.FC = () => {
               onCancel={() =>
                 setConfirmDialog({ ...confirmDialog, isOpen: false })
               }
+            />
+            <Account
+              isOpen={accountOpen}
+              onClose={() => setAccountOpen(false)}
             />
           </ReactFlowProvider>
         </div>

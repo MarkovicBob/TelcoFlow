@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useRef, useState } from "react";
+import { Plus, Settings, Trash2, Upload, X } from "lucide-react";
 import { useUserStore } from "../store/userStore";
-import { X, Upload, Plus, Trash2, Settings } from "lucide-react";
 
 interface AccountProps {
   isOpen: boolean;
@@ -56,17 +56,16 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/60 z-40"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
         <div className="bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col pointer-events-auto">
           {/* Header */}
           <div className="p-6 border-b border-slate-700 flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-100">Account Settings</h2>
+            <h2 className="text-2xl font-bold text-slate-100">
+              Account Settings
+            </h2>
             <button
               onClick={onClose}
               className="text-slate-400 hover:text-slate-200 transition-colors"
@@ -117,7 +116,9 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
 
               {/* Name Edit */}
               <div className="space-y-2">
-                <label className="block text-sm text-slate-400">Full Name</label>
+                <label className="block text-sm text-slate-400">
+                  Full Name
+                </label>
                 {editName ? (
                   <div className="flex gap-2">
                     <input
@@ -164,7 +165,9 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
 
               {/* Member Since */}
               <div className="space-y-2">
-                <label className="block text-sm text-slate-400">Member Since</label>
+                <label className="block text-sm text-slate-400">
+                  Member Since
+                </label>
                 <p className="text-slate-100">
                   {new Date(user.createdAt).toLocaleDateString()}
                 </p>
@@ -174,7 +177,9 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
             {/* Projects Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-slate-100">My Projects</h3>
+                <h3 className="text-lg font-semibold text-slate-100">
+                  My Projects
+                </h3>
                 <button
                   onClick={() => setShowNewProject(!showNewProject)}
                   className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded flex items-center gap-2 transition-colors text-sm"
@@ -192,7 +197,9 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
                     placeholder="Project name..."
                     value={newProjectName}
                     onChange={(e) => setNewProjectName(e.target.value)}
-                    onKeyPress={(e) => e.key === "Enter" && handleCreateProject()}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" && handleCreateProject()
+                    }
                     className="w-full bg-slate-800 border border-slate-700 text-slate-100 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
                     autoFocus
                   />
@@ -233,7 +240,9 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-slate-100 font-medium">{project.name}</p>
+                          <p className="text-slate-100 font-medium">
+                            {project.name}
+                          </p>
                           <p className="text-xs text-slate-500">
                             {new Date(project.updatedAt).toLocaleDateString()}
                           </p>
