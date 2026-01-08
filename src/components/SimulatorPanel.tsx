@@ -57,6 +57,8 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     errorCount: 0,
     warningCount: 0,
   });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorStack, setErrorStack] = useState<string | null>(null);
 
   // Desktop modal dragging state
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
@@ -115,24 +117,66 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
   }, [desktopOpen, mobileOpen, engine, resetSimulatorVariables]);
 
   const init = () => {
-    resetSimulatorVariables();
-    engine.init(nodes, edges, { maxSteps: 200 });
-    setInitialized(true);
-    syncState();
-    console.log("Simulator initialized:", engine.getState());
+    try {
+      if (nodes.length === 0) {
+        throw new Error("⚠️ Flow je prazan - trebate da dodate nodes");
+      }
+
+      const startNode = nodes.find((n) => n.type === "start");
+      if (!startNode) {
+        throw new Error(
+          "❌ Nema START noda - svaki flow mora da počne sa START nodom"
+        );
+      }
+
+      resetSimulatorVariables();
+      engine.init(nodes, edges, { maxSteps: 200 });
+      setInitialized(true);
+      setErrorMessage(null);
+      setErrorStack(null);
+      syncState();
+      console.log("✅ Simulator initialized:", engine.getState());
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const stack =
+        err instanceof Error ? (err.stack?.split("\n").slice(0, 3).join("\n") ?? null) : null;
+      setErrorMessage(message);
+      setErrorStack(stack);
+      setStatus("error");
+      console.error("❌ Simulator init error:", message, stack);
+    }
   };
 
   const onPlay = async () => {
-    if (!initialized) {
-      init();
+    try {
+      setErrorMessage(null);
+      setErrorStack(null);
+
+      if (!initialized) {
+        init();
+        if (errorMessage) return;
+      }
+
+      console.log(
+        "▶️  Starting simulation, current status:",
+        engine.getState().status
+      );
+      await engine.start();
+      console.log(
+        "⏹️  Simulation finished, final status:",
+        engine.getState().status
+      );
+      syncState();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const stack =
+        err instanceof Error ? (err.stack?.split("\n").slice(0, 3).join("\n") ?? null) : null;
+      setErrorMessage(`❌ Simulation failed: ${message}`);
+      setErrorStack(stack);
+      setStatus("error");
+      syncState();
+      console.error("❌ Play error:", message, stack);
     }
-    console.log(
-      "Starting simulation, current status:",
-      engine.getState().status
-    );
-    await engine.start();
-    console.log("Simulation finished, final status:", engine.getState().status);
-    syncState();
   };
 
   const onPause = () => {
@@ -141,20 +185,43 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
   };
 
   const onStep = async () => {
-    if (!initialized) {
-      init();
+    try {
+      setErrorMessage(null);
+      setErrorStack(null);
+
+      if (!initialized) {
+        init();
+        if (errorMessage) return;
+      }
+
+      console.log("⏭️  Stepping...");
+      await engine.step();
+      syncState();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const stack =
+        err instanceof Error ? (err.stack?.split("\n").slice(0, 3).join("\n") ?? null) : null;
+      setErrorMessage(`❌ Step failed: ${message}`);
+      setErrorStack(stack);
+      setStatus("error");
+      syncState();
+      console.error("❌ Step error:", message, stack);
     }
-    await engine.step();
-    syncState();
   };
 
   const onReset = () => {
-    resetSimulatorVariables();
-    setCurrentSimulatorNodeId(null);
-    engine.reset();
-    setLogs([]);
-    setInitialized(false);
-    syncState();
+    try {
+      resetSimulatorVariables();
+      setCurrentSimulatorNodeId(null);
+      engine.reset();
+      setLogs([]);
+      setInitialized(false);
+      setErrorMessage(null);
+      setErrorStack(null);
+      syncState();
+    } catch (err) {
+      console.error("Reset error:", err);
+    }
   };
 
   const currentNode = nodes.find((n) => n.id === currentNodeId);
@@ -189,6 +256,37 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
   // Shared content render function (used by both desktop and mobile)
   const renderSimulatorContent = () => (
     <>
+      {/* Error Banner - Top Priority */}
+      {errorMessage && (
+        <div className="bg-red-900/30 border border-red-700 rounded px-3 py-3 flex items-start gap-3 mb-4">
+          <AlertCircle size={18} className="text-red-400 mt-0.5 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-bold text-red-300 mb-1">
+              Simulator Error
+            </div>
+            <div className="text-xs text-red-200 mb-1.5">
+              {errorMessage}
+            </div>
+            {errorStack && (
+              <details className="text-[10px] text-red-300/70 font-mono cursor-pointer">
+                <summary className="hover:text-red-300">Stack trace</summary>
+                <pre className="mt-1 bg-black/30 p-2 rounded overflow-x-auto">
+                  {errorStack}
+                </pre>
+              </details>
+            )}
+          </div>
+          <button
+            onClick={() => {
+              setErrorMessage(null);
+              setErrorStack(null);
+            }}
+            className="text-red-400 hover:text-red-300 shrink-0"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
       {/* Header with status */}
       <div className="text-sm text-slate-300 font-medium mb-3">Simulator</div>
       <div className="text-xs text-slate-400 mb-3">
@@ -484,15 +582,15 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
       {/* Desktop Modal */}
       {desktopOpen && (
         <div className="hidden md:flex fixed inset-0 z-50 items-center justify-center pointer-events-none">
-          <div 
+          <div
             className="bg-slate-900 border border-slate-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto"
             style={{
               transform: `translate(${modalPosition.x}px, ${modalPosition.y}px)`,
-              cursor: isDragging ? 'grabbing' : 'default',
+              cursor: isDragging ? "grabbing" : "default",
             }}
           >
             {/* Header - Draggable */}
-            <div 
+            <div
               onMouseDown={handleHeaderMouseDown}
               className="p-4 border-b border-slate-800 shrink-0 flex items-center justify-between cursor-grab hover:bg-slate-800/50 transition-colors"
             >

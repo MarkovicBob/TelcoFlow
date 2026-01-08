@@ -7,7 +7,28 @@ import type { NodeHandler } from "./types";
 export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
   const getSingleNext = (nodeId: string) => {
     const edge = edges.find((e) => e.source === nodeId);
-    return edge ? edge.target : null;
+    if (!edge) {
+      // No outgoing edge - this is valid for end nodes, but not for others
+      return null;
+    }
+    return edge.target;
+  };
+
+  const validateNextNode = (
+    nodeId: string,
+    nodeType: string | undefined
+  ): { nextNodeId: string | null } | { error: string } => {
+    const nextId = getSingleNext(nodeId);
+    if (!nextId) {
+      // Only end node should not have output
+      if (nodeType === "end") {
+        return { nextNodeId: null };
+      }
+      return {
+        error: `❌ Nod tipa "${nodeType}" nema outgoing edge - trebate da povežete nastavak flow-a`,
+      };
+    }
+    return { nextNodeId: nextId };
   };
 
   const startHandler: NodeHandler = async ({ node, addLog }) => {
@@ -15,9 +36,13 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       level: "info",
       nodeId: node.id,
       nodeType: node.type || "start",
-      message: "Flow started",
+      message: "▶️ Flow started",
     });
-    return { nextNodeId: getSingleNext(node.id) };
+    const nextValidation = validateNextNode(node.id, node.type);
+    if ("error" in nextValidation) {
+      return nextValidation;
+    }
+    return nextValidation;
   };
 
   const endHandler: NodeHandler = async ({ node, addLog }) => {
@@ -43,36 +68,61 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       level: "info",
       nodeId: node.id,
       nodeType: node.type || "set-variable",
-      message: `Set ${varName} = ${JSON.stringify(value)}`,
+      message: `✓ Set ${varName} = ${JSON.stringify(value)}`,
       data: { varName, value },
     });
-    return { nextNodeId: getSingleNext(node.id) };
+    const nextValidation = validateNextNode(node.id, node.type);
+    if ("error" in nextValidation) {
+      return nextValidation;
+    }
+    return nextValidation;
   };
 
   const decisionHandler: NodeHandler = async ({ node, variables, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const condition = (data?.condition as string) || "true";
-    const result = evaluateExpression(condition, {
-      variables: variables.values,
-    });
-    const isTrue = Boolean(result);
+    
+    try {
+      const result = evaluateExpression(condition, {
+        variables: variables.values,
+      });
+      const isTrue = Boolean(result);
 
-    const decisionEdges = edges.filter((e) => e.source === node.id);
-    const nextEdge =
-      decisionEdges.find((e) => e.label === (isTrue ? "true" : "false")) ||
-      decisionEdges.find((e) => e.label === (isTrue ? "Yes" : "No")) ||
-      decisionEdges[isTrue ? 0 : 1] ||
-      decisionEdges[0];
+      const decisionEdges = edges.filter((e) => e.source === node.id);
+      
+      if (decisionEdges.length === 0) {
+        return {
+          error: `❌ Nema outgoing edge iz DECISION noda - trebate da povežete "true" ili "false" granu`,
+        };
+      }
 
-    addLog({
-      level: "info",
-      nodeId: node.id,
-      nodeType: node.type || "decision",
-      message: `Decision: "${condition}" => ${isTrue}`,
-      data: { condition, result: isTrue },
-    });
+      const nextEdge =
+        decisionEdges.find((e) => e.label === (isTrue ? "true" : "false")) ||
+        decisionEdges.find((e) => e.label === (isTrue ? "Yes" : "No")) ||
+        decisionEdges[isTrue ? 0 : 1] ||
+        decisionEdges[0];
 
-    return { nextNodeId: nextEdge ? nextEdge.target : null };
+      if (!nextEdge) {
+        return {
+          error: `❌ Ne mogu da nađem odgovarajuću granu za ${isTrue ? "true" : "false"} - proverite edge labelove`,
+        };
+      }
+
+      addLog({
+        level: "info",
+        nodeId: node.id,
+        nodeType: node.type || "decision",
+        message: `✓ Decision: "${condition}" => ${isTrue}`,
+        data: { condition, result: isTrue },
+      });
+
+      return { nextNodeId: nextEdge.target };
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      return {
+        error: `❌ Greška u uslov: ${errorMsg} - Proverite sintaksu izraza`,
+      };
+    }
   };
 
   const ivrHandler: NodeHandler = async ({ node, addLog }) => {
@@ -82,9 +132,13 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       level: "info",
       nodeId: node.id,
       nodeType: node.type || "ivr",
-      message: `IVR: ${prompt}`,
+      message: `📞 IVR: ${prompt}`,
     });
-    return { nextNodeId: getSingleNext(node.id) };
+    const nextValidation = validateNextNode(node.id, node.type);
+    if ("error" in nextValidation) {
+      return nextValidation;
+    }
+    return nextValidation;
   };
 
   const queueHandler: NodeHandler = async ({ node, addLog }) => {
@@ -94,9 +148,13 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       level: "info",
       nodeId: node.id,
       nodeType: node.type || "queue",
-      message: `Queue with hold music: ${holdMusic}`,
+      message: `📞 Queue with hold music: ${holdMusic}`,
     });
-    return { nextNodeId: getSingleNext(node.id) };
+    const nextValidation = validateNextNode(node.id, node.type);
+    if ("error" in nextValidation) {
+      return nextValidation;
+    }
+    return nextValidation;
   };
 
   const apiCallHandler: NodeHandler = async ({ node, addLog }) => {
@@ -106,10 +164,14 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       level: "info",
       nodeId: node.id,
       nodeType: node.type || "api-call",
-      message: `API Call to: ${endpoint} (simulated)`,
+      message: `🌐 API Call to: ${endpoint} (simulated)`,
       data: { endpoint },
     });
-    return { nextNodeId: getSingleNext(node.id) };
+    const nextValidation = validateNextNode(node.id, node.type);
+    if ("error" in nextValidation) {
+      return nextValidation;
+    }
+    return nextValidation;
   };
 
   const getInputHandler: NodeHandler = async ({ node, variables, addLog }) => {
@@ -119,10 +181,14 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       level: "info",
       nodeId: node.id,
       nodeType: node.type || "get-input",
-      message: `Get input (${inputType}) - using mock value`,
+      message: `⌨️ Get input (${inputType}) - using mock value`,
     });
     variables.values["last_input"] = "1"; // Mock input
-    return { nextNodeId: getSingleNext(node.id) };
+    const nextValidation = validateNextNode(node.id, node.type);
+    if ("error" in nextValidation) {
+      return nextValidation;
+    }
+    return nextValidation;
   };
 
   const waitHandler: NodeHandler = async ({ node, addLog }) => {
@@ -132,9 +198,13 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       level: "info",
       nodeId: node.id,
       nodeType: node.type || "wait",
-      message: `Wait for ${duration} seconds`,
+      message: `⏳ Wait for ${duration} seconds`,
     });
-    return { nextNodeId: getSingleNext(node.id) };
+    const nextValidation = validateNextNode(node.id, node.type);
+    if ("error" in nextValidation) {
+      return nextValidation;
+    }
+    return nextValidation;
   };
 
   const recordHandler: NodeHandler = async ({ node, addLog }) => {
@@ -144,9 +214,13 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       level: "info",
       nodeId: node.id,
       nodeType: node.type || "record",
-      message: `Record call (max ${maxDuration}s) - simulated`,
+      message: `🎙️ Record call (max ${maxDuration}s) - simulated`,
     });
-    return { nextNodeId: getSingleNext(node.id) };
+    const nextValidation = validateNextNode(node.id, node.type);
+    if ("error" in nextValidation) {
+      return nextValidation;
+    }
+    return nextValidation;
   };
 
   return {
