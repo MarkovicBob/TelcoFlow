@@ -1,3 +1,5 @@
+import Account from "./components/Account";
+import { useUserStore, initializeUserStore } from "./store/userStore";
 import ConfirmDialog from "./components/ConfirmDialog";
 import FlowCanvas from "./components/FlowCanvas";
 import Footer from "./components/Footer";
@@ -16,10 +18,12 @@ import { useFlowStore } from "./store/flowStore";
 
 const App: React.FC = () => {
   const { loadSavedFlow, saveFlow, nodes } = useFlowStore();
+  const { user } = useUserStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileSimulatorOpen, setMobileSimulatorOpen] = useState(false);
   const [desktopSimulatorOpen, setDesktopSimulatorOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean;
     title: string;
@@ -37,9 +41,28 @@ const App: React.FC = () => {
   });
 
   // Load saved flow on mount
+  // Initialize user store and load saved flow on mount
   useEffect(() => {
+    initializeUserStore();
+
+    // If no user, create a demo user
+    if (!user) {
+      useUserStore.setState({
+        user: {
+          id: "user-default",
+          name: "Guest",
+          email: "guest@telcoflow.local",
+          createdAt: new Date(),
+        },
+      });
+    }
+
     loadSavedFlow();
   }, [loadSavedFlow]);
+            <Account
+              isOpen={accountOpen}
+              onClose={() => setAccountOpen(false)}
+            />
 
   // Auto-save every 2 minutes
   useEffect(() => {
@@ -54,7 +77,7 @@ const App: React.FC = () => {
   }, [saveFlow, nodes]);
   return (
     <div className="h-screen bg-slate-950 text-slate-100 flex flex-col overflow-hidden">
-      <Header />
+      <Header onOpenAccount={() => setAccountOpen(true)} />
 
       <main className="flex flex-col md:flex-row flex-1 overflow-hidden relative min-h-0">
         <Sidebar
