@@ -160,7 +160,7 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
 
       return () => clearTimeout(timer);
     }
-  }, [desktopOpen, nodes, edges, initialized, engine, resetSimulatorVariables]);
+  }, [desktopOpen, nodes, edges, initialized, engine, resetSimulatorVariables, syncState]);
 
   const init = () => {
     try {

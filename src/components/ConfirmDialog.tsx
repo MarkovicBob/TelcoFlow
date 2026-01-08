@@ -33,7 +33,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-        <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg shadow-2xl w-full max-w-md pointer-events-auto overflow-hidden">
+        <div className="bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg shadow-2xl w-full max-w-md pointer-events-auto overflow-hidden">
           {/* Header with Icon */}
           <div
             className={`p-6 border-b ${
