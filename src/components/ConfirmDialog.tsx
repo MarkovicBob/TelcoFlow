@@ -37,18 +37,32 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           {/* Header with Icon */}
           <div
             className={`p-6 border-b ${
-              isDangerous ? "border-red-800 bg-red-900/20" : isInfo ? "border-blue-800 bg-blue-900/20" : "border-slate-700"
+              isDangerous
+                ? "border-red-800 bg-red-900/20"
+                : isInfo
+                ? "border-blue-800 bg-blue-900/20"
+                : "border-slate-700"
             }`}
           >
             <div className="flex items-start gap-4">
               <div
                 className={`p-3 rounded-full ${
-                  isDangerous ? "bg-red-900/30" : isInfo ? "bg-blue-900/40" : "bg-blue-900/30"
+                  isDangerous
+                    ? "bg-red-900/30"
+                    : isInfo
+                    ? "bg-blue-900/40"
+                    : "bg-blue-900/30"
                 }`}
               >
                 <AlertCircle
                   size={24}
-                  className={isDangerous ? "text-red-400" : isInfo ? "text-blue-500" : "text-blue-400"}
+                  className={
+                    isDangerous
+                      ? "text-red-400"
+                      : isInfo
+                      ? "text-blue-500"
+                      : "text-blue-400"
+                  }
                 />
               </div>
               <div className="flex-1">

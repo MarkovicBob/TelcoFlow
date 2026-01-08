@@ -67,7 +67,13 @@ const App: React.FC = () => {
             <Toolbar
               onOpenSimulator={() => setDesktopSimulatorOpen(true)}
               onOpenTemplates={() => setTemplatesOpen(true)}
-              onOpenConfirmDialog={(title, message, onConfirm, isDangerous, isInfo) => {
+              onOpenConfirmDialog={(
+                title,
+                message,
+                onConfirm,
+                isDangerous,
+                isInfo
+              ) => {
                 setConfirmDialog({
                   isOpen: true,
                   title,
