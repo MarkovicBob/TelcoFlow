@@ -18,7 +18,6 @@ import { initializeUserStore, useUserStore } from "./store/userStore";
 
 const App: React.FC = () => {
   const { loadSavedFlow, saveFlow, nodes } = useFlowStore();
-  const { user } = useUserStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileSimulatorOpen, setMobileSimulatorOpen] = useState(false);
   const [desktopSimulatorOpen, setDesktopSimulatorOpen] = useState(false);

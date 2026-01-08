@@ -85,7 +85,7 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
 
               {/* Profile Image */}
               <div className="flex items-center gap-4">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden border-2 border-slate-700">
+                <div className="w-24 h-24 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center overflow-hidden border-2 border-slate-700">
                   {user.profileImage ? (
                     <img
                       src={user.profileImage}

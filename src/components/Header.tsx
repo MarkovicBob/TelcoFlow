@@ -1,4 +1,10 @@
 import React from "react";
+import { useState } from "react";
+import { useFlowStore } from "../store/flowStore";
+import { useUserStore } from "../store/userStore";
+import { exportMarkdown } from "../utils/exportDocs";
+import { exportCanvasPDF, exportCanvasPNG } from "../utils/exportImage";
+
 import {
   Download,
   FileText,
@@ -8,11 +14,6 @@ import {
   User,
   Zap,
 } from "lucide-react";
-import { useState } from "react";
-import { useFlowStore } from "../store/flowStore";
-import { useUserStore } from "../store/userStore";
-import { exportMarkdown } from "../utils/exportDocs";
-import { exportCanvasPDF, exportCanvasPNG } from "../utils/exportImage";
 
 interface HeaderProps {
   onOpenAccount?: () => void;
@@ -140,7 +141,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenAccount }) => {
           <div className="relative">
             <button
               onClick={() => setAccountOpen(!accountOpen)}
-              className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center hover:from-blue-600 hover:to-purple-700 transition-all relative"
+              className="w-9 h-9 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center hover:from-blue-600 hover:to-purple-700 transition-all relative"
               title="Account"
             >
               {user?.profileImage ? (
