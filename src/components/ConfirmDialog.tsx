@@ -27,18 +27,23 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/60 z-40"
-        onClick={onCancel}
-      />
+      <div className="fixed inset-0 bg-black/60 z-40" onClick={onCancel} />
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
         <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg shadow-2xl w-full max-w-md pointer-events-auto overflow-hidden">
           {/* Header with Icon */}
-          <div className={`p-6 border-b ${isDangerous ? "border-red-800 bg-red-900/20" : "border-slate-700"}`}>
+          <div
+            className={`p-6 border-b ${
+              isDangerous ? "border-red-800 bg-red-900/20" : "border-slate-700"
+            }`}
+          >
             <div className="flex items-start gap-4">
-              <div className={`p-3 rounded-full ${isDangerous ? "bg-red-900/30" : "bg-blue-900/30"}`}>
+              <div
+                className={`p-3 rounded-full ${
+                  isDangerous ? "bg-red-900/30" : "bg-blue-900/30"
+                }`}
+              >
                 <AlertCircle
                   size={24}
                   className={isDangerous ? "text-red-400" : "text-blue-400"}
@@ -48,9 +53,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
                 <h2 className="text-lg font-bold text-slate-100 mb-1">
                   {title}
                 </h2>
-                <p className="text-sm text-slate-400">
-                  {message}
-                </p>
+                <p className="text-sm text-slate-400">{message}</p>
               </div>
               <button
                 onClick={onCancel}

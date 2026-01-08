@@ -22,7 +22,11 @@ import {
 interface ToolbarProps {
   onOpenSimulator?: () => void;
   onOpenTemplates?: () => void;
-  onOpenConfirmDialog?: (title: string, message: string, onConfirm: () => void) => void;
+  onOpenConfirmDialog?: (
+    title: string,
+    message: string,
+    onConfirm: () => void
+  ) => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -63,6 +67,11 @@ const Toolbar: React.FC<ToolbarProps> = ({
   };
 
   const handleClearCanvas = () => {
+    if (nodes.length === 0) {
+      alert("ℹ️ Canvas is empty. There is nothing to clear.");
+      return;
+    }
+
     onOpenConfirmDialog?.(
       "Clear Canvas",
       "Are you sure you want to clear the entire canvas? This action cannot be undone.",

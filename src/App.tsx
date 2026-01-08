@@ -1,3 +1,4 @@
+import ConfirmDialog from "./components/ConfirmDialog";
 import FlowCanvas from "./components/FlowCanvas";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -8,7 +9,6 @@ import SimulatorPanel from "./components/SimulatorPanel";
 import TemplatesModal from "./components/TemplatesModal";
 import Toolbar from "./components/Toolbar";
 import ValidationPanel from "./components/ValidationPanel";
-import ConfirmDialog from "./components/ConfirmDialog";
 import { ReactFlowProvider } from "reactflow";
 import { useFlowStore } from "./store/flowStore";
 
