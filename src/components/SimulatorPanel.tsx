@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useFlowStore } from "../store/flowStore";
 import { createSimulatorEngine } from "../utils/simulator/engine";
 import type { SimulationLogEntry } from "../utils/simulator/types";
@@ -98,7 +98,7 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     };
   }, [isDragging, dragOffset]);
 
-  const syncState = () => {
+  const syncState = useCallback(() => {
     const s = engine.getState();
     setStatus(s.status);
     setCurrentNodeId(s.currentNodeId);
@@ -106,7 +106,7 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     setStepsExecuted(s.stepsExecuted);
     setLogs([...s.logs]);
     setMetrics({ ...s.metrics });
-  };
+  }, [engine]);
 
   // Reset simulator kada se otvori modal
   useEffect(() => {
