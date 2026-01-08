@@ -106,7 +106,15 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     setStepsExecuted(s.stepsExecuted);
     setLogs([...s.logs]);
     setMetrics({ ...s.metrics });
-  }, [engine]);
+  }, [
+    engine,
+    setStatus,
+    setCurrentNodeId,
+    setCurrentSimulatorNodeId,
+    setStepsExecuted,
+    setLogs,
+    setMetrics,
+  ]);
 
   // Reset simulator kada se otvori modal
   useEffect(() => {
@@ -160,7 +168,15 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
 
       return () => clearTimeout(timer);
     }
-  }, [desktopOpen, nodes, edges, initialized, engine, resetSimulatorVariables, syncState]);
+  }, [
+    desktopOpen,
+    nodes,
+    edges,
+    initialized,
+    engine,
+    resetSimulatorVariables,
+    syncState,
+  ]);
 
   const init = () => {
     try {
