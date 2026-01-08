@@ -40,6 +40,8 @@ const FlowCanvas: React.FC<FlowCanvasProps> = ({
     pasteNode,
     deleteNode,
     selectedNodes,
+    undo,
+    redo,
   } = useFlowStore();
 
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -139,13 +141,33 @@ const FlowCanvas: React.FC<FlowCanvasProps> = ({
     clearSelection();
   }, [clearSelection]);
 
-  // Keyboard shortcuts for copy/paste
+  // Keyboard shortcuts for copy/paste/undo/redo
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key === "c") {
+      // Undo
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key === "z" &&
+        !event.shiftKey
+      ) {
+        event.preventDefault();
+        undo();
+      }
+      // Redo (Ctrl+Shift+Z or Ctrl+Y)
+      else if (
+        (event.ctrlKey || event.metaKey) &&
+        (event.key === "y" || (event.key === "z" && event.shiftKey))
+      ) {
+        event.preventDefault();
+        redo();
+      }
+      // Copy
+      else if ((event.ctrlKey || event.metaKey) && event.key === "c") {
         event.preventDefault();
         copyNode();
-      } else if ((event.ctrlKey || event.metaKey) && event.key === "v") {
+      }
+      // Paste
+      else if ((event.ctrlKey || event.metaKey) && event.key === "v") {
         event.preventDefault();
         if (reactFlowInstance && reactFlowWrapper.current) {
           // Paste at center of canvas
@@ -160,7 +182,9 @@ const FlowCanvas: React.FC<FlowCanvasProps> = ({
 
           pasteNode(position);
         }
-      } else if (event.key === "Delete") {
+      }
+      // Delete
+      else if (event.key === "Delete") {
         // Delete selected nodes
         if (selectedNodes && selectedNodes.length > 0) {
           event.preventDefault();
@@ -173,7 +197,15 @@ const FlowCanvas: React.FC<FlowCanvasProps> = ({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [copyNode, pasteNode, reactFlowInstance, deleteNode, selectedNodes]);
+  }, [
+    undo,
+    redo,
+    copyNode,
+    pasteNode,
+    reactFlowInstance,
+    deleteNode,
+    selectedNodes,
+  ]);
 
   return (
     <div
