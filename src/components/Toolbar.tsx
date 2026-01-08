@@ -15,13 +15,15 @@ import {
   Download,
   Upload,
   BarChart3,
+  Zap,
 } from "lucide-react";
 
 interface ToolbarProps {
   onOpenSimulator?: () => void;
+  onOpenTemplates?: () => void;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator }) => {
+const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator, onOpenTemplates }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
   const {
@@ -169,6 +171,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator }) => {
       >
         <Play size={16} />
         <span className="hidden sm:inline">Test Flow</span>
+      </button>
+
+      {/* Templates Button */}
+      <button
+        onClick={onOpenTemplates}
+        className="
+          px-3 py-1.5 rounded-md border border-slate-700
+          hover:bg-slate-800 hover:border-yellow-500
+          transition-all text-xs sm:text-sm text-slate-300
+          flex items-center gap-2 shrink-0
+        "
+        title="Load Template"
+      >
+        <Zap size={16} />
+        <span className="hidden sm:inline">Templates</span>
       </button>
 
       {/* Simulator Button */}

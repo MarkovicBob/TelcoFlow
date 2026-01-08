@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFlowStore } from "../store/flowStore";
 import { createSimulatorEngine } from "../utils/simulator/engine";
 import type { SimulationLogEntry } from "../utils/simulator/types";
@@ -59,6 +59,7 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
   });
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorStack, setErrorStack] = useState<string | null>(null);
+  const shouldAutoPlayRef = useRef(false);
 
   // Desktop modal dragging state
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
@@ -113,8 +114,53 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
       // Samo resetuj engine i promenljive bez setState poziva
       engine.reset();
       resetSimulatorVariables();
+      setInitialized(false);
+      setErrorMessage(null);
+      setErrorStack(null);
+      
+      // Mark that we should auto-play if this is a template load
+      shouldAutoPlayRef.current = true;
     }
   }, [desktopOpen, mobileOpen, engine, resetSimulatorVariables]);
+
+  // Auto-play when modal opens with a template
+  useEffect(() => {
+    if (desktopOpen && shouldAutoPlayRef.current && nodes.length > 0) {
+      shouldAutoPlayRef.current = false;
+      
+      // Delay slightly to ensure UI is ready
+      const timer = setTimeout(() => {
+        // Initialize and play
+        const initAndPlay = async () => {
+          try {
+            if (!initialized) {
+              // Inline init to avoid state update delay
+              const startNode = nodes.find((n) => n.type === "start");
+              if (startNode) {
+                resetSimulatorVariables();
+                engine.init(nodes, edges, { maxSteps: 200 });
+                setInitialized(true);
+                setErrorMessage(null);
+                setErrorStack(null);
+                
+                // Now play
+                console.log("▶️  Auto-starting template simulation...");
+                await engine.start();
+                console.log("⏹️  Template simulation completed");
+                syncState();
+              }
+            }
+          } catch (err) {
+            console.error("❌ Auto-play error:", err);
+          }
+        };
+        
+        initAndPlay();
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [desktopOpen, nodes, edges, initialized, engine, resetSimulatorVariables]);
 
   const init = () => {
     try {

@@ -92,6 +92,7 @@ interface FlowState {
   // Utility
   clearFlow: () => void;
   loadFlow: (nodes: Node<NodeData>[], edges: Edge[]) => void;
+  loadTemplate: (template: { nodes: Node<NodeData>[]; edges: Edge[] }) => void;
 }
 
 const createDefaultNodeData = (type: NodeType): NodeData => {
@@ -397,6 +398,16 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       edges,
       selectedNode: null,
       history: { past: [], future: [] },
+    });
+  },
+
+  loadTemplate: (template) => {
+    set({
+      nodes: template.nodes,
+      edges: template.edges,
+      selectedNode: null,
+      history: { past: [], future: [] },
+      simulatorVariables: {}, // Reset simulator variables
     });
   },
 
