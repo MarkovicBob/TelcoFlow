@@ -24,11 +24,15 @@ const App: React.FC = () => {
     isOpen: boolean;
     title: string;
     message: string;
+    isDangerous?: boolean;
+    isInfo?: boolean;
     onConfirm?: () => void;
   }>({
     isOpen: false,
     title: "",
     message: "",
+    isDangerous: false,
+    isInfo: false,
     onConfirm: undefined,
   });
 
@@ -63,11 +67,13 @@ const App: React.FC = () => {
             <Toolbar
               onOpenSimulator={() => setDesktopSimulatorOpen(true)}
               onOpenTemplates={() => setTemplatesOpen(true)}
-              onOpenConfirmDialog={(title, message, onConfirm) => {
+              onOpenConfirmDialog={(title, message, onConfirm, isDangerous, isInfo) => {
                 setConfirmDialog({
                   isOpen: true,
                   title,
                   message,
+                  isDangerous: isDangerous || false,
+                  isInfo: isInfo || false,
                   onConfirm,
                 });
               }}
@@ -98,7 +104,8 @@ const App: React.FC = () => {
               isOpen={confirmDialog.isOpen}
               title={confirmDialog.title}
               message={confirmDialog.message}
-              isDangerous={true}
+              isDangerous={confirmDialog.isDangerous}
+              isInfo={confirmDialog.isInfo}
               confirmText="Clear"
               cancelText="Cancel"
               onConfirm={() => {

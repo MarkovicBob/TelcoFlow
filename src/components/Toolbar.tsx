@@ -25,7 +25,9 @@ interface ToolbarProps {
   onOpenConfirmDialog?: (
     title: string,
     message: string,
-    onConfirm: () => void
+    onConfirm: () => void,
+    isDangerous?: boolean,
+    isInfo?: boolean
   ) => void;
 }
 
@@ -68,7 +70,13 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
   const handleClearCanvas = () => {
     if (nodes.length === 0) {
-      alert("ℹ️ Canvas is empty. There is nothing to clear.");
+      onOpenConfirmDialog?.(
+        "Canvas Empty",
+        "The canvas is empty. There is nothing to clear.",
+        () => {},
+        false,
+        true
+      );
       return;
     }
 
@@ -77,7 +85,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
       "Are you sure you want to clear the entire canvas? This action cannot be undone.",
       () => {
         clearFlow();
-      }
+      },
+      true,
+      false
     );
   };
 

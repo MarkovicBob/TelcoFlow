@@ -8,6 +8,7 @@ interface ConfirmDialogProps {
   confirmText?: string;
   cancelText?: string;
   isDangerous?: boolean;
+  isInfo?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -19,6 +20,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   confirmText = "Confirm",
   cancelText = "Cancel",
   isDangerous = false,
+  isInfo = false,
   onConfirm,
   onCancel,
 }) => {
@@ -35,18 +37,18 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           {/* Header with Icon */}
           <div
             className={`p-6 border-b ${
-              isDangerous ? "border-red-800 bg-red-900/20" : "border-slate-700"
+              isDangerous ? "border-red-800 bg-red-900/20" : isInfo ? "border-blue-800 bg-blue-900/20" : "border-slate-700"
             }`}
           >
             <div className="flex items-start gap-4">
               <div
                 className={`p-3 rounded-full ${
-                  isDangerous ? "bg-red-900/30" : "bg-blue-900/30"
+                  isDangerous ? "bg-red-900/30" : isInfo ? "bg-blue-900/40" : "bg-blue-900/30"
                 }`}
               >
                 <AlertCircle
                   size={24}
-                  className={isDangerous ? "text-red-400" : "text-blue-400"}
+                  className={isDangerous ? "text-red-400" : isInfo ? "text-blue-500" : "text-blue-400"}
                 />
               </div>
               <div className="flex-1">
@@ -66,21 +68,25 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 
           {/* Footer with Actions */}
           <div className="p-4 bg-slate-950/50 flex items-center gap-3 justify-end">
+            {!isInfo && (
+              <button
+                onClick={onCancel}
+                className="px-4 py-2 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-slate-600 transition-all text-sm font-medium"
+              >
+                {cancelText}
+              </button>
+            )}
             <button
-              onClick={onCancel}
-              className="px-4 py-2 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 hover:border-slate-600 transition-all text-sm font-medium"
-            >
-              {cancelText}
-            </button>
-            <button
-              onClick={onConfirm}
+              onClick={isInfo ? onCancel : onConfirm}
               className={`px-4 py-2 rounded-lg font-medium text-sm transition-all text-white ${
                 isDangerous
                   ? "bg-red-600 hover:bg-red-700 border border-red-500"
+                  : isInfo
+                  ? "bg-blue-600 hover:bg-blue-700 border border-blue-500"
                   : "bg-blue-600 hover:bg-blue-700 border border-blue-500"
               }`}
             >
-              {confirmText}
+              {isInfo ? "OK" : confirmText}
             </button>
           </div>
         </div>
