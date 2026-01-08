@@ -58,6 +58,43 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     warningCount: 0,
   });
 
+  // Desktop modal dragging state
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const handleHeaderMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return; // Only left mouse button
+    setIsDragging(true);
+    setDragOffset({
+      x: e.clientX - modalPosition.x,
+      y: e.clientY - modalPosition.y,
+    });
+  };
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setModalPosition({
+        x: e.clientX - dragOffset.x,
+        y: e.clientY - dragOffset.y,
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
+
   const syncState = () => {
     const s = engine.getState();
     setStatus(s.status);
@@ -447,10 +484,19 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
       {/* Desktop Modal */}
       {desktopOpen && (
         <div className="hidden md:flex fixed inset-0 z-50 items-center justify-center pointer-events-none">
-          <div className="bg-slate-900 border border-slate-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto">
-            {/* Header */}
-            <div className="p-4 border-b border-slate-800 shrink-0 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-100">
+          <div 
+            className="bg-slate-900 border border-slate-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto"
+            style={{
+              transform: `translate(${modalPosition.x}px, ${modalPosition.y}px)`,
+              cursor: isDragging ? 'grabbing' : 'default',
+            }}
+          >
+            {/* Header - Draggable */}
+            <div 
+              onMouseDown={handleHeaderMouseDown}
+              className="p-4 border-b border-slate-800 shrink-0 flex items-center justify-between cursor-grab hover:bg-slate-800/50 transition-colors"
+            >
+              <h3 className="text-lg font-semibold text-slate-100 select-none">
                 Simulator
               </h3>
               <button
