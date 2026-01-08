@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFlowStore } from "../store/flowStore";
 import { createSimulatorEngine } from "../utils/simulator/engine";
 import type { SimulationLogEntry } from "../utils/simulator/types";
@@ -57,6 +57,46 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     errorCount: 0,
     warningCount: 0,
   });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorStack, setErrorStack] = useState<string | null>(null);
+  const shouldAutoPlayRef = useRef(false);
+
+  // Desktop modal dragging state
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const handleHeaderMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return; // Only left mouse button
+    setIsDragging(true);
+    setDragOffset({
+      x: e.clientX - modalPosition.x,
+      y: e.clientY - modalPosition.y,
+    });
+  };
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setModalPosition({
+        x: e.clientX - dragOffset.x,
+        y: e.clientY - dragOffset.y,
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, dragOffset]);
 
   const syncState = () => {
     const s = engine.getState();
@@ -74,28 +114,119 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
       // Samo resetuj engine i promenljive bez setState poziva
       engine.reset();
       resetSimulatorVariables();
+      setInitialized(false);
+      setErrorMessage(null);
+      setErrorStack(null);
+
+      // Mark that we should auto-play if this is a template load
+      shouldAutoPlayRef.current = true;
     }
   }, [desktopOpen, mobileOpen, engine, resetSimulatorVariables]);
 
+  // Auto-play when modal opens with a template
+  useEffect(() => {
+    if (desktopOpen && shouldAutoPlayRef.current && nodes.length > 0) {
+      shouldAutoPlayRef.current = false;
+
+      // Delay slightly to ensure UI is ready
+      const timer = setTimeout(() => {
+        // Initialize and play
+        const initAndPlay = async () => {
+          try {
+            if (!initialized) {
+              // Inline init to avoid state update delay
+              const startNode = nodes.find((n) => n.type === "start");
+              if (startNode) {
+                resetSimulatorVariables();
+                engine.init(nodes, edges, { maxSteps: 200 });
+                setInitialized(true);
+                setErrorMessage(null);
+                setErrorStack(null);
+
+                // Now play
+                console.log("▶️  Auto-starting template simulation...");
+                await engine.start();
+                console.log("⏹️  Template simulation completed");
+                syncState();
+              }
+            }
+          } catch (err) {
+            console.error("❌ Auto-play error:", err);
+          }
+        };
+
+        initAndPlay();
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+  }, [desktopOpen, nodes, edges, initialized, engine, resetSimulatorVariables]);
+
   const init = () => {
-    resetSimulatorVariables();
-    engine.init(nodes, edges, { maxSteps: 200 });
-    setInitialized(true);
-    syncState();
-    console.log("Simulator initialized:", engine.getState());
+    try {
+      if (nodes.length === 0) {
+        throw new Error("⚠️ Flow is empty - you need to add nodes");
+      }
+
+      const startNode = nodes.find((n) => n.type === "start");
+      if (!startNode) {
+        throw new Error(
+          "❌ No START node - every flow must begin with a START node"
+        );
+      }
+
+      resetSimulatorVariables();
+      engine.init(nodes, edges, { maxSteps: 200 });
+      setInitialized(true);
+      setErrorMessage(null);
+      setErrorStack(null);
+      syncState();
+      console.log("✅ Simulator initialized:", engine.getState());
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const stack =
+        err instanceof Error
+          ? err.stack?.split("\n").slice(0, 3).join("\n") ?? null
+          : null;
+      setErrorMessage(message);
+      setErrorStack(stack);
+      setStatus("error");
+      console.error("❌ Simulator init error:", message, stack);
+    }
   };
 
   const onPlay = async () => {
-    if (!initialized) {
-      init();
+    try {
+      setErrorMessage(null);
+      setErrorStack(null);
+
+      if (!initialized) {
+        init();
+        if (errorMessage) return;
+      }
+
+      console.log(
+        "▶️  Starting simulation, current status:",
+        engine.getState().status
+      );
+      await engine.start();
+      console.log(
+        "⏹️  Simulation finished, final status:",
+        engine.getState().status
+      );
+      syncState();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const stack =
+        err instanceof Error
+          ? err.stack?.split("\n").slice(0, 3).join("\n") ?? null
+          : null;
+      setErrorMessage(`❌ Simulation failed: ${message}`);
+      setErrorStack(stack);
+      setStatus("error");
+      syncState();
+      console.error("❌ Play error:", message, stack);
     }
-    console.log(
-      "Starting simulation, current status:",
-      engine.getState().status
-    );
-    await engine.start();
-    console.log("Simulation finished, final status:", engine.getState().status);
-    syncState();
   };
 
   const onPause = () => {
@@ -104,20 +235,45 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
   };
 
   const onStep = async () => {
-    if (!initialized) {
-      init();
+    try {
+      setErrorMessage(null);
+      setErrorStack(null);
+
+      if (!initialized) {
+        init();
+        if (errorMessage) return;
+      }
+
+      console.log("⏭️  Stepping...");
+      await engine.step();
+      syncState();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const stack =
+        err instanceof Error
+          ? err.stack?.split("\n").slice(0, 3).join("\n") ?? null
+          : null;
+      setErrorMessage(`❌ Step failed: ${message}`);
+      setErrorStack(stack);
+      setStatus("error");
+      syncState();
+      console.error("❌ Step error:", message, stack);
     }
-    await engine.step();
-    syncState();
   };
 
   const onReset = () => {
-    resetSimulatorVariables();
-    setCurrentSimulatorNodeId(null);
-    engine.reset();
-    setLogs([]);
-    setInitialized(false);
-    syncState();
+    try {
+      resetSimulatorVariables();
+      setCurrentSimulatorNodeId(null);
+      engine.reset();
+      setLogs([]);
+      setInitialized(false);
+      setErrorMessage(null);
+      setErrorStack(null);
+      syncState();
+    } catch (err) {
+      console.error("Reset error:", err);
+    }
   };
 
   const currentNode = nodes.find((n) => n.id === currentNodeId);
@@ -152,6 +308,35 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
   // Shared content render function (used by both desktop and mobile)
   const renderSimulatorContent = () => (
     <>
+      {/* Error Banner - Top Priority */}
+      {errorMessage && (
+        <div className="bg-red-900/30 border border-red-700 rounded px-3 py-3 flex items-start gap-3 mb-4">
+          <AlertCircle size={18} className="text-red-400 mt-0.5 shrink-0" />
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-bold text-red-300 mb-1">
+              Simulator Error
+            </div>
+            <div className="text-xs text-red-200 mb-1.5">{errorMessage}</div>
+            {errorStack && (
+              <details className="text-[10px] text-red-300/70 font-mono cursor-pointer">
+                <summary className="hover:text-red-300">Stack trace</summary>
+                <pre className="mt-1 bg-black/30 p-2 rounded overflow-x-auto">
+                  {errorStack}
+                </pre>
+              </details>
+            )}
+          </div>
+          <button
+            onClick={() => {
+              setErrorMessage(null);
+              setErrorStack(null);
+            }}
+            className="text-red-400 hover:text-red-300 shrink-0"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
       {/* Header with status */}
       <div className="text-sm text-slate-300 font-medium mb-3">Simulator</div>
       <div className="text-xs text-slate-400 mb-3">
@@ -447,10 +632,19 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
       {/* Desktop Modal */}
       {desktopOpen && (
         <div className="hidden md:flex fixed inset-0 z-50 items-center justify-center pointer-events-none">
-          <div className="bg-slate-900 border border-slate-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto">
-            {/* Header */}
-            <div className="p-4 border-b border-slate-800 shrink-0 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-100">
+          <div
+            className="bg-slate-900 border border-slate-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto"
+            style={{
+              transform: `translate(${modalPosition.x}px, ${modalPosition.y}px)`,
+              cursor: isDragging ? "grabbing" : "default",
+            }}
+          >
+            {/* Header - Draggable */}
+            <div
+              onMouseDown={handleHeaderMouseDown}
+              className="p-4 border-b border-slate-800 shrink-0 flex items-center justify-between cursor-grab hover:bg-slate-800/50 transition-colors"
+            >
+              <h3 className="text-lg font-semibold text-slate-100 select-none">
                 Simulator
               </h3>
               <button

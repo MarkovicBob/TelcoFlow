@@ -15,13 +15,27 @@ import {
   Download,
   Upload,
   BarChart3,
+  Zap,
+  Trash2,
 } from "lucide-react";
 
 interface ToolbarProps {
   onOpenSimulator?: () => void;
+  onOpenTemplates?: () => void;
+  onOpenConfirmDialog?: (
+    title: string,
+    message: string,
+    onConfirm: () => void,
+    isDangerous?: boolean,
+    isInfo?: boolean
+  ) => void;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator }) => {
+const Toolbar: React.FC<ToolbarProps> = ({
+  onOpenSimulator,
+  onOpenTemplates,
+  onOpenConfirmDialog,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
   const {
@@ -36,6 +50,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator }) => {
     saveFlow,
     exportFlow,
     importFlow,
+    clearFlow,
   } = useFlowStore();
 
   const handleTestFlow = () => {
@@ -51,6 +66,29 @@ const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator }) => {
 
   const handleExport = () => {
     exportFlow();
+  };
+
+  const handleClearCanvas = () => {
+    if (nodes.length === 0) {
+      onOpenConfirmDialog?.(
+        "Canvas Empty",
+        "The canvas is empty. There is nothing to clear.",
+        () => {},
+        false,
+        true
+      );
+      return;
+    }
+
+    onOpenConfirmDialog?.(
+      "Clear Canvas",
+      "Are you sure you want to clear the entire canvas? This action cannot be undone.",
+      () => {
+        clearFlow();
+      },
+      true,
+      false
+    );
   };
 
   const handleImport = () => {
@@ -171,6 +209,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator }) => {
         <span className="hidden sm:inline">Test Flow</span>
       </button>
 
+      {/* Templates Button */}
+      <button
+        onClick={onOpenTemplates}
+        className="
+          px-3 py-1.5 rounded-md border border-slate-700
+          hover:bg-slate-800 hover:border-yellow-500
+          transition-all text-xs sm:text-sm text-slate-300
+          flex items-center gap-2 shrink-0
+        "
+        title="Load Template"
+      >
+        <Zap size={16} />
+        <span className="hidden sm:inline">Templates</span>
+      </button>
+
       {/* Simulator Button */}
       <button
         onClick={onOpenSimulator}
@@ -184,6 +237,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator }) => {
       >
         <BarChart3 size={16} />
         <span className="hidden sm:inline">Simulator</span>
+      </button>
+
+      {/* Clear Canvas Button */}
+      <button
+        onClick={handleClearCanvas}
+        className="
+          px-3 py-1.5 rounded-md border border-slate-700
+          hover:bg-slate-800 hover:border-red-500
+          transition-all text-xs sm:text-sm text-slate-300
+          flex items-center gap-2 shrink-0
+        "
+        title="Clear Canvas"
+      >
+        <Trash2 size={16} />
+        <span className="hidden sm:inline">Clear</span>
       </button>
 
       <div className="flex-1 min-w-10" />

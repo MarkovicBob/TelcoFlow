@@ -1,3 +1,4 @@
+import ConfirmDialog from "./components/ConfirmDialog";
 import FlowCanvas from "./components/FlowCanvas";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -5,6 +6,7 @@ import NodeDetailsPanel from "./components/NodeDetailsPanel";
 import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import SimulatorPanel from "./components/SimulatorPanel";
+import TemplatesModal from "./components/TemplatesModal";
 import Toolbar from "./components/Toolbar";
 import ValidationPanel from "./components/ValidationPanel";
 import { ReactFlowProvider } from "reactflow";
@@ -17,6 +19,22 @@ const App: React.FC = () => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileSimulatorOpen, setMobileSimulatorOpen] = useState(false);
   const [desktopSimulatorOpen, setDesktopSimulatorOpen] = useState(false);
+  const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    isDangerous?: boolean;
+    isInfo?: boolean;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    isDangerous: false,
+    isInfo: false,
+    onConfirm: undefined,
+  });
 
   // Load saved flow on mount
   useEffect(() => {
@@ -46,7 +64,20 @@ const App: React.FC = () => {
 
         <div className="flex-1 flex flex-col min-h-[50vh]">
           <ReactFlowProvider>
-            <Toolbar onOpenSimulator={() => setDesktopSimulatorOpen(true)} />
+            <Toolbar
+              onOpenSimulator={() => setDesktopSimulatorOpen(true)}
+              onOpenTemplates={() => setTemplatesOpen(true)}
+              onOpenConfirmDialog={(title, message, onConfirm, isDangerous, isInfo) => {
+                setConfirmDialog({
+                  isOpen: true,
+                  title,
+                  message,
+                  isDangerous: isDangerous || false,
+                  isInfo: isInfo || false,
+                  onConfirm,
+                });
+              }}
+            />
             <FlowCanvas
               onOpenSidebar={() => setMobileSidebarOpen(true)}
               onOpenSimulator={() => setMobileSimulatorOpen(true)}
@@ -60,6 +91,29 @@ const App: React.FC = () => {
               desktopOpen={desktopSimulatorOpen}
               onDesktopToggle={() =>
                 setDesktopSimulatorOpen(!desktopSimulatorOpen)
+              }
+            />
+            <TemplatesModal
+              isOpen={templatesOpen}
+              onClose={() => setTemplatesOpen(false)}
+              onTemplateLoaded={() => {
+                setDesktopSimulatorOpen(true);
+              }}
+            />
+            <ConfirmDialog
+              isOpen={confirmDialog.isOpen}
+              title={confirmDialog.title}
+              message={confirmDialog.message}
+              isDangerous={confirmDialog.isDangerous}
+              isInfo={confirmDialog.isInfo}
+              confirmText="Clear"
+              cancelText="Cancel"
+              onConfirm={() => {
+                confirmDialog.onConfirm?.();
+                setConfirmDialog({ ...confirmDialog, isOpen: false });
+              }}
+              onCancel={() =>
+                setConfirmDialog({ ...confirmDialog, isOpen: false })
               }
             />
           </ReactFlowProvider>

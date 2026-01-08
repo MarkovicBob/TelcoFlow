@@ -82,7 +82,7 @@ export function createSimulatorEngine(): SimulatorEngine {
         level: "error",
         nodeId: state.currentNodeId || "-",
         nodeType: "system",
-        message: "Max steps reached",
+        message: `⏱️ Max steps (${state.maxSteps}) reached - possible infinite loop in flow`,
       });
       return;
     }
@@ -94,41 +94,52 @@ export function createSimulatorEngine(): SimulatorEngine {
         level: "error",
         nodeId: "-",
         nodeType: "system",
-        message: "No start node",
+        message: "❌ No START node - flow must begin with a START node",
       });
       return;
     }
 
     state.currentNodeId = node.id;
-    const result = await runHandler(node);
+    try {
+      const result = await runHandler(node);
 
-    if ("error" in result) {
-      state.status = "error";
-      addLog(
-        {
-          level: "error",
-          nodeId: node.id,
-          nodeType: node.type || "unknown",
-          message: result.error,
-        },
-        (result as { duration?: number }).duration
-      );
-      return;
-    }
-
-    state.stepsExecuted += 1;
-    const { nextNodeId } = result as {
-      nextNodeId: string | null;
-      duration?: number;
-    };
-    if (!nextNodeId) {
-      state.status = "completed";
-      state.endTime = Date.now();
-      if (state.startTime) {
-        state.metrics.totalDuration = state.endTime - state.startTime;
+      if ("error" in result) {
+        state.status = "error";
+        addLog(
+          {
+            level: "error",
+            nodeId: node.id,
+            nodeType: node.type || "unknown",
+            message: `❌ ${result.error}`,
+          },
+          (result as { duration?: number }).duration
+        );
+        return;
       }
-    } else {
-      state.currentNodeId = nextNodeId;
+
+      state.stepsExecuted += 1;
+      const { nextNodeId } = result as {
+        nextNodeId: string | null;
+        duration?: number;
+      };
+      if (!nextNodeId) {
+        state.status = "completed";
+        state.endTime = Date.now();
+        if (state.startTime) {
+          state.metrics.totalDuration = state.endTime - state.startTime;
+        }
+      } else {
+        state.currentNodeId = nextNodeId;
+      }
+    } catch (err) {
+      state.status = "error";
+      const message = err instanceof Error ? err.message : String(err);
+      addLog({
+        level: "error",
+        nodeId: node.id,
+        nodeType: node.type || "unknown",
+        message: `❌ Greška u nodu: ${message}`,
+      });
     }
   };
 
