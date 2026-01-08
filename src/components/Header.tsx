@@ -7,12 +7,7 @@ import { exportCanvasPDF, exportCanvasPNG } from "../utils/exportImage";
 // src/components/Header.tsx
 
 const Header: React.FC = () => {
-  const {
-    projectMetadata,
-    exportFlow,
-    nodes,
-    edges,
-  } = useFlowStore();
+  const { projectMetadata, exportFlow, nodes, edges } = useFlowStore();
 
   const exportJson = () => {
     exportFlow();

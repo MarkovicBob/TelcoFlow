@@ -59,7 +59,7 @@ const TemplatesModal: React.FC<TemplatesModalProps> = ({
                 <div
                   key={template.id}
                   onClick={() => handleLoadTemplate(template.id)}
-                  className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg p-4 cursor-pointer hover:border-blue-500 hover:from-slate-700 transition-all group"
+                  className="bg-linear-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-lg p-4 cursor-pointer hover:border-blue-500 hover:from-slate-700 transition-all group"
                 >
                   {/* Icon + Title */}
                   <div className="flex items-start gap-3 mb-3">
