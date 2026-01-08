@@ -81,7 +81,7 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
   const decisionHandler: NodeHandler = async ({ node, variables, addLog }) => {
     const data = node.data as unknown as Record<string, unknown> | undefined;
     const condition = (data?.condition as string) || "true";
-    
+
     try {
       const result = evaluateExpression(condition, {
         variables: variables.values,
@@ -89,7 +89,7 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       const isTrue = Boolean(result);
 
       const decisionEdges = edges.filter((e) => e.source === node.id);
-      
+
       if (decisionEdges.length === 0) {
         return {
           error: `❌ DECISION node has no outgoing edges - you need to connect "true" or "false" branches`,
@@ -104,11 +104,13 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
 
       if (!nextEdge) {
         return {
-          error: `❌ Cannot find matching branch for ${isTrue ? "true" : "false"} - check edge labels`,
+          error: `❌ Cannot find matching branch for ${
+            isTrue ? "true" : "false"
+          } - check edge labels`,
         };
       }
 
-      console.log("✓ Decision: \"" + condition + "\" => " + isTrue);
+      console.log('✓ Decision: "' + condition + '" => ' + isTrue);
 
       addLog({
         level: "info",

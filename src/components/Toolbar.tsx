@@ -22,11 +22,13 @@ import {
 interface ToolbarProps {
   onOpenSimulator?: () => void;
   onOpenTemplates?: () => void;
+  onOpenConfirmDialog?: (title: string, message: string, onConfirm: () => void) => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
   onOpenSimulator,
   onOpenTemplates,
+  onOpenConfirmDialog,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
@@ -61,9 +63,13 @@ const Toolbar: React.FC<ToolbarProps> = ({
   };
 
   const handleClearCanvas = () => {
-    if (window.confirm("⚠️ Are you sure you want to clear the entire canvas? This action cannot be undone.")) {
-      clearFlow();
-    }
+    onOpenConfirmDialog?.(
+      "Clear Canvas",
+      "Are you sure you want to clear the entire canvas? This action cannot be undone.",
+      () => {
+        clearFlow();
+      }
+    );
   };
 
   const handleImport = () => {

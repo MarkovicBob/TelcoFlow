@@ -109,7 +109,8 @@ const TemplatesModal: React.FC<TemplatesModalProps> = ({
           {/* Footer */}
           <div className="p-4 border-t border-slate-800 bg-slate-950/50">
             <p className="text-xs text-slate-400">
-              💡 Click a template to load example flow. Simulation will automatically start after loading.
+              💡 Click a template to load example flow. Simulation will
+              automatically start after loading.
             </p>
           </div>
         </div>

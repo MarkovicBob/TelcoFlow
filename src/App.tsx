@@ -8,6 +8,7 @@ import SimulatorPanel from "./components/SimulatorPanel";
 import TemplatesModal from "./components/TemplatesModal";
 import Toolbar from "./components/Toolbar";
 import ValidationPanel from "./components/ValidationPanel";
+import ConfirmDialog from "./components/ConfirmDialog";
 import { ReactFlowProvider } from "reactflow";
 import { useFlowStore } from "./store/flowStore";
 
@@ -19,6 +20,17 @@ const App: React.FC = () => {
   const [mobileSimulatorOpen, setMobileSimulatorOpen] = useState(false);
   const [desktopSimulatorOpen, setDesktopSimulatorOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState<{
+    isOpen: boolean;
+    title: string;
+    message: string;
+    onConfirm?: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: undefined,
+  });
 
   // Load saved flow on mount
   useEffect(() => {
@@ -51,6 +63,14 @@ const App: React.FC = () => {
             <Toolbar
               onOpenSimulator={() => setDesktopSimulatorOpen(true)}
               onOpenTemplates={() => setTemplatesOpen(true)}
+              onOpenConfirmDialog={(title, message, onConfirm) => {
+                setConfirmDialog({
+                  isOpen: true,
+                  title,
+                  message,
+                  onConfirm,
+                });
+              }}
             />
             <FlowCanvas
               onOpenSidebar={() => setMobileSidebarOpen(true)}
@@ -73,6 +93,21 @@ const App: React.FC = () => {
               onTemplateLoaded={() => {
                 setDesktopSimulatorOpen(true);
               }}
+            />
+            <ConfirmDialog
+              isOpen={confirmDialog.isOpen}
+              title={confirmDialog.title}
+              message={confirmDialog.message}
+              isDangerous={true}
+              confirmText="Clear"
+              cancelText="Cancel"
+              onConfirm={() => {
+                confirmDialog.onConfirm?.();
+                setConfirmDialog({ ...confirmDialog, isOpen: false });
+              }}
+              onCancel={() =>
+                setConfirmDialog({ ...confirmDialog, isOpen: false })
+              }
             />
           </ReactFlowProvider>
         </div>
