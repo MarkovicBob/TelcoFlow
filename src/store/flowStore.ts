@@ -223,14 +223,42 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   },
 
   onEdgesChange: (changes) => {
+    const state = get();
+    const hasStructuralChange = changes.some(
+      // EdgeChange has a `type` field: 'add' | 'remove' | 'reset' | 'select' | 'update'
+      // We only snapshot history for structural add/remove
+      (c: any) => c?.type === "add" || c?.type === "remove"
+    );
+
+    const newEdges = applyEdgeChanges(changes, state.edges);
+
     set({
-      edges: applyEdgeChanges(changes, get().edges),
+      edges: newEdges,
+      ...(hasStructuralChange
+        ? {
+            history: {
+              past: [
+                ...state.history.past,
+                { nodes: state.nodes, edges: state.edges },
+              ],
+              future: [],
+            },
+          }
+        : {}),
     });
   },
 
   onConnect: (connection) => {
+    const state = get();
     set({
-      edges: addEdge(connection, get().edges),
+      edges: addEdge(connection, state.edges),
+      history: {
+        past: [
+          ...state.history.past,
+          { nodes: state.nodes, edges: state.edges },
+        ],
+        future: [],
+      },
     });
   },
 
