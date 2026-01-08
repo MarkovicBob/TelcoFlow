@@ -16,6 +16,7 @@ import {
   Upload,
   BarChart3,
   Zap,
+  Trash2,
 } from "lucide-react";
 
 interface ToolbarProps {
@@ -23,7 +24,10 @@ interface ToolbarProps {
   onOpenTemplates?: () => void;
 }
 
-const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator, onOpenTemplates }) => {
+const Toolbar: React.FC<ToolbarProps> = ({
+  onOpenSimulator,
+  onOpenTemplates,
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { zoomIn, zoomOut, fitView } = useReactFlow();
   const {
@@ -38,6 +42,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator, onOpenTemplates }) =
     saveFlow,
     exportFlow,
     importFlow,
+    clearFlow,
   } = useFlowStore();
 
   const handleTestFlow = () => {
@@ -53,6 +58,12 @@ const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator, onOpenTemplates }) =
 
   const handleExport = () => {
     exportFlow();
+  };
+
+  const handleClearCanvas = () => {
+    if (window.confirm("⚠️ Are you sure you want to clear the entire canvas? This action cannot be undone.")) {
+      clearFlow();
+    }
   };
 
   const handleImport = () => {
@@ -201,6 +212,21 @@ const Toolbar: React.FC<ToolbarProps> = ({ onOpenSimulator, onOpenTemplates }) =
       >
         <BarChart3 size={16} />
         <span className="hidden sm:inline">Simulator</span>
+      </button>
+
+      {/* Clear Canvas Button */}
+      <button
+        onClick={handleClearCanvas}
+        className="
+          px-3 py-1.5 rounded-md border border-slate-700
+          hover:bg-slate-800 hover:border-red-500
+          transition-all text-xs sm:text-sm text-slate-300
+          flex items-center gap-2 shrink-0
+        "
+        title="Clear Canvas"
+      >
+        <Trash2 size={16} />
+        <span className="hidden sm:inline">Clear</span>
       </button>
 
       <div className="flex-1 min-w-10" />

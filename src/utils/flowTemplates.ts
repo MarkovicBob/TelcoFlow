@@ -1,4 +1,4 @@
-import type { Node, Edge } from "reactflow";
+import type { Edge, Node } from "reactflow";
 import type { NodeData } from "../types/nodes";
 
 export interface FlowTemplate {
@@ -36,12 +36,24 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
     icon: "🎤",
     nodes: [
       createNode("start-1", "start", "Start", { x: 100, y: 50 }),
-      createNode("ivr-1", "ivr", "Play Message", { x: 100, y: 150 }, {
-        prompt: "Dobrodošli u naš sistem",
-      }),
-      createNode("wait-1", "wait", "Wait", { x: 100, y: 250 }, {
-        duration: 2,
-      }),
+      createNode(
+        "ivr-1",
+        "ivr",
+        "Play Message",
+        { x: 100, y: 150 },
+        {
+          prompt: "Welcome to our system",
+        }
+      ),
+      createNode(
+        "wait-1",
+        "wait",
+        "Wait",
+        { x: 100, y: 250 },
+        {
+          duration: 2,
+        }
+      ),
       createNode("end-1", "end", "End", { x: 100, y: 350 }),
     ],
     edges: [
@@ -57,15 +69,33 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
     icon: "🔀",
     nodes: [
       createNode("start-2", "start", "Start", { x: 100, y: 50 }),
-      createNode("decision-1", "decision", "Check Input", { x: 100, y: 150 }, {
-        condition: "last_input === '1'",
-      }),
-      createNode("ivr-success", "ivr", "Success Path", { x: -100, y: 250 }, {
-        prompt: "Odabrali ste opciju 1",
-      }),
-      createNode("ivr-other", "ivr", "Other Path", { x: 300, y: 250 }, {
-        prompt: "Odabrali ste nešto drugo",
-      }),
+      createNode(
+        "decision-1",
+        "decision",
+        "Check Input",
+        { x: 100, y: 150 },
+        {
+          condition: "last_input === '1'",
+        }
+      ),
+      createNode(
+        "ivr-success",
+        "ivr",
+        "Success Path",
+        { x: -100, y: 250 },
+        {
+          prompt: "You selected option 1",
+        }
+      ),
+      createNode(
+        "ivr-other",
+        "ivr",
+        "Other Path",
+        { x: 300, y: 250 },
+        {
+          prompt: "You selected something else",
+        }
+      ),
       createNode("end-2", "end", "End", { x: 100, y: 350 }),
     ],
     edges: [
@@ -93,15 +123,33 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
     icon: "📞",
     nodes: [
       createNode("start-3", "start", "Start", { x: 100, y: 50 }),
-      createNode("ivr-greeting", "ivr", "Greeting", { x: 100, y: 150 }, {
-        prompt: "Pritisnite 1 za agenta",
-      }),
-      createNode("queue-1", "queue", "Wait in Queue", { x: 100, y: 250 }, {
-        holdMusic: "elevator",
-      }),
-      createNode("record-1", "record", "Record", { x: 100, y: 350 }, {
-        maxDuration: 30,
-      }),
+      createNode(
+        "ivr-greeting",
+        "ivr",
+        "Greeting",
+        { x: 100, y: 150 },
+        {
+          prompt: "Press 1 to speak with an agent",
+        }
+      ),
+      createNode(
+        "queue-1",
+        "queue",
+        "Wait in Queue",
+        { x: 100, y: 250 },
+        {
+          holdMusic: "elevator",
+        }
+      ),
+      createNode(
+        "record-1",
+        "record",
+        "Record",
+        { x: 100, y: 350 },
+        {
+          maxDuration: 30,
+        }
+      ),
       createNode("end-3", "end", "End Call", { x: 100, y: 450 }),
     ],
     edges: [
@@ -118,19 +166,37 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
     icon: "⌨️",
     nodes: [
       createNode("start-4", "start", "Start", { x: 100, y: 50 }),
-      createNode("ivr-ask", "ivr", "Ask for Input", { x: 100, y: 150 }, {
-        prompt: "Unesite 1 digit",
-      }),
-      createNode("get-input-1", "get-input", "Capture Input", {
-        x: 100,
-        y: 250,
-      }, {
-        inputType: "dtmf",
-      }),
-      createNode("set-var-1", "set-variable", "Save Input", { x: 100, y: 350 }, {
-        variableName: "user_choice",
-        value: "1",
-      }),
+      createNode(
+        "ivr-ask",
+        "ivr",
+        "Ask for Input",
+        { x: 100, y: 150 },
+        {
+          prompt: "Please enter one digit",
+        }
+      ),
+      createNode(
+        "get-input-1",
+        "get-input",
+        "Capture Input",
+        {
+          x: 100,
+          y: 250,
+        },
+        {
+          inputType: "dtmf",
+        }
+      ),
+      createNode(
+        "set-var-1",
+        "set-variable",
+        "Save Input",
+        { x: 100, y: 350 },
+        {
+          variableName: "user_choice",
+          value: "1",
+        }
+      ),
       createNode("end-4", "end", "End", { x: 100, y: 450 }),
     ],
     edges: [
@@ -147,19 +213,37 @@ export const FLOW_TEMPLATES: FlowTemplate[] = [
     icon: "🌐",
     nodes: [
       createNode("start-5", "start", "Start", { x: 100, y: 50 }),
-      createNode("api-1", "api-call", "Call API", { x: 100, y: 150 }, {
-        endpoint: "https://api.example.com/status",
-      }),
-      createNode("set-result", "set-variable", "Store Result", {
-        x: 100,
-        y: 250,
-      }, {
-        variableName: "api_response",
-        value: "success",
-      }),
-      createNode("ivr-confirm", "ivr", "Confirm", { x: 100, y: 350 }, {
-        prompt: "Zahtev je prosleđen",
-      }),
+      createNode(
+        "api-1",
+        "api-call",
+        "Call API",
+        { x: 100, y: 150 },
+        {
+          endpoint: "https://api.example.com/status",
+        }
+      ),
+      createNode(
+        "set-result",
+        "set-variable",
+        "Store Result",
+        {
+          x: 100,
+          y: 250,
+        },
+        {
+          variableName: "api_response",
+          value: "success",
+        }
+      ),
+      createNode(
+        "ivr-confirm",
+        "ivr",
+        "Confirm",
+        { x: 100, y: 350 },
+        {
+          prompt: "Request has been submitted",
+        }
+      ),
       createNode("end-5", "end", "End", { x: 100, y: 450 }),
     ],
     edges: [

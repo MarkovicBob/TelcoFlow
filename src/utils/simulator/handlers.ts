@@ -25,7 +25,7 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
         return { nextNodeId: null };
       }
       return {
-        error: `❌ Nod tipa "${nodeType}" nema outgoing edge - trebate da povežete nastavak flow-a`,
+        error: `❌ Node of type "${nodeType}" has no outgoing edge - you need to connect the flow`,
       };
     }
     return { nextNodeId: nextId };
@@ -92,7 +92,7 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
       
       if (decisionEdges.length === 0) {
         return {
-          error: `❌ Nema outgoing edge iz DECISION noda - trebate da povežete "true" ili "false" granu`,
+          error: `❌ DECISION node has no outgoing edges - you need to connect "true" or "false" branches`,
         };
       }
 
@@ -104,9 +104,11 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
 
       if (!nextEdge) {
         return {
-          error: `❌ Ne mogu da nađem odgovarajuću granu za ${isTrue ? "true" : "false"} - proverite edge labelove`,
+          error: `❌ Cannot find matching branch for ${isTrue ? "true" : "false"} - check edge labels`,
         };
       }
+
+      console.log("✓ Decision: \"" + condition + "\" => " + isTrue);
 
       addLog({
         level: "info",
@@ -120,7 +122,7 @@ export const getNodeHandlers = (edges: Edge[]): Record<string, NodeHandler> => {
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);
       return {
-        error: `❌ Greška u uslov: ${errorMsg} - Proverite sintaksu izraza`,
+        error: `❌ Error in condition: ${errorMsg} - Check expression syntax`,
       };
     }
   };

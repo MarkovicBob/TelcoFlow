@@ -1,6 +1,6 @@
+import { X } from "lucide-react";
 import { useFlowStore } from "../store/flowStore";
 import { FLOW_TEMPLATES } from "../utils/flowTemplates";
-import { X } from "lucide-react";
 
 interface TemplatesModalProps {
   isOpen: boolean;
@@ -33,10 +33,7 @@ const TemplatesModal: React.FC<TemplatesModalProps> = ({
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-black/60 z-40"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
@@ -44,7 +41,7 @@ const TemplatesModal: React.FC<TemplatesModalProps> = ({
           {/* Header */}
           <div className="p-4 border-b border-slate-800 flex items-center justify-between">
             <h2 className="text-xl font-bold text-slate-100">
-              Izaberite Template Flow-a
+              Select a Flow Template
             </h2>
             <button
               onClick={onClose}
@@ -102,7 +99,7 @@ const TemplatesModal: React.FC<TemplatesModalProps> = ({
 
                   {/* Load Button */}
                   <button className="w-full py-2 px-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded transition-colors">
-                    ↓ Učitaj Template
+                    ↓ Load Template
                   </button>
                 </div>
               ))}
@@ -112,8 +109,7 @@ const TemplatesModal: React.FC<TemplatesModalProps> = ({
           {/* Footer */}
           <div className="p-4 border-t border-slate-800 bg-slate-950/50">
             <p className="text-xs text-slate-400">
-              💡 Klikni na template da učitaš example flow. Simulacija će se
-              automatski pokrenuti nakon učitavanja.
+              💡 Click a template to load example flow. Simulation will automatically start after loading.
             </p>
           </div>
         </div>

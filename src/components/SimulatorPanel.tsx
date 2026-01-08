@@ -117,7 +117,7 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
       setInitialized(false);
       setErrorMessage(null);
       setErrorStack(null);
-      
+
       // Mark that we should auto-play if this is a template load
       shouldAutoPlayRef.current = true;
     }
@@ -127,7 +127,7 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
   useEffect(() => {
     if (desktopOpen && shouldAutoPlayRef.current && nodes.length > 0) {
       shouldAutoPlayRef.current = false;
-      
+
       // Delay slightly to ensure UI is ready
       const timer = setTimeout(() => {
         // Initialize and play
@@ -142,7 +142,7 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
                 setInitialized(true);
                 setErrorMessage(null);
                 setErrorStack(null);
-                
+
                 // Now play
                 console.log("▶️  Auto-starting template simulation...");
                 await engine.start();
@@ -154,10 +154,10 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
             console.error("❌ Auto-play error:", err);
           }
         };
-        
+
         initAndPlay();
       }, 300);
-      
+
       return () => clearTimeout(timer);
     }
   }, [desktopOpen, nodes, edges, initialized, engine, resetSimulatorVariables]);
@@ -165,13 +165,13 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
   const init = () => {
     try {
       if (nodes.length === 0) {
-        throw new Error("⚠️ Flow je prazan - trebate da dodate nodes");
+        throw new Error("⚠️ Flow is empty - you need to add nodes");
       }
 
       const startNode = nodes.find((n) => n.type === "start");
       if (!startNode) {
         throw new Error(
-          "❌ Nema START noda - svaki flow mora da počne sa START nodom"
+          "❌ No START node - every flow must begin with a START node"
         );
       }
 
@@ -185,7 +185,9 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       const stack =
-        err instanceof Error ? (err.stack?.split("\n").slice(0, 3).join("\n") ?? null) : null;
+        err instanceof Error
+          ? err.stack?.split("\n").slice(0, 3).join("\n") ?? null
+          : null;
       setErrorMessage(message);
       setErrorStack(stack);
       setStatus("error");
@@ -216,7 +218,9 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       const stack =
-        err instanceof Error ? (err.stack?.split("\n").slice(0, 3).join("\n") ?? null) : null;
+        err instanceof Error
+          ? err.stack?.split("\n").slice(0, 3).join("\n") ?? null
+          : null;
       setErrorMessage(`❌ Simulation failed: ${message}`);
       setErrorStack(stack);
       setStatus("error");
@@ -246,7 +250,9 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       const stack =
-        err instanceof Error ? (err.stack?.split("\n").slice(0, 3).join("\n") ?? null) : null;
+        err instanceof Error
+          ? err.stack?.split("\n").slice(0, 3).join("\n") ?? null
+          : null;
       setErrorMessage(`❌ Step failed: ${message}`);
       setErrorStack(stack);
       setStatus("error");
@@ -310,9 +316,7 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
             <div className="text-xs font-bold text-red-300 mb-1">
               Simulator Error
             </div>
-            <div className="text-xs text-red-200 mb-1.5">
-              {errorMessage}
-            </div>
+            <div className="text-xs text-red-200 mb-1.5">{errorMessage}</div>
             {errorStack && (
               <details className="text-[10px] text-red-300/70 font-mono cursor-pointer">
                 <summary className="hover:text-red-300">Stack trace</summary>

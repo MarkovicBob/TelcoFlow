@@ -82,7 +82,7 @@ export function createSimulatorEngine(): SimulatorEngine {
         level: "error",
         nodeId: state.currentNodeId || "-",
         nodeType: "system",
-        message: `⏱️ Max steps (${state.maxSteps}) reached - mogućna beskonačna petlja u flow-u`,
+        message: `⏱️ Max steps (${state.maxSteps}) reached - possible infinite loop in flow`,
       });
       return;
     }
@@ -94,7 +94,7 @@ export function createSimulatorEngine(): SimulatorEngine {
         level: "error",
         nodeId: "-",
         nodeType: "system",
-        message: "❌ Nema START noda - flow mora da počne sa START nodom",
+        message: "❌ No START node - flow must begin with a START node",
       });
       return;
     }
