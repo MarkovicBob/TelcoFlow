@@ -94,4 +94,3 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
 };
 
 export default Account;
-
