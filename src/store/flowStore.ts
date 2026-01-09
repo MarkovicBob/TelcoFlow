@@ -477,10 +477,20 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   loadSavedFlow: () => {
     try {
       const saved = localStorage.getItem("telcoflow_saved");
-      if (!saved) return false;
+      if (!saved) {
+        console.log("No saved flow found, starting with empty canvas");
+        return false;
+      }
 
       const flowData = JSON.parse(saved);
       const savedDate = flowData.savedAt ? new Date(flowData.savedAt) : null;
+
+      // Log what we're loading
+      console.log("Loading saved flow:", {
+        nodeCount: flowData.nodes?.length || 0,
+        edgeCount: flowData.edges?.length || 0,
+      });
+
       set({
         nodes: flowData.nodes || [],
         edges: flowData.edges || [],
@@ -490,6 +500,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       return true;
     } catch (error) {
       console.error("Failed to load flow:", error);
+      localStorage.removeItem("telcoflow_saved");
       return false;
     }
   },
