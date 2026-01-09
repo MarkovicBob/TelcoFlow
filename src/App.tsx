@@ -17,7 +17,7 @@ import { initializeUserStore, useUserStore } from "./store/userStore";
 // src/App.tsx
 
 const App: React.FC = () => {
-  const { loadSavedFlow, saveFlow, nodes, clearFlow } = useFlowStore();
+  const { loadSavedFlow, saveFlow, nodes, edges, clearFlow } = useFlowStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileSimulatorOpen, setMobileSimulatorOpen] = useState(false);
   const [desktopSimulatorOpen, setDesktopSimulatorOpen] = useState(false);
@@ -59,6 +59,7 @@ const App: React.FC = () => {
     // Try to load saved flow, if it doesn't exist, start with empty canvas
     const flowLoaded = loadSavedFlow();
     if (!flowLoaded) {
+      console.log("No saved flow, starting with empty canvas");
       clearFlow();
     }
   }, [loadSavedFlow, clearFlow]);
@@ -68,12 +69,24 @@ const App: React.FC = () => {
     const interval = setInterval(() => {
       if (nodes.length > 0) {
         saveFlow();
-        console.log("Auto-saved flow");
+        console.log("Auto-saved flow (2 min interval)");
       }
     }, 2 * 60 * 1000); // 2 minutes
 
     return () => clearInterval(interval);
   }, [saveFlow, nodes]);
+
+  // Auto-save when nodes or edges change (with debounce)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (nodes.length > 0) {
+        saveFlow();
+        console.log("Auto-saved flow (on change)");
+      }
+    }, 1000); // Wait 1 second after changes stop before saving
+
+    return () => clearTimeout(timeout);
+  }, [nodes, edges, saveFlow]);
   return (
     <div className="h-screen bg-slate-950 text-slate-100 flex flex-col overflow-hidden">
       <Header onOpenAccount={() => setAccountOpen(true)} />

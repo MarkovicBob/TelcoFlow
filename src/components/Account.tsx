@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
-import { Plus, Settings, Trash2, Upload, X, AlertCircle } from "lucide-react";
-import { useUserStore } from "../store/userStore";
+import { AlertCircle, Plus, Settings, Trash2, Upload, X } from "lucide-react";
 import { useFlowStore } from "../store/flowStore";
+import { useUserStore } from "../store/userStore";
 
 interface AccountProps {
   isOpen: boolean;
@@ -15,7 +15,11 @@ interface AccountProps {
   ) => void;
 }
 
-const Account: React.FC<AccountProps> = ({ isOpen, onClose, onOpenConfirmDialog }) => {
+const Account: React.FC<AccountProps> = ({
+  isOpen,
+  onClose,
+  onOpenConfirmDialog,
+}) => {
   const {
     user,
     updateUserProfile,
