@@ -6,6 +6,7 @@
 ## 🎯 Features
 
 ### ✨ Core Functionality
+
 - **Visual Flow Designer**: Drag-and-drop interface to build call flows
 - **Node Library**: Pre-built telecom nodes (Start, End, IVR Menu, Transfer, Queue, Decision, API Call, etc.)
 - **Real-time Flow Simulation**: Test your flows with interactive simulator
@@ -13,18 +14,21 @@
 - **Export Options**: Download flows as JSON, PNG, or PDF documentation
 
 ### 💾 Data Persistence
+
 - **Auto-Save on Changes**: Flow automatically saves 1 second after you stop making changes
 - **Periodic Backup**: Additional auto-save every 2 minutes as failsafe
 - **Empty Canvas**: Starts fresh on first launch, no default nodes
 - **LocalStorage**: All data persists in browser across sessions
 
 ### 🎨 User Experience
+
 - **Custom Dialogs**: Beautiful, styled confirmation and info dialogs (no browser alerts)
 - **Profile Management**: Upload and display custom profile images
 - **Dark Theme**: Professional dark slate UI with blue accent colors
 - **Responsive Design**: Works on desktop and mobile devices
 
 ### 📱 UI/UX Polish
+
 - **Toolbar Controls**: Undo/Redo, Zoom, Fit View, Test Flow, Templates, Simulator, Clear Canvas
 - **Validation Panel**: Real-time error and warning display
 - **Node Details Panel**: Configure individual nodes with properties
@@ -36,6 +40,7 @@
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 18+ (LTS)
 - npm or yarn
 - Modern web browser (Chrome, Firefox, Safari, Edge)
@@ -87,14 +92,14 @@ docker compose up --build
 
 ### Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `Ctrl+Z` / `Cmd+Z` | Undo |
-| `Ctrl+Y` / `Cmd+Y` | Redo |
-| `Ctrl+C` / `Cmd+C` | Copy node |
-| `Ctrl+V` / `Cmd+V` | Paste node |
-| `Delete` | Delete selected node(s) |
-| `Ctrl+S` / `Cmd+S` | Save flow |
+| Shortcut           | Action                  |
+| ------------------ | ----------------------- |
+| `Ctrl+Z` / `Cmd+Z` | Undo                    |
+| `Ctrl+Y` / `Cmd+Y` | Redo                    |
+| `Ctrl+C` / `Cmd+C` | Copy node               |
+| `Ctrl+V` / `Cmd+V` | Paste node              |
+| `Delete`           | Delete selected node(s) |
+| `Ctrl+S` / `Cmd+S` | Save flow               |
 
 ---
 
@@ -105,6 +110,7 @@ docker compose up --build
 The application implements a dual-layer auto-save mechanism:
 
 1. **Real-time Save (1 second debounce)**
+
    - Activates after you stop making changes
    - Stores complete flow state in localStorage
    - Console logs: "Auto-saved flow (on change)"
@@ -118,18 +124,18 @@ The application implements a dual-layer auto-save mechanism:
 
 ```typescript
 // localStorage keys used:
-- telcoflow_saved       // Complete flow data (nodes, edges, metadata)
-- telcoflow_initialized_v2  // First-time initialization flag
-- telcoflow_user        // User profile (name, image, settings)
+-telcoflow_saved - // Complete flow data (nodes, edges, metadata)
+  telcoflow_initialized_v2 - // First-time initialization flag
+  telcoflow_user; // User profile (name, image, settings)
 ```
 
 ### Export Options
 
-| Format | Use Case |
-|--------|----------|
+| Format   | Use Case                                           |
+| -------- | -------------------------------------------------- |
 | **JSON** | Full flow data for backup/integration with backend |
-| **PNG** | Visual diagram for documentation |
-| **PDF** | Professional documentation package |
+| **PNG**  | Visual diagram for documentation                   |
+| **PDF**  | Professional documentation package                 |
 
 ### Profile & Settings
 
@@ -153,20 +159,20 @@ The application implements a dual-layer auto-save mechanism:
 
 ### Node Types Available
 
-| Type | Icon | Purpose | Key Settings |
-|------|------|---------|--------------|
-| **Start** | 🟢 | Entry point for flow | Trigger type |
-| **End** | 🔴 | Terminate call | Exit reason |
-| **IVR Menu** | 📱 | DTMF menu with options | Options, timeout |
-| **Play Message** | 🔊 | Play audio/TTS | Message text, audio |
-| **Get Input** | ⌨️ | Collect DTMF input | Input length, timeout |
-| **Decision** | 🔀 | Conditional routing | Conditions |
-| **Transfer** | ☎️ | Transfer call | Destination |
-| **Queue** | 👥 | Place in queue | Queue name, priority |
-| **API Call** | 🌐 | External API call | URL, method, headers |
-| **Record** | 🎙️ | Record audio | Duration, format |
-| **Wait** | ⏱️ | Time delay | Duration |
-| **Set Variable** | 📝 | Store data | Variable name, value |
+| Type             | Icon | Purpose                | Key Settings          |
+| ---------------- | ---- | ---------------------- | --------------------- |
+| **Start**        | 🟢   | Entry point for flow   | Trigger type          |
+| **End**          | 🔴   | Terminate call         | Exit reason           |
+| **IVR Menu**     | 📱   | DTMF menu with options | Options, timeout      |
+| **Play Message** | 🔊   | Play audio/TTS         | Message text, audio   |
+| **Get Input**    | ⌨️   | Collect DTMF input     | Input length, timeout |
+| **Decision**     | 🔀   | Conditional routing    | Conditions            |
+| **Transfer**     | ☎️   | Transfer call          | Destination           |
+| **Queue**        | 👥   | Place in queue         | Queue name, priority  |
+| **API Call**     | 🌐   | External API call      | URL, method, headers  |
+| **Record**       | 🎙️   | Record audio           | Duration, format      |
+| **Wait**         | ⏱️   | Time delay             | Duration              |
+| **Set Variable** | 📝   | Store data             | Variable name, value  |
 
 ---
 
@@ -259,6 +265,7 @@ eslint.config.js               # ESLint rules
 ## 🔧 Recent Updates (v1.1)
 
 ### ✨ New Features
+
 - **Real-time Auto-Save**: Saves automatically 1 second after changes with debounce
 - **Periodic Backup**: Additional auto-save every 2 minutes as failsafe
 - **Custom Dialogs**: Beautiful styled confirmations instead of browser alerts
@@ -266,6 +273,7 @@ eslint.config.js               # ESLint rules
 - **Empty Canvas**: Fresh start on first launch - no default nodes
 
 ### 🐛 Improvements & Fixes
+
 - **Docker Security**: Updated node:18-alpine → node:22-alpine, nginx:alpine → nginx:latest-alpine
 - **Flow Persistence**: Enhanced localStorage strategy with initialization flags
 - **Error Handling**: Better error logging and debugging in console
@@ -273,6 +281,7 @@ eslint.config.js               # ESLint rules
 - **Logout Button**: Disabled pending authentication system (v2 feature)
 
 ### 🔌 Integration Ready
+
 - **JSON Export**: Full flow data compatible with backend APIs
 - **REST API**: Preparation for flow execution endpoints
 - **Webhook Ready**: Architecture supports incoming webhooks
@@ -283,6 +292,7 @@ eslint.config.js               # ESLint rules
 ## 📝 Roadmap
 
 ### Current Release (v1.1) ✅
+
 - ✅ Visual flow builder with 12+ node types
 - ✅ Real-time auto-save persistence (debounce 1s + periodic 2min)
 - ✅ Empty canvas on first launch
@@ -295,6 +305,7 @@ eslint.config.js               # ESLint rules
 - ✅ Docker security updates
 
 ### Next Release (v2.0) 🚧
+
 - ⬜ User authentication system
 - ⬜ Multiple projects support
 - ⬜ Project metadata (name, description, tags)
@@ -307,6 +318,7 @@ eslint.config.js               # ESLint rules
 - ⬜ Full Account modal (name, email, settings)
 
 ### Future (v3.0+) 📅
+
 - Workflow scheduler and execution
 - Analytics & metrics dashboard
 - Team management system
@@ -321,6 +333,7 @@ eslint.config.js               # ESLint rules
 ## 🎬 Demo Scenarios
 
 ### Simple IVR Flow (5 nodes)
+
 1. **Start** → Entry point
 2. **Play Message** → "Welcome to support"
 3. **IVR Menu** → "Press 1 for sales, 2 for support"
@@ -329,6 +342,7 @@ eslint.config.js               # ESLint rules
 6. **End** → Call complete
 
 ### Complex Call Routing (8+ nodes)
+
 1. **Start** → Entry
 2. **Decision** → Check business hours
 3. **IVR Menu** → Department selection
@@ -367,13 +381,13 @@ npm run preview
 
 ### Project Scripts
 
-| Script | Purpose |
-|--------|---------|
-| `npm run dev` | Start Vite dev server on port 5173 |
-| `npm run build` | Create optimized production build in dist/ |
-| `npm run preview` | Preview production build locally |
-| `npm run type-check` | Run TypeScript type checking |
-| `npm run lint` | Run ESLint on source files |
+| Script               | Purpose                                    |
+| -------------------- | ------------------------------------------ |
+| `npm run dev`        | Start Vite dev server on port 5173         |
+| `npm run build`      | Create optimized production build in dist/ |
+| `npm run preview`    | Preview production build locally           |
+| `npm run type-check` | Run TypeScript type checking               |
+| `npm run lint`       | Run ESLint on source files                 |
 
 ### Docker Development
 
@@ -413,6 +427,7 @@ This is a demonstration project. For modifications:
 5. Push and open a pull request
 
 ### Code Style
+
 - TypeScript strict mode enabled
 - ESLint configuration enforced
 - Prettier formatting for consistency
@@ -441,27 +456,32 @@ This project is provided as-is for demonstration and portfolio purposes.
 When presenting this project:
 
 1. **Problem Statement**
+
    - "Telecom operators need rapid service development without vendor lock-in"
    - Months-long development timelines with traditional approaches
 
 2. **Solution Overview**
+
    - Visual low-code platform reducing time-to-market from months to days
    - Type-safe TypeScript architecture
    - Real-time simulation and validation
 
 3. **Technical Achievements**
+
    - Custom flow validation engine
    - Real-time auto-save with debounce strategy
    - Responsive React 19 + TypeScript implementation
    - Docker containerization with security best practices
 
 4. **User Experience**
+
    - Intuitive drag-and-drop interface
    - Immediate visual feedback
    - No-code flow building
    - Professional UI/UX with dark theme
 
 5. **Scalability & Integration**
+
    - JSON export for backend integration
    - REST API ready
    - Docker deployment ready
@@ -477,7 +497,7 @@ When presenting this project:
 
 **Happy flow building!** 🚀📞
 
-*Last updated: January 9, 2026*
+_Last updated: January 9, 2026_
 
 ### Main Application Layout
 
