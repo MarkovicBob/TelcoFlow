@@ -185,11 +185,12 @@ const Header: React.FC<HeaderProps> = ({ onOpenAccount }) => {
                       Settings
                     </button>
                     <button
+                      disabled
                       onClick={() => {
                         logout();
                         setAccountOpen(false);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-900/20 rounded transition-colors"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-900/20 rounded transition-colors opacity-50 cursor-not-allowed"
                     >
                       <LogOut size={16} />
                       Logout
