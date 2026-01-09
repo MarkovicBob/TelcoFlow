@@ -494,6 +494,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
       set({
         nodes: flowData.nodes || [],
         edges: flowData.edges || [],
+        projectMetadata: flowData.metadata || { name: "My Flow" },
         lastSaved: savedDate,
         history: { past: [], future: [] },
       });

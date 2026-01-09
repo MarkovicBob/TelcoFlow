@@ -17,7 +17,7 @@ import { initializeUserStore, useUserStore } from "./store/userStore";
 // src/App.tsx
 
 const App: React.FC = () => {
-  const { loadSavedFlow, saveFlow, nodes, edges, clearFlow } = useFlowStore();
+  const { loadSavedFlow, saveFlow, nodes, edges, clearFlow, projectMetadata } = useFlowStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileSimulatorOpen, setMobileSimulatorOpen] = useState(false);
   const [desktopSimulatorOpen, setDesktopSimulatorOpen] = useState(false);
@@ -86,7 +86,7 @@ const App: React.FC = () => {
     }, 1000); // Wait 1 second after changes stop before saving
 
     return () => clearTimeout(timeout);
-  }, [nodes, edges, saveFlow]);
+  }, [nodes, edges, projectMetadata, saveFlow]);
   return (
     <div className="h-screen bg-slate-950 text-slate-100 flex flex-col overflow-hidden">
       <Header onOpenAccount={() => setAccountOpen(true)} />
