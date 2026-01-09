@@ -61,10 +61,18 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
   const [errorStack, setErrorStack] = useState<string | null>(null);
   const shouldAutoPlayRef = useRef(false);
 
-  // Desktop modal dragging state
+  // Desktop modal dragging and resizing state
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [modalSize, setModalSize] = useState({ width: 800, height: 600 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isResizing, setIsResizing] = useState(false);
+  const [resizeStart, setResizeStart] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
 
   const handleHeaderMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return; // Only left mouse button
@@ -75,18 +83,43 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
     });
   };
 
+  const handleResizeMouseDown = (e: React.MouseEvent) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    setIsResizing(true);
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: modalSize.width,
+      height: modalSize.height,
+    });
+  };
+
   useEffect(() => {
-    if (!isDragging) return;
+    if (!isDragging && !isResizing) return;
 
     const handleMouseMove = (e: MouseEvent) => {
-      setModalPosition({
-        x: e.clientX - dragOffset.x,
-        y: e.clientY - dragOffset.y,
-      });
+      if (isDragging) {
+        setModalPosition({
+          x: e.clientX - dragOffset.x,
+          y: e.clientY - dragOffset.y,
+        });
+      } else if (isResizing) {
+        const deltaX = e.clientX - resizeStart.x;
+        const deltaY = e.clientY - resizeStart.y;
+        const minWidth = 400;
+        const minHeight = 300;
+
+        setModalSize({
+          width: Math.max(minWidth, resizeStart.width + deltaX),
+          height: Math.max(minHeight, resizeStart.height + deltaY),
+        });
+      }
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
+      setIsResizing(false);
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -96,7 +129,14 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, dragOffset]);
+  }, [
+    isDragging,
+    isResizing,
+    dragOffset,
+    resizeStart,
+    modalSize.width,
+    modalSize.height,
+  ]);
 
   const syncState = useCallback(() => {
     const s = engine.getState();
@@ -649,10 +689,16 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
       {desktopOpen && (
         <div className="hidden md:flex fixed inset-0 z-50 items-center justify-center pointer-events-none">
           <div
-            className="bg-slate-900 border border-slate-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col pointer-events-auto"
+            className="bg-slate-900 border border-slate-800 rounded-lg shadow-2xl overflow-hidden flex flex-col pointer-events-auto relative"
             style={{
               transform: `translate(${modalPosition.x}px, ${modalPosition.y}px)`,
-              cursor: isDragging ? "grabbing" : "default",
+              cursor: isResizing
+                ? "nwse-resize"
+                : isDragging
+                ? "grabbing"
+                : "default",
+              width: `${modalSize.width}px`,
+              height: `${modalSize.height}px`,
             }}
           >
             {/* Header - Draggable */}
@@ -676,6 +722,13 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
             <div className="flex-1 overflow-y-auto p-4">
               {renderSimulatorContent()}
             </div>
+
+            {/* Resize Handle */}
+            <div
+              onMouseDown={handleResizeMouseDown}
+              className="absolute bottom-0 right-0 w-5 h-5 cursor-nwse-resize bg-gradient-to-tl from-blue-500/60 to-transparent hover:from-blue-500/100 transition-colors opacity-0 hover:opacity-100"
+              title="Drag to resize"
+            />
           </div>
         </div>
       )}
