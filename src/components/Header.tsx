@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFlowStore } from "../store/flowStore";
 import { useUserStore } from "../store/userStore";
 import { exportMarkdown } from "../utils/exportDocs";
@@ -28,6 +28,11 @@ const Header: React.FC<HeaderProps> = ({ onOpenAccount }) => {
   const [accountOpen, setAccountOpen] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [projectName, setProjectName] = useState(projectMetadata.name);
+
+  // Sync local projectName state with store metadata
+  useEffect(() => {
+    setProjectName(projectMetadata.name);
+  }, [projectMetadata.name]);
 
   const handleSaveProjectName = () => {
     if (projectName.trim()) {
