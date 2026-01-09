@@ -61,7 +61,13 @@ const Toolbar: React.FC<ToolbarProps> = ({
 
   const handleSave = () => {
     saveFlow();
-    alert("✅ Flow saved successfully!");
+    onOpenConfirmDialog?.(
+      "Flow Saved",
+      "Your flow has been saved successfully!",
+      () => {},
+      false,
+      true
+    );
   };
 
   const handleExport = () => {
@@ -104,9 +110,21 @@ const Toolbar: React.FC<ToolbarProps> = ({
       try {
         const content = e.target?.result as string;
         importFlow(content);
-        alert("✅ Flow imported successfully!");
+        onOpenConfirmDialog?.(
+          "Flow Imported",
+          "Your flow has been imported successfully!",
+          () => {},
+          false,
+          true
+        );
       } catch {
-        alert("❌ Failed to import flow. Invalid file format.");
+        onOpenConfirmDialog?.(
+          "Import Failed",
+          "Failed to import flow. Invalid file format.",
+          () => {},
+          true,
+          false
+        );
       }
     };
     reader.readAsText(file);
