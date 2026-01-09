@@ -1,13 +1,21 @@
 import React, { useRef, useState } from "react";
-import { Plus, Settings, Trash2, Upload, X } from "lucide-react";
+import { Plus, Settings, Trash2, Upload, X, AlertCircle } from "lucide-react";
 import { useUserStore } from "../store/userStore";
+import { useFlowStore } from "../store/flowStore";
 
 interface AccountProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenConfirmDialog?: (
+    title: string,
+    message: string,
+    onConfirm: () => void,
+    isDangerous?: boolean,
+    isInfo?: boolean
+  ) => void;
 }
 
-const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
+const Account: React.FC<AccountProps> = ({ isOpen, onClose, onOpenConfirmDialog }) => {
   const {
     user,
     updateUserProfile,
@@ -17,6 +25,7 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
     createProject,
     deleteProject,
   } = useUserStore();
+  const { clearFlow } = useFlowStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [editName, setEditName] = useState(false);
@@ -265,7 +274,25 @@ const Account: React.FC<AccountProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Footer */}
-          <div className="p-4 bg-slate-950/50 border-t border-slate-700 flex justify-end">
+          <div className="p-4 bg-slate-950/50 border-t border-slate-700 flex justify-between items-center">
+            <button
+              onClick={() => {
+                onOpenConfirmDialog?.(
+                  "Reset All Data",
+                  "Are you sure you want to clear the canvas and reset all flow data? This action cannot be undone.",
+                  () => {
+                    clearFlow();
+                    localStorage.removeItem("telcoflow_saved");
+                  },
+                  true,
+                  false
+                );
+              }}
+              className="px-3 py-2 text-red-400 hover:text-red-300 transition-colors text-sm flex items-center gap-2 border border-red-900 hover:border-red-700 rounded"
+            >
+              <AlertCircle size={16} />
+              Reset Canvas
+            </button>
             <button
               onClick={onClose}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"

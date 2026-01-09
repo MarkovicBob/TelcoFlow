@@ -17,7 +17,7 @@ import { initializeUserStore, useUserStore } from "./store/userStore";
 // src/App.tsx
 
 const App: React.FC = () => {
-  const { loadSavedFlow, saveFlow, nodes } = useFlowStore();
+  const { loadSavedFlow, saveFlow, nodes, clearFlow } = useFlowStore();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileSimulatorOpen, setMobileSimulatorOpen] = useState(false);
   const [desktopSimulatorOpen, setDesktopSimulatorOpen] = useState(false);
@@ -56,8 +56,12 @@ const App: React.FC = () => {
       });
     }
 
-    loadSavedFlow();
-  }, [loadSavedFlow]);
+    // Try to load saved flow, if it doesn't exist, start with empty canvas
+    const flowLoaded = loadSavedFlow();
+    if (!flowLoaded) {
+      clearFlow();
+    }
+  }, [loadSavedFlow, clearFlow]);
 
   // Auto-save every 2 minutes
   useEffect(() => {
@@ -143,6 +147,22 @@ const App: React.FC = () => {
             <Account
               isOpen={accountOpen}
               onClose={() => setAccountOpen(false)}
+              onOpenConfirmDialog={(
+                title,
+                message,
+                onConfirm,
+                isDangerous,
+                isInfo
+              ) => {
+                setConfirmDialog({
+                  isOpen: true,
+                  title,
+                  message,
+                  isDangerous: isDangerous || false,
+                  isInfo: isInfo || false,
+                  onConfirm,
+                });
+              }}
             />
           </ReactFlowProvider>
         </div>
