@@ -160,22 +160,6 @@ const App: React.FC = () => {
             <Account
               isOpen={accountOpen}
               onClose={() => setAccountOpen(false)}
-              onOpenConfirmDialog={(
-                title,
-                message,
-                onConfirm,
-                isDangerous,
-                isInfo
-              ) => {
-                setConfirmDialog({
-                  isOpen: true,
-                  title,
-                  message,
-                  isDangerous: isDangerous || false,
-                  isInfo: isInfo || false,
-                  onConfirm,
-                });
-              }}
             />
           </ReactFlowProvider>
         </div>
