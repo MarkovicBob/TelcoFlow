@@ -726,7 +726,7 @@ const SimulatorPanel: React.FC<SimulatorPanelProps> = ({
             {/* Resize Handle */}
             <div
               onMouseDown={handleResizeMouseDown}
-              className="absolute bottom-0 right-0 w-5 h-5 cursor-nwse-resize bg-gradient-to-tl from-blue-500/60 to-transparent hover:from-blue-500/100 transition-colors opacity-0 hover:opacity-100"
+              className="absolute bottom-0 right-0 w-5 h-5 cursor-nwse-resize bg-linear-to-tl from-blue-500/60 to-transparent hover:from-blue-500 transition-colors opacity-0 hover:opacity-100"
               title="Drag to resize"
             />
           </div>
