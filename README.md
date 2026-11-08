@@ -3,6 +3,16 @@
 > **Modern, intuitive visual programming platform for telecommunications call flows**  
 > Design complex IVR systems, call routing, and customer interactions without coding.
 
+## Screenshots
+
+<a href="https://portfoliobob.netlify.app/projects/telcoflow/demo.mp4"><img src="https://portfoliobob.netlify.app/projects/telcoflow/poster.webp" alt="Demo video" width="100%"></a>
+
+<sub>▶ Click the image to watch the demo video · more on <a href="https://portfoliobob.netlify.app/#projects">portfoliobob.netlify.app</a></sub>
+
+<table>
+<tr><td width="33%"><img src="https://portfoliobob.netlify.app/projects/telcoflow/1.webp" alt="Screenshot 1" width="100%"></td><td width="33%"><img src="https://portfoliobob.netlify.app/projects/telcoflow/2.webp" alt="Screenshot 2" width="100%"></td><td width="33%"><img src="https://portfoliobob.netlify.app/projects/telcoflow/3.webp" alt="Screenshot 3" width="100%"></td></tr>
+</table>
+
 ## 🎯 Features
 
 ### ✨ Core Functionality
